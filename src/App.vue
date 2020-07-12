@@ -18,7 +18,6 @@
                             </v-list-item-content>
                         </v-list-item>
                     </v-list>
-
                 </v-navigation-drawer>
                 <router-view></router-view>
                 <v-app-bar app clipped-left>
