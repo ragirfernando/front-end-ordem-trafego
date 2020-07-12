@@ -16,7 +16,6 @@
         watch: {},
 
         created() {
-
         },
 
         methods: {}
