@@ -1,67 +1,60 @@
 <template>
-  <div id="app">
-    <v-app id="inspire">
-      <v-app id="inspire">
-        <v-navigation-drawer v-model="drawer" app clipped>
-          <v-list dense>
+    <div id="app" style="background-color: azure">
+        <v-app id="inspire">
+            <v-app id="inspire">
+                <v-navigation-drawer v-model="drawer" app clipped style="width: 200px">
+                    <v-list dense nav>
+                        <v-list-item
+                                v-for="item in items"
+                                :key="item.title"
+                                :to="item.link"
+                        >
+                            <v-list-item-icon>
+                                <v-icon>{{ item.icon }}</v-icon>
+                            </v-list-item-icon>
 
-            <v-list-item link>
-              <v-list-item-action>
-                <v-icon>mdi-view-dashboard</v-icon>
-              </v-list-item-action>
-              <v-list-item-content>
-                <v-list-item-title class="subtitle-1">Veículos</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            
-          </v-list>
+                            <v-list-item-content>
+                                <v-list-item-title>{{ item.title }}</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                    </v-list>
 
-        </v-navigation-drawer>
+                </v-navigation-drawer>
+                <router-view></router-view>
+                <v-app-bar app clipped-left>
+                    <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+                    <v-toolbar-title>Ordem de tráfego</v-toolbar-title>
+                </v-app-bar>
 
-        <v-app-bar app clipped-left>
-          <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-          <v-toolbar-title>Ordem de tráfego</v-toolbar-title>
-        </v-app-bar>
+                <v-footer app>
+                    <span>&copy; Ragir Fernando</span>
+                </v-footer>
+            </v-app>
+        </v-app>
 
-        <!--<v-content>
-          <Veiculo />
-        </v-content>-->
 
-        <v-content>
-          <Condutor />
-        </v-content>
-
-        <v-footer app>
-          <span>&copy; Ragir Fernando</span>
-        </v-footer>
-      </v-app>
-    </v-app>
-  </div>
+    </div>
 </template>
 
 <script>
-//import Veiculo from "./components/Veiculo";
-import Condutor from "./components/Condutor";
+    export default {
+        name: "App",
+        props: {
+            source: String
+        },
 
+        data: () => ({
+            drawer: null,
+            items: [
+                {title: 'Veículo', icon: 'mdi-view-dashboard', link: '/Veiculo'},
+                {title: 'Condutor', icon: 'mdi-image', link: '/Condutor'},
+                {title: 'Ordem de Tráfego', icon: 'mdi-image', link: '/OrdemTrafego'}
+            ],
+            right: null,
+        }),
 
-export default {
-  name: "App",
-
-  components: {
-    //Veiculo
-    Condutor
-  },
-
-  props: {
-    source: String
-  },
-
-  data: () => ({
-    drawer: null
-  }),
-
-  created() {
-    this.$vuetify.theme.dark = true;
-  }
-};
+        created() {
+            this.$vuetify.theme.dark = true;
+        }
+    };
 </script>

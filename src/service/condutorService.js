@@ -1,4 +1,6 @@
-import {http} from '/home/ragir/Sistemas-para-Internet/Novas-Tecnologias/Trafego/trafego/src/service/config'
+
+import {http} from './config'
+
 
 export default{
     listar:() =>{
