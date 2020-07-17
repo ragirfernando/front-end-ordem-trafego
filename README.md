@@ -28,4 +28,4 @@ npm run lint
 ## Tecnologias usadas
 [Vue CLI](https://cli.vuejs.org/config/),
 [ Vuetify](https://vuetifyjs.com/en/),
-[ axios](https://github.com/axios/axios).
+[ Axios API](https://github.com/axios/axios).
