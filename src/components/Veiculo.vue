@@ -76,7 +76,7 @@
                                             </v-col>
 
                                             <v-col cols="12" sm="6" md="4">
-                                                <p>Estado de Conservação"</p>
+                                                <p>Estado de Conservação</p>
                                                 <v-overflow-btn
                                                         class="my-2"
                                                         v-model="veiculo.estadoConservacao"
