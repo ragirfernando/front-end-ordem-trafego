@@ -47,7 +47,8 @@
             items: [
                 {title: 'Veículo', icon: 'mdi-view-dashboard', link: '/Veiculo'},
                 {title: 'Condutor', icon: 'mdi-image', link: '/Condutor'},
-                {title: 'Ordem de Tráfego', icon: 'mdi-image', link: '/OrdemTrafego'}
+                {title: 'Ordem de Tráfego', icon: 'mdi-image', link: '/OrdemTrafego'},
+                {title: 'Teste', icon: 'mdi-image', link: '/Teste'}
             ],
             right: null,
         }),

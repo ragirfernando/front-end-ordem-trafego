@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Veiculo from './components/Veiculo'
 import Condutor from './components/Condutor'
 import OrdemTrafego from "./components/OrdemTrafego";
+import Teste from "./components/Teste";
 
 Vue.use(VueRouter)
 
@@ -24,6 +25,11 @@ export default new VueRouter({
             path: '/OrdemTrafego',
             name: 'ordemTrafego',
             component: OrdemTrafego
+        },
+        {
+            path: '/Teste',
+            name: 'teste',
+            component: Teste
         }
     ]
 })

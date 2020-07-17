@@ -42,37 +42,11 @@
                                             </v-col>
 
                                             <v-col cols="12" sm="6" md="4">
-                                                <v-text-field v-model="ordemTrafego.origem.nunero" label="Número origem" required
+                                                <v-text-field v-model="ordemTrafego.origem.nunero" label="Complemento número" required
                                                               :rules="regra"></v-text-field>
                                             </v-col>
 
 
-
-                                            <v-col cols="12" sm="6" md="4">
-                                                <v-text-field v-model="ordemTrafego.destino.bairro"
-                                                              label="Bairro de destino" required
-                                                              :rules="regra"></v-text-field>
-                                            </v-col>
-
-                                            <v-col cols="12" sm="6" md="4">
-                                                <v-text-field
-                                                        v-model="ordemTrafego.destino.cidade"
-                                                        label="Cidade de destino"
-                                                        required
-                                                        :rules="regra"
-                                                ></v-text-field>
-                                            </v-col>
-
-
-                                            <v-col cols="12" sm="6" md="4">
-                                                <v-text-field v-model="ordemTrafego.destino.complemento" label="Completo destino" required
-                                                              :rules="regra"></v-text-field>
-                                            </v-col>
-
-                                            <v-col cols="12" sm="6" md="4">
-                                                <v-text-field v-model="ordemTrafego.destino.nunero" label="Número destino" required
-                                                              :rules="regra"></v-text-field>
-                                            </v-col>
 
 
                                             <v-col cols="12" sm="6" md="4">
@@ -87,8 +61,8 @@
                                                 >
                                                     <template v-slot:activator="{ on }">
                                                         <v-text-field
-                                                                v-model="ordemTrafego.data"
-                                                                label="Data"
+                                                                v-model="condutor.cnh.validade"
+                                                                label="Validade"
                                                                 readonly
                                                                 required
                                                                 :rules="regra"
@@ -96,7 +70,7 @@
                                                         ></v-text-field>
                                                     </template>
                                                     <v-date-picker
-                                                            v-model="ordemTrafego.data"
+                                                            v-model="condutor.cnh.validade"
                                                             no-title
                                                             scrollable
                                                             locale="br"
@@ -109,14 +83,13 @@
                                                     </v-date-picker>
                                                 </v-menu>
                                             </v-col>
-
                                             <v-col cols="12" sm="6" md="4">
-                                                <v-text-field v-model="ordemTrafego.status" label="Status" required
+                                                <v-text-field v-model="condutor.cpf" label="CPF" required
                                                               :rules="regra"></v-text-field>
                                             </v-col>
 
                                             <v-col cols="12" sm="6" md="4">
-                                                <v-text-field v-model="ordemTrafego.distanciaPercorrer" label="Distancia" required
+                                                <v-text-field v-model="condutor.matricula" label="Matricula" required
                                                               :rules="regra"></v-text-field>
                                             </v-col>
                                         </v-row>
@@ -131,9 +104,9 @@
                         </v-dialog>
                     </v-toolbar>
                 </template>
-                <template v-slot:item.acoes="{  }">
-                    <v-icon small class="mr-2" @click="editarCondutor()">mdi-pencil</v-icon>
-                    <v-icon small @click="deletarCondutor()">mdi-delete</v-icon>
+                <template v-slot:item.acoes="{ item }">
+                    <v-icon small class="mr-2" @click="editarCondutor(item)">mdi-pencil</v-icon>
+                    <v-icon small @click="deletarCondutor(item)">mdi-delete</v-icon>
                 </template>
                 <template v-slot:no-data>
                     <v-btn color="primary" @click="buscaOrdensTrafego">Reset</v-btn>
@@ -159,6 +132,7 @@
             headers: [
                 {text: "Origem", align: "start", sortable: false, value: "origem.bairro"},
                 {text: "Destino", sortable: false, value: "destino.bairro"},
+                {text: "Categoria Cnh", sortable: false, value: "cnh.categoriaCNH"},
                 {text: "Data", sortable: false, value: "data"},
                 {text: "Status", sortable: false, value: "status"},
                 {text: "Distancia", sortable: false, value: "distanciaPercorrer"},
