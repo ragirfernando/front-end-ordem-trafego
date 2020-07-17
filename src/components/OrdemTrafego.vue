@@ -49,49 +49,8 @@
 
 
 
-                                            <v-col cols="12" sm="6" md="4">
-                                                <v-menu
-                                                        ref="menu"
-                                                        v-model="menu"
-                                                        :close-on-content-click="false"
-                                                        :return-value.sync="date"
-                                                        transition="scale-transition"
-                                                        offset-y
-                                                        min-width="290px"
-                                                >
-                                                    <template v-slot:activator="{ on }">
-                                                        <v-text-field
-                                                                v-model="condutor.cnh.validade"
-                                                                label="Validade"
-                                                                readonly
-                                                                required
-                                                                :rules="regra"
-                                                                v-on="on"
-                                                        ></v-text-field>
-                                                    </template>
-                                                    <v-date-picker
-                                                            v-model="condutor.cnh.validade"
-                                                            no-title
-                                                            scrollable
-                                                            locale="br"
-                                                    >
-                                                        <v-spacer></v-spacer>
-                                                        <v-btn text color="primary" @click="menu = false">Cancelar
-                                                        </v-btn>
-                                                        <v-btn text color="primary" @click="$refs.menu.save(date)">OK
-                                                        </v-btn>
-                                                    </v-date-picker>
-                                                </v-menu>
-                                            </v-col>
-                                            <v-col cols="12" sm="6" md="4">
-                                                <v-text-field v-model="condutor.cpf" label="CPF" required
-                                                              :rules="regra"></v-text-field>
-                                            </v-col>
 
-                                            <v-col cols="12" sm="6" md="4">
-                                                <v-text-field v-model="condutor.matricula" label="Matricula" required
-                                                              :rules="regra"></v-text-field>
-                                            </v-col>
+
                                         </v-row>
                                     </v-container>
                                 </v-card-text>
