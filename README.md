@@ -25,5 +25,7 @@ npm run build
 npm run lint
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## Tecnologias usadas
+[Vue CLI](https://cli.vuejs.org/config/),
+[ Vuetify](https://vuetifyjs.com/en/),
+[ axios](https://vuetifyjs.com/en/).
