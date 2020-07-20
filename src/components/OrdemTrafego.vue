@@ -8,7 +8,7 @@
                         <v-divider class="mx-4" inset vertical></v-divider>
                         <v-spacer></v-spacer>
 
-                        <v-dialog v-model="dialog" max-width="900px">
+                        <v-dialog v-model="dialog" max-width="90%">
                             <template v-slot:activator="{ on }">
                                 <v-btn color="#" dark class="mb-2" v-on="on">Nova ordem de tráfego</v-btn>
                             </template>
@@ -17,43 +17,92 @@
                                     <span class="headline">{{ formTitle }}</span>
                                 </v-card-title>
 
-                                <v-card-text>
-                                    <v-container>
-                                        <v-row>
-                                            <v-col cols="12" sm="6" md="4">
-                                                <v-text-field v-model="ordemTrafego.origem.bairro"
-                                                              label="Bairro de origem" required
-                                                              :rules="regra"></v-text-field>
-                                            </v-col>
 
-                                            <v-col cols="12" sm="6" md="4">
-                                                <v-text-field
-                                                        v-model="ordemTrafego.origem.cidade"
-                                                        label="Cidade de origem"
-                                                        required
-                                                        :rules="regra"
-                                                ></v-text-field>
-                                            </v-col>
+                                <v-tabs botton>
+                                    <v-tab show-arrows="true">
+                                        <v-icon left>mdi-account</v-icon>
+                                        Origem
+
+                                    </v-tab>
+                                    <v-tab>
+                                        <v-icon left>mdi-lock</v-icon>
+                                        Destino
+                                    </v-tab>
+                                    <v-tab>
+                                        <v-icon left>mdi-access-point</v-icon>
+                                        Veículo
+
+                                    </v-tab>
+
+                                    <v-tab>
+                                        <v-icon left>mdi-access-point</v-icon>
+                                        Condutor
+                                    </v-tab>
+
+                                    <v-tab>
+                                        <v-icon left>mdi-access-point</v-icon>
+                                        Salvar
+                                    </v-tab>
+
+                                    <v-tab-item>
+                                        <v-card flat>
+                                            <v-card-text>
+                                                <p class="mb-0">
+                                                    Phasellus dolor. Fusce neque. Fusce fermentum odio nec arcu.
+                                                    Pellentesque libero tortor, tincidunt et, tincidunt eget, semper
+                                                    nec, quam. Phasellus blandit leo ut odio.
+                                                </p>
+
+                                            </v-card-text>
+                                        </v-card>
+                                    </v-tab-item>
+                                    <v-tab-item>
+                                        <v-card flat>
+                                            <v-card-text>
+
+                                                <p class="mb-0">
+                                                    Donec venenatis vulputate lorem. Aenean viverra rhoncus pede. In dui
+                                                    magna, posuere eget, vestibulum et, tempor auctor, justo. Fusce
+                                                    commodo aliquam arcu.
+                                                </p>
+                                            </v-card-text>
+                                        </v-card>
+                                    </v-tab-item>
+                                    <v-tab-item>
+                                        <v-card flat>
+                                            <v-card-text>
+                                                <p class="mb-0">
+                                                    Cras sagittis. Phasellus nec sem in justo pellentesque facilisis.
+                                                    Proin sapien ipsum, porta a, auctor quis, euismod ut, mi.
+                                                </p>
+                                            </v-card-text>
+                                        </v-card>
+                                    </v-tab-item>
+
+                                    <v-tab-item>
+                                        <v-card flat>
+                                            <v-card-text>
+                                                <p class="mb-0">
+                                                    Cras sagittis. Phasellus nec sem in justo pellentesque facilisis.
+                                                    Proin sapien ipsum, porta a, auctor quis, euismod ut, mi.
+                                                </p>
+                                            </v-card-text>
+                                        </v-card>
+                                    </v-tab-item>
+
+                                    <v-tab-item>
+                                        <v-card flat>
+                                            <v-card-text>
+                                                <p class="mb-0">
+                                                    Cras sagittis. Phasellus nec sem in justo pellentesque facilisis.
+                                                    Proin sapien ipsum, porta a, auctor quis, euismod ut, mi.
+                                                </p>
+                                            </v-card-text>
+                                        </v-card>
+                                    </v-tab-item>
+                                </v-tabs>
 
 
-                                            <v-col cols="12" sm="6" md="4">
-                                                <v-text-field v-model="ordemTrafego.origem.complemento" label="Completo Origem" required
-                                                              :rules="regra"></v-text-field>
-                                            </v-col>
-
-                                            <v-col cols="12" sm="6" md="4">
-                                                <v-text-field v-model="ordemTrafego.origem.nunero" label="Complemento número" required
-                                                              :rules="regra"></v-text-field>
-                                            </v-col>
-
-
-
-
-
-
-                                        </v-row>
-                                    </v-container>
-                                </v-card-text>
                                 <v-card-actions>
                                     <v-spacer></v-spacer>
                                     <v-btn color="white" text @click="fecharDialog">Cancelar</v-btn>
@@ -131,7 +180,7 @@
 
         computed: {
             formTitle() {
-                return this.editedIndex === -1 ? "Novo condutor" : "Atualizar condutor";
+                return this.editedIndex === -1 ? "Nova ordem de tráfego" : "Atualizar ordem de tráfego";
             }
         },
 
