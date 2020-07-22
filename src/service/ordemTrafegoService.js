@@ -6,5 +6,8 @@ export default {
         return http.get('ordemTrefego/ordensTrafego')
     },
 
-
+    inserir: (ordemTrafego, idCondutor, idVeiculo) => {
+        const url = `ordemTrefego/salvarOrdemTrafego/${idCondutor}/${idVeiculo}`;
+        return http.post(url,  ordemTrafego)
+    },
 }

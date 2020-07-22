@@ -10,13 +10,14 @@
 
                         <v-dialog v-model="dialog" max-width="90%">
                             <template v-slot:activator="{ on }">
-                                <v-btn color="#" dark class="mb-2" v-on="on">Nova ordem de tráfego</v-btn>
+                                <v-btn color="#" dark class="mb-2" v-on="on" @click="buscarVeiculos">Nova ordem de
+                                    tráfego
+                                </v-btn>
                             </template>
                             <v-card>
                                 <v-card-title>
                                     <span class="headline">{{ formTitle }}</span>
                                 </v-card-title>
-
 
                                 <v-tabs botton>
                                     <v-tab show-arrows="true">
@@ -47,34 +48,70 @@
                                     <v-tab-item>
                                         <v-card flat>
                                             <v-card-text>
-                                                <p class="mb-0">
-                                                    Phasellus dolor. Fusce neque. Fusce fermentum odio nec arcu.
-                                                    Pellentesque libero tortor, tincidunt et, tincidunt eget, semper
-                                                    nec, quam. Phasellus blandit leo ut odio.
-                                                </p>
+                                                <v-row>
+                                                    <v-col cols="12" sm="6" md="4">
+                                                        <v-text-field v-model="ordemTrafego.origem.cidade"
+                                                                      label="Cidade"></v-text-field>
+                                                    </v-col>
 
+                                                    <v-col cols="12" sm="6" md="4">
+                                                        <v-text-field v-model="ordemTrafego.origem.bairro"
+                                                                      label="Bairro"></v-text-field>
+                                                    </v-col>
+
+                                                    <v-col cols="12" sm="6" md="4">
+                                                        <v-text-field v-model="ordemTrafego.origem.nunero"
+                                                                      label="Número"></v-text-field>
+                                                    </v-col>
+
+                                                    <v-col cols="12" sm="6" md="4">
+                                                        <v-text-field v-model="ordemTrafego.origem.complemento"
+                                                                      label="Completo"></v-text-field>
+                                                    </v-col>
+                                                </v-row>
                                             </v-card-text>
                                         </v-card>
                                     </v-tab-item>
                                     <v-tab-item>
                                         <v-card flat>
                                             <v-card-text>
+                                                <v-row>
+                                                    <v-col cols="12" sm="6" md="4">
+                                                        <v-text-field v-model="ordemTrafego.destino.cidade"
+                                                                      label="Cidade"></v-text-field>
+                                                    </v-col>
 
-                                                <p class="mb-0">
-                                                    Donec venenatis vulputate lorem. Aenean viverra rhoncus pede. In dui
-                                                    magna, posuere eget, vestibulum et, tempor auctor, justo. Fusce
-                                                    commodo aliquam arcu.
-                                                </p>
+                                                    <v-col cols="12" sm="6" md="4">
+                                                        <v-text-field v-model="ordemTrafego.destino.bairro"
+                                                                      label="Bairro"></v-text-field>
+                                                    </v-col>
+
+                                                    <v-col cols="12" sm="6" md="4">
+                                                        <v-text-field v-model="ordemTrafego.destino.nunero"
+                                                                      label="Número"></v-text-field>
+                                                    </v-col>
+
+                                                    <v-col cols="12" sm="6" md="4">
+                                                        <v-text-field v-model="ordemTrafego.destino.complemento"
+                                                                      label="Completo"></v-text-field>
+                                                    </v-col>
+                                                </v-row>
                                             </v-card-text>
                                         </v-card>
                                     </v-tab-item>
                                     <v-tab-item>
                                         <v-card flat>
                                             <v-card-text>
-                                                <p class="mb-0">
-                                                    Cras sagittis. Phasellus nec sem in justo pellentesque facilisis.
-                                                    Proin sapien ipsum, porta a, auctor quis, euismod ut, mi.
-                                                </p>
+                                                <v-data-table
+                                                        v-model="idVeiculo"
+                                                        :headers="colunasVeiculo"
+                                                        :items="listaVeiculos"
+                                                        :single-select="singleSelect"
+                                                        item-key="name"
+                                                        class="elevation-1"
+                                                        show-select
+                                                >
+                                                </v-data-table>
                                             </v-card-text>
                                         </v-card>
                                     </v-tab-item>
@@ -82,10 +119,18 @@
                                     <v-tab-item>
                                         <v-card flat>
                                             <v-card-text>
-                                                <p class="mb-0">
-                                                    Cras sagittis. Phasellus nec sem in justo pellentesque facilisis.
-                                                    Proin sapien ipsum, porta a, auctor quis, euismod ut, mi.
-                                                </p>
+                                                <v-card-text>
+                                                    <v-data-table
+                                                            v-model="idCondutor"
+                                                            :headers="colunasCondutor"
+                                                            :items="listaCondutores"
+                                                            :single-select="singleSelect"
+                                                            item-key="id"
+                                                            class="elevation-1"
+                                                            show-select
+                                                    >
+                                                    </v-data-table>
+                                                </v-card-text>
                                             </v-card-text>
                                         </v-card>
                                     </v-tab-item>
@@ -93,21 +138,62 @@
                                     <v-tab-item>
                                         <v-card flat>
                                             <v-card-text>
-                                                <p class="mb-0">
-                                                    Cras sagittis. Phasellus nec sem in justo pellentesque facilisis.
-                                                    Proin sapien ipsum, porta a, auctor quis, euismod ut, mi.
-                                                </p>
+
+                                                <v-row>
+                                                    <v-col cols="12" sm="6" md="4">
+                                                        <v-menu
+                                                                ref="menu"
+                                                                v-model="menu"
+                                                                :close-on-content-click="false"
+                                                                :return-value.sync="date"
+                                                                transition="scale-transition"
+                                                                offset-y
+                                                                min-width="290px"
+                                                        >
+                                                            <template v-slot:activator="{ on }">
+                                                                <v-text-field
+                                                                        v-model="ordemTrafego.data"
+                                                                        label="Data"
+                                                                        readonly
+                                                                        required
+                                                                        :rules="regra"
+                                                                        v-on="on"
+                                                                ></v-text-field>
+                                                            </template>
+                                                            <v-date-picker
+                                                                    v-model="ordemTrafego.data"
+                                                                    no-title
+                                                                    scrollable
+                                                                    locale="br"
+                                                            >
+                                                                <v-spacer></v-spacer>
+                                                                <v-btn text color="primary" @click="menu = false">
+                                                                    Cancelar
+                                                                </v-btn>
+                                                                <v-btn text color="primary"
+                                                                       @click="$refs.menu.save(date)">
+                                                                    OK
+                                                                </v-btn>
+                                                            </v-date-picker>
+                                                        </v-menu>
+                                                    </v-col>
+
+                                                    <v-col cols="12" sm="6" md="4">
+                                                        <v-text-field v-model="ordemTrafego.distanciaPercorrer"
+                                                                      label="Distancia "></v-text-field>
+                                                    </v-col>
+
+                                                    <v-col cols="12" sm="6" md="4">
+                                                        <v-text-field v-model="ordemTrafego.status"
+                                                                      label="Status "></v-text-field>
+                                                    </v-col>
+                                                </v-row>
                                             </v-card-text>
+                                            <v-btn color="white" text @click="fecharDialog">Cancelar</v-btn>
+                                            <v-btn color="white" text @click="inserirOrdemTrafego">Salvar</v-btn>
                                         </v-card>
                                     </v-tab-item>
                                 </v-tabs>
-
-
-                                <v-card-actions>
-                                    <v-spacer></v-spacer>
-                                    <v-btn color="white" text @click="fecharDialog">Cancelar</v-btn>
-                                    <v-btn color="white" text @click="inserirCondutor">Salvar</v-btn>
-                                </v-card-actions>
                             </v-card>
                         </v-dialog>
                     </v-toolbar>
@@ -126,6 +212,8 @@
 
 <script>
     import OrdemTrafegoService from '../service/ordemTrafegoService';
+    import VeiculoServce from '../service/veiculosService';
+    import CondutorService from '../service/condutorService';
 
     export default {
         name: 'ordemTrafego',
@@ -137,6 +225,7 @@
             menu2: false,
             drawer: null,
             dialog: false,
+            singleSelect: true,
             headers: [
                 {text: "Origem", align: "start", sortable: false, value: "origem.bairro"},
                 {text: "Destino", sortable: false, value: "destino.bairro"},
@@ -144,11 +233,32 @@
                 {text: "Data", sortable: false, value: "data"},
                 {text: "Status", sortable: false, value: "status"},
                 {text: "Distancia", sortable: false, value: "distanciaPercorrer"},
-                /*{text: "CPF", sortable: false, value: "cpf"},
-                {text: "Matricula", sortable: false, value: "matricula"},*/
                 {text: "Ações", value: "acoes", sortable: false}
             ],
+            colunasVeiculo: [
+                {text: "Modelo", sortable: false, value: "modelo"},
+                {text: "Placa", sortable: false, value: "placa"},
+                {text: "Cor", sortable: false, value: "cor"},
+                {text: "Ano", sortable: false, value: "anoFabicacao"},
+                {text: "Categoria", sortable: false, value: "categoriaVeiculo"},
+                {text: "Combustivel", sortable: false, value: "tipoCombustivel"},
+                {text: "Conservação", sortable: false, value: "estadoConservacao"},
+            ],
+
+            colunasCondutor: [
+                {text: "Nome", align: "start", sortable: false, value: "nome"},
+                {text: "Categoria Cnh", sortable: false, value: "cnh.categoriaCNH"},
+                {text: "Validade", sortable: false, value: "cnh.validade"},
+                {text: "Cidade", sortable: false, value: "endereco.cidade"},
+                {text: "Bairro", sortable: false, value: "endereco.bairro"},
+                {text: "CPF", sortable: false, value: "cpf"},
+                {text: "Matricula", sortable: false, value: "matricula"},
+            ],
             listaOrdensTrafego: [],
+            idVeiculo: [],
+            idCondutor: [],
+            listaVeiculos: [],
+            listaCondutores: [],
             editedIndex: -1,
             ordemTrafego: {
                 origem: {
@@ -162,12 +272,14 @@
                     cidade: "",
                     complemento: "",
                     nunero: 0,
-                }
-                ,
+                },
+
                 data: "",
                 status: "",
                 distanciaPercorrer: 0
             },
+
+
             defaultItem: {
                 name: "",
                 calories: 0,
@@ -201,6 +313,18 @@
                     this.listaOrdensTrafego = resposta.data;
                 });
             },
+
+            buscarVeiculos() {
+                VeiculoServce.listar().then(resposta => {
+                    this.listaVeiculos = resposta.data;
+                })
+                this.buscarCondutores();
+            },
+            buscarCondutores() {
+                CondutorService.listar().then(resposta => {
+                    this.listaCondutores = resposta.data;
+                })
+            },
             fecharDialog() {
                 this.dialog = false;
                 this.$nextTick(() => {
@@ -208,17 +332,17 @@
                     this.editedIndex = -1;
                 });
             },
-            inserirCondutor() {
-                /*CondutorService.inserirVeiculo(this.condutor).then(resposta => {
+            inserirOrdemTrafego() {
+                OrdemTrafegoService.inserir(this.ordemTrafego, this.idCondutor[0].id, this.idVeiculo[0].id).then(resposta => {
                     console.log(resposta);
-                    this.buscaCondutores();
-                });*/
+                    this.buscaOrdensTrafego();
+                });
                 /*if (this.editedIndex > -1) {
                   Object.assign(this.desserts[this.editedIndex], this.editedItem);
                 } else {
                   this.desserts.push(this.editedItem);
                 }*/
-                //this.fecharDialog();
+                this.fecharDialog();
             },
             editarCondutor(/*item*/) {
                 /*CondutorService.atualizar(item).then(resposta => {
