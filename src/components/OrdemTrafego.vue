@@ -1,7 +1,7 @@
 <template>
     <v-container>
         <div id="app" style="margin-top: 60px">
-            <v-data-table :headers="headers" :items="listaOrdensTrafego" class="elevation-1 subtitle-1">
+            <v-data-table :headers="headers" :items="listaOrdensTrafego" class="elevation-1 subtitle-1" >
                 <template v-slot:top>
                     <v-toolbar flat color="#">
                         <v-toolbar-title>Lista de Ordens de tráfego</v-toolbar-title>
@@ -60,7 +60,7 @@
                                                     </v-col>
 
                                                     <v-col cols="12" sm="6" md="4">
-                                                        <v-text-field v-model="ordemTrafego.origem.nunero"
+                                                        <v-text-field v-model="ordemTrafego.origem.numero"
                                                                       label="Número"></v-text-field>
                                                     </v-col>
 
@@ -87,7 +87,7 @@
                                                     </v-col>
 
                                                     <v-col cols="12" sm="6" md="4">
-                                                        <v-text-field v-model="ordemTrafego.destino.nunero"
+                                                        <v-text-field v-model="ordemTrafego.destino.numero"
                                                                       label="Número"></v-text-field>
                                                     </v-col>
 
@@ -199,7 +199,7 @@
                     </v-toolbar>
                 </template>
                 <template v-slot:item.acoes="{ item }">
-                    <v-icon small class="mr-2" @click="editarCondutor(item)">mdi-pencil</v-icon>
+                    <v-icon small class="mr-2" @click="editarOrdemTrafego(item)">mdi-pencil</v-icon>
                     <v-icon small @click="deletarCondutor(item)">mdi-delete</v-icon>
                 </template>
                 <template v-slot:no-data>
@@ -227,12 +227,13 @@
             dialog: false,
             singleSelect: true,
             headers: [
-                {text: "Origem", align: "start", sortable: false, value: "origem.bairro"},
-                {text: "Destino", sortable: false, value: "destino.bairro"},
-                {text: "Categoria Cnh", sortable: false, value: "cnh.categoriaCNH"},
+                {text: "Cidade de Origem", align: "start", sortable: false, value: "origem.cidade"},
+                {text: "Cidade de Destino", sortable: false, value: "destino.cidade"},
                 {text: "Data", sortable: false, value: "data"},
+                {text: "Condutor", sortable: false, value: "condutor.nome"},
+                {text: "Veiculo", sortable: false, value: "veiculo.modelo"},
                 {text: "Status", sortable: false, value: "status"},
-                {text: "Distancia", sortable: false, value: "distanciaPercorrer"},
+                {text: "Distância", sortable: false, value: "distanciaPercorrer"},
                 {text: "Ações", value: "acoes", sortable: false}
             ],
             colunasVeiculo: [
@@ -265,13 +266,13 @@
                     bairro: "",
                     cidade: "",
                     complemento: "",
-                    nunero: 0,
+                    numero: 0,
                 },
                 destino: {
                     bairro: "",
                     cidade: "",
                     complemento: "",
-                    nunero: 0,
+                    numero: 0,
                 },
 
                 data: "",
@@ -344,14 +345,12 @@
                 }*/
                 this.fecharDialog();
             },
-            editarCondutor(/*item*/) {
-                /*CondutorService.atualizar(item).then(resposta => {
-                    console.log(resposta);
-
-                    this.editedIndex = this.listaCondutores.indexOf(item);
-                    this.condutor = Object.assign({}, item);
+            editarOrdemTrafego(item) {
+                    this.editedIndex = this.listaOrdensTrafego.indexOf(item);
+                    this.ordemTrafego = Object.assign({}, item);
+                    this.idCondutor[0] = Object.assign({}, item.condutor);
+                    this.idVeiculo[0] = Object.assign({}, item.veiculo);
                     this.dialog = true;
-                });*/
             },
 
             deletarCondutor(/*item*/) {

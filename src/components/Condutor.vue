@@ -1,137 +1,152 @@
 <template>
     <v-container>
         <div id="app" style="margin-top: 60px">
-            <v-data-table :headers="headers" :items="listaCondutores" class="elevation-1 subtitle-1">
-                <template v-slot:top>
-                    <v-toolbar flat color="#">
-                        <v-toolbar-title>Lista de Condutores</v-toolbar-title>
-                        <v-divider class="mx-4" inset vertical></v-divider>
-                        <v-spacer></v-spacer>
+            <v-card>
+                <v-data-table :headers="headers" :items="listaCondutores" class="elevation-5 subtitle-1"
+                              items-per-page="5" :search="search">
+                    <template v-slot:top style="width: 90%">
+                        <v-toolbar flat color="#">
+                            <v-toolbar-title>Lista de Condutores</v-toolbar-title>
+                            <v-divider class="mx-4" inset vertical></v-divider>
+                            <v-card-title style="width: 70%">
+                                <v-text-field
+                                        v-model="search"
+                                        append-icon="mdi-magnify"
+                                        label="Filtrar"
+                                        single-line
+                                        hide-details
+                                ></v-text-field>
+                            </v-card-title>
+                            <v-spacer></v-spacer>
+                            <v-dialog v-model="dialog" max-width="900px">
+                                <template v-slot:activator="{ on }">
+                                    <v-btn color="primary" class="elevation-10 subtitle-1 mb-2" dark v-on="on">Novo Condutor</v-btn>
+                                </template>
+                                <v-card>
+                                    <v-card-title>
+                                        <span class="headline">{{ formTitle }}</span>
+                                    </v-card-title>
+                                    <v-card-text>
+                                        <v-container>
+                                            <v-row>
+                                                <v-col cols="12" sm="6" md="4">
+                                                    <v-text-field v-model="condutor.nome" label="Nome" required
+                                                                  :rules="regra"></v-text-field>
+                                                </v-col>
 
-                        <v-dialog v-model="dialog" max-width="900px">
-                            <template v-slot:activator="{ on }">
-                                <v-btn color="#" dark class="mb-2" v-on="on">Novo Condutor</v-btn>
-                            </template>
-                            <v-card>
-                                <v-card-title>
-                                    <span class="headline">{{ formTitle }}</span>
-                                </v-card-title>
+                                                <v-col cols="12" sm="6" md="4">
+                                                    <v-text-field
+                                                            v-model="condutor.cnh.numeroCNH"
+                                                            label="Número cnh"
+                                                            required
+                                                            :rules="regra"
+                                                    ></v-text-field>
+                                                </v-col>
 
-                                <v-card-text>
-                                    <v-container>
-                                        <v-row>
-                                            <v-col cols="12" sm="6" md="4">
-                                                <v-text-field v-model="condutor.nome" label="Nome" required
-                                                              :rules="regra"></v-text-field>
-                                            </v-col>
-
-                                            <v-col cols="12" sm="6" md="4">
-                                                <v-text-field
-                                                        v-model="condutor.cnh.numeroCNH"
-                                                        label="Número cnh"
-                                                        required
-                                                        :rules="regra"
-                                                ></v-text-field>
-                                            </v-col>
-
-                                            <v-col cols="12" sm="6" md="4">
-                                                <v-menu
-                                                        ref="menu"
-                                                        v-model="menu"
-                                                        :close-on-content-click="false"
-                                                        :return-value.sync="date"
-                                                        transition="scale-transition"
-                                                        offset-y
-                                                        min-width="290px"
-                                                >
-                                                    <template v-slot:activator="{ on }">
-                                                        <v-text-field
-                                                                v-model="condutor.cnh.validade"
-                                                                label="Validade"
-                                                                readonly
-                                                                required
-                                                                :rules="regra"
-                                                                v-on="on"
-                                                        ></v-text-field>
-                                                    </template>
-                                                    <v-date-picker
-                                                            v-model="condutor.cnh.validade"
-                                                            no-title
-                                                            scrollable
-                                                            locale="br"
+                                                <v-col cols="12" sm="6" md="4">
+                                                    <v-menu
+                                                            ref="menu"
+                                                            v-model="menu"
+                                                            :close-on-content-click="false"
+                                                            :return-value.sync="date"
+                                                            transition="scale-transition"
+                                                            offset-y
+                                                            min-width="290px"
                                                     >
-                                                        <v-spacer></v-spacer>
-                                                        <v-btn text color="primary" @click="menu = false">Cancelar
-                                                        </v-btn>
-                                                        <v-btn text color="primary" @click="$refs.menu.save(date)">OK
-                                                        </v-btn>
-                                                    </v-date-picker>
-                                                </v-menu>
-                                            </v-col>
+                                                        <template v-slot:activator="{ on }">
+                                                            <v-text-field
+                                                                    v-model="condutor.cnh.validade"
+                                                                    label="Validade"
+                                                                    readonly
+                                                                    required
+                                                                    :rules="regra"
+                                                                    v-on="on"
+                                                            ></v-text-field>
+                                                        </template>
+                                                        <v-date-picker
+                                                                v-model="condutor.cnh.validade"
+                                                                no-title
+                                                                scrollable
+                                                                locale="br"
+                                                        >
+                                                            <v-spacer></v-spacer>
+                                                            <v-btn text color="primary" @click="menu = false">Cancelar
+                                                            </v-btn>
+                                                            <v-btn text color="primary" @click="$refs.menu.save(date)">
+                                                                OK
+                                                            </v-btn>
+                                                        </v-date-picker>
+                                                    </v-menu>
+                                                </v-col>
 
-                                            <v-col cols="12" sm="6" md="4">
-                                                <p>Categoria Cnh</p>
-                                                <v-overflow-btn
-                                                        class="my-2"
-                                                        v-model="condutor.cnh.categoriaCNH"
-                                                        :items="categoriaCnh"
-                                                        required
-                                                        :rules="regra"
-                                                        label="Selecione a categoria da CNH"
-                                                        target="#dropdown-example"
-                                                ></v-overflow-btn>
-                                            </v-col>
+                                                <v-col cols="12" sm="6" md="4">
+                                                    <p>Categoria Cnh</p>
+                                                    <v-overflow-btn
+                                                            class="my-2"
+                                                            v-model="condutor.cnh.categoriaCNH"
+                                                            :items="categoriaCnh"
+                                                            required
+                                                            :rules="regra"
+                                                            label="Selecione a categoria da CNH"
+                                                            target="#dropdown-example"
+                                                    ></v-overflow-btn>
+                                                </v-col>
 
-                                            <v-col cols="12" sm="6" md="4">
-                                                <v-text-field v-model="condutor.endereco.cidade" label="Cidade" required
-                                                              :rules="regra"></v-text-field>
-                                            </v-col>
+                                                <v-col cols="12" sm="6" md="4">
+                                                    <v-text-field v-model="condutor.endereco.cidade" label="Cidade"
+                                                                  required
+                                                                  :rules="regra"></v-text-field>
+                                                </v-col>
 
-                                            <v-col cols="12" sm="6" md="4">
-                                                <v-text-field v-model="condutor.endereco.bairro" label="Bairro" required
-                                                              :rules="regra"></v-text-field>
-                                            </v-col>
+                                                <v-col cols="12" sm="6" md="4">
+                                                    <v-text-field v-model="condutor.endereco.bairro" label="Bairro"
+                                                                  required
+                                                                  :rules="regra"></v-text-field>
+                                                </v-col>
 
-                                            <v-col cols="12" sm="6" md="4">
-                                                <v-text-field v-model="condutor.endereco.numero" label="Número" required
-                                                              :rules="regra"></v-text-field>
-                                            </v-col>
+                                                <v-col cols="12" sm="6" md="4">
+                                                    <v-text-field v-model="condutor.endereco.numero" label="Número"
+                                                                  required
+                                                                  :rules="regra"></v-text-field>
+                                                </v-col>
 
-                                            <v-col cols="12" sm="6" md="4">
-                                                <v-text-field v-model="condutor.endereco.complemento"
-                                                              label="Complemento" required
-                                                              :rules="regra"></v-text-field>
-                                            </v-col>
+                                                <v-col cols="12" sm="6" md="4">
+                                                    <v-text-field v-model="condutor.endereco.complemento"
+                                                                  label="Complemento" required
+                                                                  :rules="regra"></v-text-field>
+                                                </v-col>
 
-                                            <v-col cols="12" sm="6" md="4">
-                                                <v-text-field v-model="condutor.cpf" label="CPF" required
-                                                              :rules="regra"></v-text-field>
-                                            </v-col>
+                                                <v-col cols="12" sm="6" md="4">
+                                                    <v-text-field v-model="condutor.cpf" label="CPF" required
+                                                                  :rules="regra"></v-text-field>
+                                                </v-col>
 
-                                            <v-col cols="12" sm="6" md="4">
-                                                <v-text-field v-model="condutor.matricula" label="Matricula" required
-                                                              :rules="regra"></v-text-field>
-                                            </v-col>
-                                        </v-row>
-                                    </v-container>
-                                </v-card-text>
-                                <v-card-actions>
-                                    <v-spacer></v-spacer>
-                                    <v-btn color="white" text @click="fecharDialog">Cancelar</v-btn>
-                                    <v-btn color="white" text @click="inserirCondutor">Salvar</v-btn>
-                                </v-card-actions>
-                            </v-card>
-                        </v-dialog>
-                    </v-toolbar>
-                </template>
-                <template v-slot:item.acoes="{ item }">
-                    <v-icon small class="mr-2" @click="editarCondutor(item)">mdi-pencil</v-icon>
-                    <v-icon small @click="deletarCondutor(item)">mdi-delete</v-icon>
-                </template>
-                <template v-slot:no-data>
-                    <v-btn color="primary" @click="buscaCondutores">Reset</v-btn>
-                </template>
-            </v-data-table>
+                                                <v-col cols="12" sm="6" md="4">
+                                                    <v-text-field v-model="condutor.matricula" label="Matricula"
+                                                                  required
+                                                                  :rules="regra"></v-text-field>
+                                                </v-col>
+                                            </v-row>
+                                        </v-container>
+                                    </v-card-text>
+                                    <v-card-actions>
+                                        <v-spacer></v-spacer>
+                                        <v-btn color="white" text @click="fecharDialog">Cancelar</v-btn>
+                                        <v-btn color="white" text @click="inserirCondutor">Salvar</v-btn>
+                                    </v-card-actions>
+                                </v-card>
+                            </v-dialog>
+                        </v-toolbar>
+                    </template>
+                    <template v-slot:item.acoes="{ item }">
+                        <v-icon small class="mr-2" @click="editarCondutor(item)">mdi-pencil</v-icon>
+                        <v-icon small @click="deletarCondutor(item)">mdi-delete</v-icon>
+                    </template>
+                    <template v-slot:no-data>
+                        <v-btn color="primary" @click="buscaCondutores">Reset</v-btn>
+                    </template>
+                </v-data-table>
+            </v-card>
         </div>
     </v-container>
 </template>
@@ -147,6 +162,7 @@
             menu: false,
             modal: false,
             menu2: false,
+            search: '',
             categoriaCnh: ["B", "C", "D", "E"],
             drawer: null,
             dialog: false,

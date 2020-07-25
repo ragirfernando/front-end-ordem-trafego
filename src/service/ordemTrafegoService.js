@@ -10,4 +10,9 @@ export default {
         const url = `ordemTrefego/salvarOrdemTrafego/${idCondutor}/${idVeiculo}`;
         return http.post(url,  ordemTrafego)
     },
+
+    editar: (ordemTrafego, idCondutor, idVeiculo) => {
+        const url = `ordemTrefego/editarOrdemTrafego/${idCondutor}/${idVeiculo}`;
+        return http.put(url,  ordemTrafego)
+    },
 }
