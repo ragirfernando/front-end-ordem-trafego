@@ -10,7 +10,8 @@
 
                         <v-dialog v-model="dialog" max-width="80%">
                             <template v-slot:activator="{ on }">
-                                <v-btn color="#" dark class="mb-2" v-on="on">Novo veículo</v-btn>
+                                <v-btn color="#" dark class="mb-2" v-on="on" @click="limparListaVeiculos">Novo veículo
+                                </v-btn>
                             </template>
                             <v-card>
                                 <v-card-title>
@@ -38,7 +39,7 @@
 
                                             <v-col class="d-flex" cols="12" sm="6">
                                                 <v-select
-                                                        v-model="veiculo.anoFabicacao"
+                                                        v-model="veiculo.anoFabricacao"
                                                         :items="anoVeiculo"
                                                         label="Selecione o ano de fabricação"
                                                 ></v-select>
@@ -47,8 +48,7 @@
                                             <v-col class="d-flex" cols="12" sm="6">
                                                 <v-select
                                                         v-model="veiculo.categoriaVeiculo"
-                                                        :items="categoriaVeiculoLabel"
-                                                        value="categoriaVeiculoValue"
+                                                        :items="categoriaVeiculo"
                                                         label="Selecione a categoria"
                                                 ></v-select>
                                             </v-col>
@@ -56,9 +56,16 @@
                                             <v-col class="d-flex" cols="12" sm="6">
                                                 <v-select
                                                         v-model="veiculo.estadoConservacao"
-                                                        :items="estadoConservacaoVeiculoLabel"
-                                                        value="estadoConservacaoVeiculoValue"
+                                                        :items="estadoConservacao"
                                                         label="Selecione o estado de Conservação"
+                                                ></v-select>
+                                            </v-col>
+
+                                            <v-col class="d-flex" cols="12" sm="6">
+                                                <v-select
+                                                        v-model="veiculo.tipoCombustivel"
+                                                        :items="combustivelVeiculo"
+                                                        label="Selecione o combustível"
                                                 ></v-select>
                                             </v-col>
 
@@ -67,7 +74,8 @@
                                             </v-col>
 
                                             <v-col class="d-flex" cols="12" sm="6">
-                                                <v-text-field v-model="veiculo.kmRodados" label="Quilometragem rodada"></v-text-field>
+                                                <v-text-field v-model="veiculo.kmRodados"
+                                                              label="Quilometragem rodada"></v-text-field>
                                             </v-col>
 
                                             <v-col class="d-flex" cols="12" sm="6">
@@ -85,9 +93,9 @@
                         </v-dialog>
                     </v-toolbar>
                 </template>
-                <template v-slot:item.acoes="{ item : veiculo }">
-                    <v-icon small class="mr-2" @click="atualizarVeiculo(veiculo)">mdi-pencil</v-icon>
-                    <v-icon small @click="deletarVeiculo(veiculo)">mdi-delete</v-icon>
+                <template v-slot:item.acoes="{item}">
+                    <v-icon small class="mr-2" @click="atualizarVeiculo(item)">mdi-pencil</v-icon>
+                    <v-icon small @click="deletarVeiculo(item)">mdi-delete</v-icon>
                 </template>
                 <template v-slot:no-data>
                     <v-btn color="primary" @click="listarVeiculos">Reset</v-btn>
@@ -96,6 +104,7 @@
         </div>
     </v-container>
 </template>
+
 
 <script>
     import VeiculoService from '../service/veiculoService';
@@ -106,13 +115,10 @@
             anoAtual: "",
             marcaVeiculo: ["Fiat", "Chevrolet", "Ford", "Toyota"],
             corVeiculo: ["Branca", "Vermelha", "Preta", "Azul", "Amarela"],
-            anoVeiculo: [/*this.anoAtual, this.anoAtual-1, this.anoAtual-2, this.anoAtual-3, this.anoAtual-4*/],
-            categoriaVeiculoValue: ["PASSEIO", "SUV", "CAMINHONETE", "ONIBUS", "VAN"],
-            categoriaVeiculoLabel: ["Passeio", "Suv", "Caminhonete", "Ônibus", "Van"],
-            combustivelVeiculoValue: ["DIESEL", "GASOLINA", "ALCOOL", "FLEX"],
-            combustivelVeiculoLabel: ["Diesel", "Gasolina", "Álcool", "Flex"],
-            estadoConservacaoVeiculoValue: ["NOVO", "SEMINOVO", "USADO"],
-            estadoConservacaoVeiculoLabel: ["Novo", "Seminovo", "Usado"],
+            anoVeiculo: [],
+            categoriaVeiculo: ["Passeio", "Suv", "Caminhonete", "Ônibus", "Van"],
+            combustivelVeiculo: ["Diesel", "Gasolina", "Álcool", "Flex"],
+            estadoConservacao: ["Novo", "Seminovo", "Usado"],
             drawer: null,
             dialog: false,
             nomeColunas: [
@@ -128,15 +134,15 @@
                 {text: "Ações", value: "acoes", sortable: false}
             ],
             listaVeiculos: [],
-
-            editedIndex: -1,
+            IndexListaVeiculos: -1,
             veiculo: {
+                id: null,
                 marca: "",
                 modelo: "",
                 kmRodados: 0,
                 placa: "",
                 cor: "",
-                anoFabicacao: 0,
+                anoFabricacao: 0,
                 categoriaVeiculo: "",
                 tipoCombustivel: "",
                 estadoConservacao: ""
@@ -153,7 +159,7 @@
 
         computed: {
             novoOuAtualizar() {
-                return this.editedIndex === -1 ? "Novo veiculo" : "Atualizar veiculo";
+                return this.IndexListaVeiculos === -1 ? "Novo veiculo" : "Atualizar veiculo";
             }
         },
 
@@ -179,18 +185,36 @@
                 }
             },
 
-            retornarPrlimeiraLetraMaiuscula(primeiraLetarMaiuscula) {
-                return primeiraLetarMaiuscula.substring(0, 1) +
-                    primeiraLetarMaiuscula.toLowerCase().substring(1, primeiraLetarMaiuscula.length)
+            limparListaVeiculos() {
+                this.veiculo.id = null;
+                this.veiculo.marca = "";
+                this.veiculo.modelo = "";
+                this.veiculo.kmRodados = 0;
+                this.veiculo.placa = "";
+                this.veiculo.cor = "";
+                this.veiculo.anoFabricacao = 0;
+                this.veiculo.categoriaVeiculo = "";
+                this.veiculo.tipoCombustivel = "";
+                this.veiculo.estadoConservacao = "";
+
+            },
+
+            retornarPrimeiraLetraMaiuscula(primeiraLetraMaiuscula) {
+                return primeiraLetraMaiuscula.substring(0, 1) +
+                    primeiraLetraMaiuscula.toLowerCase().substring(1, primeiraLetraMaiuscula.length)
+            },
+
+            retornarPalavraMaiuscula(palavra) {
+                return palavra.replace(/[^a-zA-Zs]/g, "").toUpperCase()
             },
 
             listarVeiculos() {
                 VeiculoService.listarVeiculos().then(resposta => {
                     let lista = [];
                     resposta.data.forEach(list => {
-                        list.categoriaVeiculo = this.retornarPrlimeiraLetraMaiuscula(list.categoriaVeiculo);
-                        list.tipoCombustivel = this.retornarPrlimeiraLetraMaiuscula(list.tipoCombustivel);
-                        list.estadoConservacao = this.retornarPrlimeiraLetraMaiuscula(list.estadoConservacao);
+                        list.categoriaVeiculo = this.retornarPrimeiraLetraMaiuscula(list.categoriaVeiculo);
+                        list.tipoCombustivel = this.retornarPrimeiraLetraMaiuscula(list.tipoCombustivel);
+                        list.estadoConservacao = this.retornarPrimeiraLetraMaiuscula(list.estadoConservacao);
                         lista.push(list)
                     })
                     this.listaVeiculos = lista;
@@ -198,13 +222,14 @@
             },
 
             atualizarVeiculo(item) {
-                VeiculoService.atualizarVeiculo(item).then(resposta => {
-                    console.log(resposta);
+                /*VeiculoService.atualizarVeiculo(veiculo).then(resposta => {
+                    console.log(resposta);*/
 
-                    this.editedIndex = this.listaVeiculos.indexOf(item);
-                    this.veiculo = Object.assign({}, item);
-                    this.dialog = true;
-                });
+                this.IndexListaVeiculos = this.listaVeiculos.indexOf(item);
+                this.veiculo = Object.assign({}, item);
+                console.log(this.veiculo)
+                this.dialog = true;
+                // });
             },
 
             deletarVeiculo(veiculo) {
@@ -222,24 +247,31 @@
 
             fecharDialog() {
                 this.dialog = false;
-               /* this.$nextTick(() => {
-                    this.veiculo = Object.assign({}, this.defaultItem);
-                    this.editedIndex = -1;
-                });*/
+                /* this.$nextTick(() => {
+                     this.veiculo = Object.assign({}, this.defaultItem);
+                     this.editedIndex = -1;
+                 });*/
             },
 
             inserirVeiculo() {
-                VeiculoService.inserirVeiculo(this.veiculo).then(resposta => {
-                    console.log(resposta);
-                    this.listarVeiculos();
-                });
-                /*if (this.editedIndex > -1) {
-                  Object.assign(this.desserts[this.editedIndex], this.editedItem)
-                } else {
-                  this.desserts.push(this.editedItem)
-                }*/
+                this.veiculo.estadoConservacao = this.retornarPalavraMaiuscula(this.veiculo.estadoConservacao);
+                this.veiculo.categoriaVeiculo = this.retornarPalavraMaiuscula(this.veiculo.categoriaVeiculo);
+                this.veiculo.tipoCombustivel = this.retornarPalavraMaiuscula(this.veiculo.tipoCombustivel);
+
+                console.log("ff" + this.veiculo)
+                if (this.veiculo.id == null) {
+                    VeiculoService.inserirVeiculo(this.veiculo).then(resposta => {
+                        console.log(resposta);
+                        this.listarVeiculos();
+                    });
+                } else
+                    VeiculoService.atualizarVeiculo(this.veiculo).then(resposta => {
+                        console.log(resposta)
+                        this.listarVeiculos();
+                    })
                 this.fecharDialog();
             }
         }
     };
+
 </script>

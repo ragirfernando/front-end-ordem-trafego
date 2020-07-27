@@ -6,11 +6,11 @@ export default {
     },
 
     inserirVeiculo: (veiculo) => {
-        return http.post('veiculo/salvarVeiculo', veiculo)
+        return http.post('veiculo/inserirVeiculo', veiculo)
     },
 
     atualizarVeiculo: (veiculo) => {
-        return http.put('veiculo/editarVeiculo', veiculo)
+        return http.put('veiculo/atualizarVeiculo', veiculo)
     },
 
     deletarVeiculo: (veiculo) => {
