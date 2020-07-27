@@ -222,10 +222,14 @@
         },
 
         methods: {
-            buscaCondutores() {
-                CondutorService.listar().then(resposta => {
-                    this.listaCondutores = resposta.data;
-                });
+            // buscaCondutores() {
+            //     CondutorService.listar().then(resposta => {
+            //         this.listaCondutores = resposta.data;
+            //     });
+            // },
+
+            buscaCondutores:  async  function(){
+                this.listaCondutores = (await CondutorService.listar()).data
             },
             fecharDialog() {
                 this.dialog = false;

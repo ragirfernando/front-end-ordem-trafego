@@ -62,7 +62,7 @@
     </v-container>
 </template>
 <script>
-    import VeiculosService from "../service/veiculosService";
+    import VeiculosService from "../service/veiculoService";
     //import Veiculos from "../service/veiculosService";
 
     export default {
@@ -115,7 +115,7 @@
                 if (this.items.length > 0) return
                 if (this.isLoading) return
                 this.isLoading = true
-                VeiculosService.listar().then(res => {
+                VeiculosService.listarVeiculos().then(res => {
                     this.entries = res.data
                 }).catch(err => {
                     console.log(err)

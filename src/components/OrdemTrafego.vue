@@ -212,7 +212,7 @@
 
 <script>
     import OrdemTrafegoService from '../service/ordemTrafegoService';
-    import VeiculoServce from '../service/veiculosService';
+    import VeiculoServce from '../service/veiculoService';
     import CondutorService from '../service/condutorService';
 
     export default {
@@ -316,7 +316,7 @@
             },
 
             buscarVeiculos() {
-                VeiculoServce.listar().then(resposta => {
+                VeiculoServce.listarVeiculos().then(resposta => {
                     this.listaVeiculos = resposta.data;
                 })
                 this.buscarCondutores();
