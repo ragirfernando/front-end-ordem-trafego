@@ -13,7 +13,7 @@ export default {
         return http.put('veiculo/atualizarVeiculo', veiculo)
     },
 
-    deletarVeiculo: (veiculo) => {
-        return http.delete('veiculo/deletarVeiculo', {data: veiculo})
+    deletarVeiculo: (id) => {
+        return http.delete(`veiculo/deletarVeiculo/${id}`)
     }
 }

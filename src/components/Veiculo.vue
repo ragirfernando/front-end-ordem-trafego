@@ -205,7 +205,7 @@
             },
 
             retornarPalavraMaiuscula(palavra) {
-                return palavra.replace(/[^a-zA-Zs]/g, "").toUpperCase()
+                return palavra.replace("Á", "A").replace("Ô", "O").toUpperCase();
             },
 
             listarVeiculos() {
@@ -222,19 +222,14 @@
             },
 
             atualizarVeiculo(item) {
-                /*VeiculoService.atualizarVeiculo(veiculo).then(resposta => {
-                    console.log(resposta);*/
-
                 this.IndexListaVeiculos = this.listaVeiculos.indexOf(item);
                 this.veiculo = Object.assign({}, item);
-                console.log(this.veiculo)
                 this.dialog = true;
-                // });
             },
 
-            deletarVeiculo(veiculo) {
-                if (confirm("Deseja excluir o veiculo " + veiculo.modelo + " ? ")) {
-                    VeiculoService.deletarVeiculo(veiculo)
+            deletarVeiculo(item) {
+                if (confirm("Deseja excluir o veiculo " + item.modelo + " ? ")) {
+                    VeiculoService.deletarVeiculo(item.id)
                         .then(resposta => {
                             this.listarVeiculos();
                             console.log(resposta);
@@ -258,7 +253,6 @@
                 this.veiculo.categoriaVeiculo = this.retornarPalavraMaiuscula(this.veiculo.categoriaVeiculo);
                 this.veiculo.tipoCombustivel = this.retornarPalavraMaiuscula(this.veiculo.tipoCombustivel);
 
-                console.log("ff" + this.veiculo)
                 if (this.veiculo.id == null) {
                     VeiculoService.inserirVeiculo(this.veiculo).then(resposta => {
                         console.log(resposta);
