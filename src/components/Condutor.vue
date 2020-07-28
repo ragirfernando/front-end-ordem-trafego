@@ -3,7 +3,7 @@
         <div id="app" style="margin-top: 60px">
             <v-card>
                 <v-data-table :headers="headers" :items="listaCondutores" class="elevation-5 subtitle-1"
-                              items-per-page="5" :search="search">
+                              items-per-page="5" :search="search" no-data-text="ss">
                     <template v-slot:top style="width: 90%">
                         <v-toolbar flat color="#">
                             <v-toolbar-title>Lista de Condutores</v-toolbar-title>
