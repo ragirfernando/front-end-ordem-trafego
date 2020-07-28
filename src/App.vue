@@ -9,12 +9,12 @@
                                 :key="item.title"
                                 :to="item.link"
                         >
-                            <v-list-item-icon>
-                                <v-icon>{{ item.icon }}</v-icon>
+                            <v-list-item-icon style="margin-right: 10px">
+                                <v-icon >{{ item.icon }}</v-icon>
                             </v-list-item-icon>
 
                             <v-list-item-content>
-                                <v-list-item-title>{{ item.title }}</v-list-item-title>
+                                <v-list-item-title class="subtitle-1">{{ item.title }}</v-list-item-title>
                             </v-list-item-content>
                         </v-list-item>
                     </v-list>
@@ -36,6 +36,8 @@
 </template>
 
 <script>
+    import {mdiCar, mdiCardAccountDetailsOutline, mdiHighway, mdiAbTesting} from '@mdi/js';
+
     export default {
         name: "App",
         props: {
@@ -45,10 +47,10 @@
         data: () => ({
             drawer: null,
             items: [
-                {title: 'Veículo', icon: 'mdi-view-dashboard', link: '/Veiculo'},
-                {title: 'Condutor', icon: 'mdi-image', link: '/Condutor'},
-                {title: 'Ordem de Tráfego', icon: 'mdi-image', link: '/OrdemTrafego'},
-                {title: 'Teste', icon: 'mdi-image', link: '/Teste'}
+                {title: 'Veículo', icon: mdiCar , link: '/Veiculo'},
+                {title: 'Condutor', icon: mdiCardAccountDetailsOutline , link: '/Condutor'},
+                {title: 'Ordem de Tráfego', icon: mdiHighway, link: '/OrdemTrafego'},
+                {title: 'Teste', icon: mdiAbTesting , link: '/Teste'}
             ],
             right: null,
         }),
