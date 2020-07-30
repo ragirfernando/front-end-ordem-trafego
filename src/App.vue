@@ -20,9 +20,9 @@
                     </v-list>
                 </v-navigation-drawer>
                 <router-view></router-view>
-                <v-app-bar app clipped-left>
+                <v-app-bar app clipped-left >
                     <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-                    <v-toolbar-title>Ordem de tráfego</v-toolbar-title>
+                    <v-toolbar-title class="text-uppercase" >Ordem de tráfego</v-toolbar-title>
                 </v-app-bar>
 
                 <v-footer app>
