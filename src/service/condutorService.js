@@ -8,14 +8,14 @@ export default{
     },
     
     inserirVeiculo:(condutor) => {
-        return http.post('condutor/salvarCondutor', condutor)
+        return http.post('condutor/inserirCondutor', condutor)
     },
     
     atualizar:(condutor) => {
-        return http.put('condutor/editarCondutor', condutor)
+        return http.put('condutor/atualizarCondutor', condutor)
     },
 
-    apagar:(condutor) => {        
-        return http.delete('condutor/deletarCondutor', {data: condutor})
+    apagar:(id) => {
+        return http.delete(`condutor/deletarCondutorId/${id}`)
     }
 }

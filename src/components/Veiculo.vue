@@ -48,22 +48,6 @@
                   <span class="headline">{{ novoOuAtualizar }}</span>
                 </v-card-title>
 
-                <v-dialog v-model="dialogCamposObrigatorios" max-width="70%" style="margin-top: 60px">
-                  <v-card color="#">
-                    <v-card-title class="headline">Por favor, preencher todos os campos.
-                    </v-card-title>
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                      <v-btn
-                          color="white"
-                          text
-                          @click="dialogCamposObrigatorios = false"
-                      >OK
-                      </v-btn>
-                    </v-card-actions>
-                  </v-card>
-                </v-dialog>
-
                 <v-card-text>
                   <v-container>
 
@@ -156,7 +140,7 @@
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn color="white" text @click="fecharDialog">Cancelar</v-btn>
+                  <v-btn color="white" text @click="dialogFormularios = false">Cancelar</v-btn>
                   <v-btn color="white" text :disabled="!valid" @click="inserirVeiculo">Salvar</v-btn>
                 </v-card-actions>
               </v-card>
@@ -226,9 +210,7 @@ export default {
   computed: {},
 
   watch: {
-    dialog(val) {
-      val || this.fecharDialog();
-    }
+
   },
 
   created() {
