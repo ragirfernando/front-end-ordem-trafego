@@ -1,14 +1,14 @@
 <template>
   <v-container>
     <div id="app" style="margin: 60px -9% ; ">
-      <v-data-table :headers="headers" :items="listaOrdensTrafego" class="elevation-1 subtitle-1" :search="search">
+      <v-data-table :headers="headers" :items="listaOrdensTrafego" class="elevation-1 subtitle-1" :search="filtrar">
         <template v-slot:top>
           <v-toolbar flat color="#">
             <v-toolbar-title>Lista de Ordens de tráfego</v-toolbar-title>
             <v-divider class="mx-4" inset vertical></v-divider>
             <v-card-title style="width: 45%">
               <v-text-field
-                  v-model="search"
+                  v-model="filtrar"
                   append-icon="mdi-magnify"
                   label="Filtrar"
                   single-line
@@ -17,9 +17,9 @@
             </v-card-title>
             <v-spacer></v-spacer>
 
-            <v-dialog v-model="dialog" max-width="90%">
+            <v-dialog v-model="dialog" max-width="95%" style="height: 0px">
               <template v-slot:activator="{ on }">
-                <v-btn color="#" dark class="mb-2" v-on="on" @click="buscarVeiculos">Nova ordem de
+                <v-btn color="#" dark class="mb-2" v-on="on">Nova ordem de
                   tráfego
                 </v-btn>
               </template>
@@ -38,6 +38,7 @@
                     <v-icon left>mdi-lock</v-icon>
                     Destino
                   </v-tab>
+
                   <v-tab>
                     <v-icon left>mdi-access-point</v-icon>
                     Veículo
@@ -103,6 +104,7 @@
                       </v-card-text>
                     </v-card>
                   </v-tab-item>
+
                   <v-tab-item>
                     <v-card flat>
                       <v-card-text>
@@ -152,20 +154,62 @@
                       </v-card-text>
                     </v-card>
                   </v-tab-item>
+
                   <v-tab-item>
                     <v-card flat>
-                      <v-card-text>
-                        <v-data-table
-                            v-model="idVeiculo"
-                            :headers="colunasVeiculo"
-                            :items="listaVeiculos"
-                            :single-select="singleSelect"
-                            item-key="name"
-                            class="elevation-1"
-                            show-select
-                        >
-                        </v-data-table>
-                      </v-card-text>
+                      <v-card dark>
+                        <v-card-text>
+                          <v-autocomplete
+                              v-model="idVeiculo"
+                              :items="items"
+                              :loading="isLoading"
+                              :search-input.sync="search"
+                              color="white"
+                              hide-no-data
+                              hide-selected
+                              item-text="modelo"
+                              item-value="API"
+                              placeholder="Digitar para pesquisar"
+                              prepend-icon="mdi-database-search"
+                              return-object
+                          ></v-autocomplete>
+
+                        </v-card-text>
+
+                        <v-card>
+                          <span style="display: none" class="e">{{ fields }}></span>
+                          <v-simple-table>
+                            <template v-slot:default>
+                              <thead>
+                              <tr class="subtitle-2 Bold text">
+                                <th>Marca</th>
+                                <th>Modelo</th>
+                                <th>Quilometragem</th>
+                                <th>Placa</th>
+                                <th>Cor</th>
+                                <th>Ano</th>
+                                <th>Categoria</th>
+                                <th>Combustível</th>
+                                <th>Conservação</th>
+                              </tr>
+                              </thead>
+                              <tbody>
+                              <tr>
+                                <td>{{listaVeiculos.marca }}</td>
+                                <td>{{listaVeiculos.marca }}</td>
+                                <td>{{listaVeiculos.kmRodados }}</td>
+                                <td>{{listaVeiculos.placa }}</td>
+                                <td>{{listaVeiculos.cor }}</td>
+                                <td>{{listaVeiculos.anoFabricacao }}</td>
+                                <td>{{listaVeiculos.categoriaVeiculo }}</td>
+                                <td>{{listaVeiculos.tipoCombustivel }}</td>
+                                <td>{{listaVeiculos.estadoConservacao }}</td>
+                              </tr>
+                              </tbody>
+                            </template>
+                          </v-simple-table>
+                        </v-card>
+                      </v-card>
                     </v-card>
                   </v-tab-item>
 
@@ -266,13 +310,29 @@
 import OrdemTrafegoService from '../service/ordemTrafegoService';
 import VeiculoServce from '../service/veiculoService';
 import CondutorService from '../service/condutorService';
+import VeiculosService from "../service/veiculoService";
 
 export default {
   name: 'ordemTrafego',
   data: () => ({
+    descriptionLimit: 60,
+    entries: [],
+    isLoading: false,
+    model: null,
+    /*marca: "",
+    modelo: "",
+    km: null,
+    placa: "",
+    cor: "",
+    anoFabicacao: null,
+    categoriaVeiculo: "",
+    tipoCombustivel: "",
+    estadoConservacao: "",*/
+
     regra: [v => !!v || "Campo é obrigatorio"],
     date: new Date().toISOString().substr(0, 10),
-    search: '',
+    filtrar: '',
+    search: null,
     menu: false,
     modal: false,
     menu2: false,
@@ -290,13 +350,15 @@ export default {
       {text: "Ações", value: "acoes", sortable: false}
     ],
     colunasVeiculo: [
-      {text: "Modelo", sortable: false, value: "modelo"},
-      {text: "Placa", sortable: false, value: "placa"},
-      {text: "Cor", sortable: false, value: "cor"},
-      {text: "Ano", sortable: false, value: "anoFabicacao"},
-      {text: "Categoria", sortable: false, value: "categoriaVeiculo"},
-      {text: "Combustivel", sortable: false, value: "tipoCombustivel"},
-      {text: "Conservação", sortable: false, value: "estadoConservacao"},
+      {text: "Marca", align: "start", class: "subtitle-2 Bold text", sortable: false, value: "marca"},
+      {text: "Modelo", sortable: false, class: "subtitle-2 Bold text", value: "modelo"},
+      {text: "Quilometragem ", class: "subtitle-2 Bold text", sortable: false, value: "kmRodados"},
+      {text: "Placa", sortable: false, class: "subtitle-2 Bold text", value: "placa"},
+      {text: "Cor", sortable: false, class: "subtitle-2 Bold text", value: "cor"},
+      {text: "Ano", sortable: false, class: "subtitle-2 Bold text", value: "anoFabricacao"},
+      {text: "Categoria", sortable: false, class: "subtitle-2 Bold text", value: "categoriaVeiculo"},
+      {text: "Combustível", sortable: false, class: "subtitle-2 Bold text", value: "tipoCombustivel"},
+      {text: "Conservação", sortable: false, class: "subtitle-2 Bold text", value: "estadoConservacao"},
     ],
 
     colunasCondutor: [
@@ -311,7 +373,18 @@ export default {
     listaOrdensTrafego: [],
     idVeiculo: [],
     idCondutor: [],
-    listaVeiculos: [],
+    listaVeiculos: {
+      marca: "",
+      modelo: "",
+      kmRodados: 0,
+      placa: "",
+      cor: "",
+      anoFabricacao: 0,
+      categoriaVeiculo: "",
+      tipoCombustivel: "",
+      estadoConservacao: ""
+    },
+    /*listaVeiculos: [],*/
     listaCondutores: [],
     editedIndex: -1,
     ordemTrafego: {
@@ -353,13 +426,48 @@ export default {
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? "Nova ordem de tráfego" : "Atualizar ordem de tráfego";
-    }
+    },
+    fields() {
+      if (!this.model) return []
+      return Object.keys(this.model).map(key => {
+        key;
+        this.listaVeiculos.marca = this.model.marca;
+        this.listaVeiculos.modelo = this.model.modelo;
+        this.listaVeiculos.km = this.model.km;
+        this.listaVeiculos.placa = this.model.placa;
+        this.listaVeiculos.cor = this.model.cor;
+        this.listaVeiculos.anoFabicacao = this.model.anoFabicacao;
+        this.listaVeiculos.categoriaVeiculo = this.model.categoriaVeiculo;
+        this.listaVeiculos.tipoCombustivel = this.model.tipoCombustivel;
+        this.listaVeiculos.estadoConservacao = this.model.estadoConservacao;
+
+
+        console.log("Lista de veículo: " + this.listaVeiculos.marca)
+      })
+    },
+
+    items() {
+      return this.entries.map(entry => {
+        const modelo = entry.modelo
+        return Object.assign({}, entry, {modelo})
+      })
+    },
   },
 
   watch: {
     dialog(val) {
       val || this.fecharDialog();
-    }
+    },
+    search() {
+      if (this.items.length > 0) return
+      if (this.isLoading) return
+      this.isLoading = true
+      VeiculosService.listarVeiculos().then(res => {
+        this.entries = res.data
+      }).catch(err => {
+        console.log(err)
+      }).finally(() => (this.isLoading = false))
+    },
   },
 
   created() {

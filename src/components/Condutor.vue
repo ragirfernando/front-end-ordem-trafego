@@ -244,6 +244,7 @@ export default {
       val || this.fecharDialog();
     },
     date(val) {
+      this.listaCondutores.length
       console.log(`Data: `, val)
       this.dateFormatted = this.formatDate(this.date)
     },
