@@ -3,7 +3,7 @@ import {http} from './config'
 
 export default {
     listar: () => {
-        return http.get('ordemTrefego/ordensTrafego')
+        return http.get('ordemTrafego/ordensTrafego')
     },
 
     inserir: (ordemTrafego, idCondutor, idVeiculo) => {

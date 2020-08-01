@@ -2,7 +2,7 @@
   <v-container>
     <div id="app" style="margin: 60px -9% ; ">
       <v-card>
-        <v-data-table :headers="headers" :items="listaCondutores" items-per-page="5"  :search="search" no-data-text="ss">
+        <v-data-table :headers="headers" :items="listaCondutores" items-per-page="5" :search="search" no-data-text="ss">
           <template v-slot:top style="width: 90%">
             <v-toolbar flat color="#">
               <v-toolbar-title>Lista de Condutores</v-toolbar-title>
@@ -30,7 +30,7 @@
                 </v-card>
               </v-dialog>
               <v-divider class="mx-4" inset vertical></v-divider>
-              <v-card-title style="width: 85%">
+              <v-card-title style="width: 75%">
                 <v-text-field
                     v-model="search"
                     append-icon="mdi-magnify"
@@ -38,7 +38,7 @@
                     single-line
                     hide-details
                 ></v-text-field>
-                <v-btn style="margin-left: 2%" @click="mostrarDialoFormularios">Novo Condutor</v-btn>
+                <v-btn style="margin-right: -6%; margin-left: 2%" @click="mostrarDialoFormularios">Novo Condutor</v-btn>
               </v-card-title>
               <v-spacer></v-spacer>
               <v-dialog v-model="dialogFormularios" max-width="95%">
@@ -78,10 +78,12 @@
                             >
                               <template v-slot:activator="{ on, attrs }">
                                 <v-text-field
-                                    v-model="condutor.cnh.validade"
+                                    v-model="dateFormatted"
                                     label="Validade"
                                     persistent-hint
                                     v-bind="attrs"
+                                    @blur="date = parseDate(dateFormatted)"
+
                                     :rules="regra"
                                     v-on="on"
                                 ></v-text-field>
@@ -211,7 +213,7 @@ export default {
       cnh: {
         numeroCNH: 0,
         categoriaCNH: "",
-        validade: vm.formatDate(new Date().toISOString().substr(0, 10)),
+        validade: "",
       },
       endereco: {
         cep: "",
@@ -259,6 +261,13 @@ export default {
       const [year, month, day] = date.split('-')
       return `${day}/${month}/${year}`
     },
+  parseDate (date) {
+    if (!date) return null
+
+    const [month, day, year] = date.split('/')
+    return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+  },
+
 
     buscaCondutores() {
       CondutorService.listar().then(resposta => {
@@ -284,6 +293,8 @@ export default {
       });
     },
     inserirCondutor() {
+      console.log("this.dateFormatted: "+this.dateFormatted)
+      this.condutor.cnh.validade = this.dateFormatted
       if (this.condutor.id == null) {
         CondutorService.inserirVeiculo(this.condutor).then(resposta => {
           console.log(resposta);
@@ -317,7 +328,7 @@ export default {
         console.log(resposta);
         this.listaCondutores.splice(this.posicao, 1)
       }).catch(e => {
-            console.log(e);
+        console.log(e);
       });
       this.dialogDeletarVeiculo = false;
     }

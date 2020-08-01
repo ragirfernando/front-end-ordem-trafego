@@ -57,7 +57,7 @@
                         :lazy-validation="lazy"
                     >
                       <v-row>
-                        <v-col class="d-flex" cols="12" sm="6">
+                        <v-col cols="12" sm="6" md="4">
                           <v-select
                               v-model="veiculo.marca"
                               :items="marcaVeiculo"
@@ -66,7 +66,7 @@
                           ></v-select>
                         </v-col>
 
-                        <v-col class="d-flex" cols="12" sm="6">
+                        <v-col cols="12" sm="6" md="4">
                           <v-select
                               v-model="veiculo.cor"
                               :items="corVeiculo"
@@ -75,7 +75,7 @@
                           ></v-select>
                         </v-col>
 
-                        <v-col class="d-flex" cols="12" sm="6">
+                        <v-col cols="12" sm="6" md="4">
                           <v-select
                               v-model="veiculo.anoFabricacao"
                               :items="anoVeiculo"
@@ -85,7 +85,7 @@
                           ></v-select>
                         </v-col>
 
-                        <v-col class="d-flex" cols="12" sm="6">
+                        <v-col cols="12" sm="6" md="4">
                           <v-select
                               v-model="veiculo.categoriaVeiculo"
                               :items="categoriaVeiculo"
@@ -94,7 +94,7 @@
                           ></v-select>
                         </v-col>
 
-                        <v-col class="d-flex" cols="12" sm="6">
+                        <v-col cols="12" sm="6" md="4">
                           <v-select
                               v-model="veiculo.estadoConservacao"
                               :items="estadoConservacao"
@@ -103,7 +103,7 @@
                           ></v-select>
                         </v-col>
 
-                        <v-col class="d-flex" cols="12" sm="6">
+                        <v-col cols="12" sm="6" md="4">
                           <v-select
                               v-model="veiculo.tipoCombustivel"
                               :items="combustivelVeiculo"
@@ -112,7 +112,7 @@
                           ></v-select>
                         </v-col>
 
-                        <v-col class="d-flex" cols="12" sm="6">
+                        <v-col cols="12" sm="6" md="4">
                           <v-text-field
                               v-model="veiculo.modelo"
                               label="Modelo *"
@@ -120,14 +120,14 @@
                           ></v-text-field>
                         </v-col>
 
-                        <v-col class="d-flex" cols="12" sm="6">
+                        <v-col cols="12" sm="6" md="4">
                           <v-text-field v-model="veiculo.kmRodados"
                                         label="Quilometragem rodada *"
                                         :rules="[v => !!v || 'Campo obrigatório']"
                           ></v-text-field>
                         </v-col>
 
-                        <v-col class="d-flex" cols="12" sm="6">
+                        <v-col cols="12" sm="6" md="4">
                           <v-text-field
                               v-model="veiculo.placa"
                               label="Placa *"

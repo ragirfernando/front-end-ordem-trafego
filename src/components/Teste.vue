@@ -1,7 +1,7 @@
 <template>
     <v-container>
         <div id="app" style="margin-top: 60px">
-          <v-app id="inspire">
+          <!--<v-app id="inspire">
             <v-container>
               <v-row>
 
@@ -30,8 +30,8 @@
                 </v-col>
               </v-row>
             </v-container>
-          </v-app>
-            <!--<v-app id="inspire">
+          </v-app>-->
+            <v-app id="inspire">
                 <v-card dark>
                     <v-card-title>Pesquisar APIs públicas</v-card-title>
                     <v-card-text>
@@ -51,8 +51,8 @@
                                 return-object
                         ></v-autocomplete>
                     </v-card-text>
-                    &lt;!&ndash;                    <v-expand-transition style="height: 600px">&ndash;&gt;
-                    &lt;!&ndash;<v-card>
+                    <!--                    <v-expand-transition style="height: 600px">-->
+                    <!--<v-card>
 
 
                             <v-row>
@@ -66,10 +66,10 @@
                                 <h2>{{categoriaVeiculo}}</h2>
                                 <h2>{{tipoCombustivel}}</h2>
                             </v-row>
-                    </v-card>&ndash;&gt;
+                    </v-card>-->
                     <v-card>
-                        <span class="e">{{ fields }}></span>
-                        <v-simple-table style="border: 5px solid red;">
+                        <span style="display: none" class="e">{{ fields }}></span>
+                        <v-simple-table >
                             <template v-slot:default >
                                 <thead>
                                 <tr>
@@ -87,17 +87,17 @@
                         </v-simple-table>
                     </v-card>
                 </v-card>
-            </v-app>-->
+            </v-app>
         </div>
     </v-container>
 </template>
 <script>
-    /*import VeiculosService from "../service/veiculoService";
-    import Veiculos from "../service/veiculosService";*/
+    import VeiculosService from "../service/veiculoService";
+    /*import Veiculos from "../service/veiculosService";*!/*/
 
     export default {
         name: 'teste',
-      data: vm => ({
+      /*data: vm => ({
         date: new Date().toISOString().substr(0, 10),
         dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
         menu2: false,
@@ -129,8 +129,8 @@
           const [month, day, year] = date.split('/')
           return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
         },
-      },
-        /*data: () => ({
+      },*/
+        data: () => ({
             descriptionLimit: 60,
             entries: [],
             isLoading: false,
@@ -184,6 +184,6 @@
                     console.log(err)
                 }).finally(() => (this.isLoading = false))
             },
-        },*/
+        },
     };
 </script>
