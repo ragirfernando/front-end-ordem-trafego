@@ -34,6 +34,7 @@
                     Origem
 
                   </v-tab>
+
                   <v-tab>
                     <v-icon left>mdi-lock</v-icon>
                     Destino
@@ -160,10 +161,10 @@
                       <v-card dark>
                         <v-card-text>
                           <v-autocomplete
-                              v-model="idVeiculo"
-                              :items="items"
+                              v-model="model"
+                              :items="items1"
                               :loading="isLoading"
-                              :search-input.sync="search"
+                              :search-input.sync="search1"
                               color="white"
                               hide-no-data
                               hide-selected
@@ -173,11 +174,10 @@
                               prepend-icon="mdi-database-search"
                               return-object
                           ></v-autocomplete>
-
                         </v-card-text>
 
                         <v-card>
-                          <span style="display: none" class="e">{{ fields }}></span>
+                          <span style="display: none">{{ fields1 }}></span>
                           <v-simple-table>
                             <template v-slot:default>
                               <thead>
@@ -215,6 +215,63 @@
 
                   <v-tab-item>
                     <v-card flat>
+                      <v-card dark>
+                        <v-card-text>
+                          <v-autocomplete
+                              v-model="model1"
+                              :items="items2"
+                              :loading="isLoading2"
+                              :search-input.sync="search2"
+                              color="white"
+                              hide-no-data
+                              hide-selected
+                              item-text="nome"
+                              item-value="API"
+                              placeholder="Digitar para pesquisar"
+                              prepend-icon="mdi-database-search"
+                              return-object
+                          ></v-autocomplete>
+                        </v-card-text>
+
+                        <v-card>
+                          <span style="display: none">{{ fields2 }}></span>
+                          <v-simple-table>
+                            <template v-slot:default>
+                              <thead>
+                              <tr class="subtitle-2 Bold text">
+                                <th>Nome</th>
+                                <!--<th>Modelo</th>
+                                <th>Quilometragem</th>
+                                <th>Placa</th>
+                                <th>Cor</th>
+                                <th>Ano</th>
+                                <th>Categoria</th>
+                                <th>Combustível</th>
+                                <th>Conservação</th>-->
+                              </tr>
+                              </thead>
+                              <tbody>
+                              <tr>
+                                <td>{{listaCondutores.nome }}</td>
+                                <!--<td>{{listaVeiculos.marca }}</td>
+                                <td>{{listaVeiculos.kmRodados }}</td>
+                                <td>{{listaVeiculos.placa }}</td>
+                                <td>{{listaVeiculos.cor }}</td>
+                                <td>{{listaVeiculos.anoFabricacao }}</td>
+                                <td>{{listaVeiculos.categoriaVeiculo }}</td>
+                                <td>{{listaVeiculos.tipoCombustivel }}</td>
+                                <td>{{listaVeiculos.estadoConservacao }}</td>-->
+                              </tr>
+                              </tbody>
+                            </template>
+                          </v-simple-table>
+                        </v-card>
+                      </v-card>
+                    </v-card>
+                  </v-tab-item>
+
+                 <!-- <v-tab-item>
+                    <v-card flat>
                       <v-card-text>
                         <v-card-text>
                           <v-data-table
@@ -230,7 +287,7 @@
                         </v-card-text>
                       </v-card-text>
                     </v-card>
-                  </v-tab-item>
+                  </v-tab-item>-->
 
                   <v-tab-item>
                     <v-card flat>
@@ -308,7 +365,6 @@
 
 <script>
 import OrdemTrafegoService from '../service/ordemTrafegoService';
-import VeiculoServce from '../service/veiculoService';
 import CondutorService from '../service/condutorService';
 import VeiculosService from "../service/veiculoService";
 
@@ -317,8 +373,11 @@ export default {
   data: () => ({
     descriptionLimit: 60,
     entries: [],
+    entries2: [],
     isLoading: false,
+    isLoading2: false,
     model: null,
+    model1: null,
     /*marca: "",
     modelo: "",
     km: null,
@@ -332,7 +391,8 @@ export default {
     regra: [v => !!v || "Campo é obrigatorio"],
     date: new Date().toISOString().substr(0, 10),
     filtrar: '',
-    search: null,
+    search1: null,
+    search2: null,
     menu: false,
     modal: false,
     menu2: false,
@@ -376,16 +436,36 @@ export default {
     listaVeiculos: {
       marca: "",
       modelo: "",
-      kmRodados: 0,
+      kmRodados: "",
       placa: "",
       cor: "",
-      anoFabricacao: 0,
+      anoFabricacao: "",
       categoriaVeiculo: "",
       tipoCombustivel: "",
       estadoConservacao: ""
     },
     /*listaVeiculos: [],*/
-    listaCondutores: [],
+    /*listaCondutores: [],*/
+    listaCondutores: {
+      id: null,
+      nome: "",
+      cnh: {
+        numeroCNH: "",
+        categoriaCNH: "",
+        validade: "",
+      },
+      endereco: {
+        cep: "",
+        logradouro: "",
+        complemento: "",
+        bairro: "",
+        localidade: "",
+        numero: "",
+        uf: ""
+      },
+      cpf: "",
+      matricula: ""
+    },
     editedIndex: -1,
     ordemTrafego: {
       origem: {
@@ -394,7 +474,7 @@ export default {
         complemento: "",
         bairro: "",
         localidade: "",
-        numero: 0,
+        numero: "",
         uf: ""
       },
       destino: {
@@ -403,16 +483,14 @@ export default {
         complemento: "",
         bairro: "",
         localidade: "",
-        numero: 0,
+        numero: "",
         uf: ""
       },
       hora: "",
       status: "",
       data: "",
-      distanciaPercorrer: 0
+      distanciaPercorrer: ""
     },
-
-
     defaultItem: {
       name: "",
       calories: 0,
@@ -427,7 +505,7 @@ export default {
     formTitle() {
       return this.editedIndex === -1 ? "Nova ordem de tráfego" : "Atualizar ordem de tráfego";
     },
-    fields() {
+    fields1() {
       if (!this.model) return []
       return Object.keys(this.model).map(key => {
         key;
@@ -440,16 +518,31 @@ export default {
         this.listaVeiculos.categoriaVeiculo = this.model.categoriaVeiculo;
         this.listaVeiculos.tipoCombustivel = this.model.tipoCombustivel;
         this.listaVeiculos.estadoConservacao = this.model.estadoConservacao;
-
-
-        console.log("Lista de veículo: " + this.listaVeiculos.marca)
+        /*console.log("Lista de veículo: " + this.listaVeiculos.marca)*/
       })
     },
 
-    items() {
+    items1() {
       return this.entries.map(entry => {
         const modelo = entry.modelo
         return Object.assign({}, entry, {modelo})
+      })
+    },
+
+    fields2() {
+      if (!this.model1) return []
+      return Object.keys(this.model1).map(key => {
+        key;
+        this.listaCondutores.nome = this.model1.nome;
+
+        /*console.log("Lista de veículo: " + this.listaVeiculos.marca)*/
+      })
+    },
+
+    items2() {
+      return this.entries2.map(entry => {
+        const nome = entry.nome
+        return Object.assign({}, entry, {nome})
       })
     },
   },
@@ -458,8 +551,8 @@ export default {
     dialog(val) {
       val || this.fecharDialog();
     },
-    search() {
-      if (this.items.length > 0) return
+    search1() {
+      if (this.items1.length > 0) return
       if (this.isLoading) return
       this.isLoading = true
       VeiculosService.listarVeiculos().then(res => {
@@ -467,6 +560,17 @@ export default {
       }).catch(err => {
         console.log(err)
       }).finally(() => (this.isLoading = false))
+    },
+
+    search2() {
+      if (this.items2.length > 0) return
+      if (this.isLoading2) return
+      this.isLoading2 = true
+      CondutorService.listar().then(res => {
+        this.entries2 = res.data
+      }).catch(err => {
+        console.log(err)
+      }).finally(() => (this.isLoading2 = false))
     },
   },
 
@@ -481,13 +585,13 @@ export default {
         this.listaOrdensTrafego = resposta.data;
       });
     },
-
-    buscarVeiculos() {
+    /*buscarVeiculos() {
       VeiculoServce.listarVeiculos().then(resposta => {
         this.listaVeiculos = resposta.data;
       })
       this.buscarCondutores();
-    },
+    },*/
+
     buscarCondutores() {
       CondutorService.listar().then(resposta => {
         this.listaCondutores = resposta.data;
