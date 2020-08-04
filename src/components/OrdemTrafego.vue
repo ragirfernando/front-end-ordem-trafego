@@ -17,8 +17,7 @@
             </v-card-title>
             <v-spacer></v-spacer>
 
-            <v-dialog v-model="dialog" max-width="95%" style="height: 0px">
-              <template v-slot:activator="{ on }">
+            <v-dialog v-model="dialog" max-width="95%" style="height: 0px">              <template v-slot:activator="{ on }">
                 <v-btn color="#" dark class="mb-2" v-on="on">Nova ordem de
                   tráfego
                 </v-btn>
