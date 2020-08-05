@@ -24,6 +24,8 @@ npm run build
 ```
 npm run lint
 ```
+## Url da aplicação
+[Ordem de tráfego](https://ordem-trafego.netlify.app/).
 
 ## Tecnologias usadas
 [Vue CLI](https://cli.vuejs.org/config/),
