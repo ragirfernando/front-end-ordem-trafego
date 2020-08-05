@@ -7,7 +7,7 @@
             <v-dialog v-model="dialogDeletarVeiculo" max-width="350">
               <v-card>
                 <v-card-title class="headline">Deletar veículo</v-card-title>
-                <v-card-text v-if="veiculoDeletar != null">Deseja de deletat o većulo, modelo:
+                <v-card-text v-if="veiculoDeletar != null">Deseja de deletar o veículo, modelo:
                   {{ veiculoDeletar.modelo }}
                 </v-card-text>
                 <v-card-actions>
@@ -59,6 +59,7 @@
                       <v-row>
                         <v-col cols="12" sm="6" md="4">
                           <v-select
+                              placeholder="Selecione"
                               v-model="veiculo.marca"
                               :items="marcaVeiculo"
                               :rules="[v => !!v || 'Campo obrigatório']"
@@ -232,12 +233,16 @@ export default {
       this.veiculoDeletar = item;
       this.posicao = this.veiculoDeletar[item];
       this.dialogDeletarVeiculo = true;
+
     },
 
     mostrarDialoFormularios() {
       this.dialogFormularios = true;
       this.novoOuAtualizar = "Inserir novo veículo";
-      this.veiculo = Object.assign({}, []);
+      this.reset();
+    },
+    reset () {
+      this.$refs.form.reset()
     },
 
     retornarPrimeiraLetraMaiuscula(primeiraLetraMaiuscula) {
@@ -278,9 +283,7 @@ export default {
       });
       this.listaVeiculos.splice(this.posicao, 1)
       this.dialogDeletarVeiculo = false;
-
     },
-
 
     inserirVeiculo() {
       this.veiculo.estadoConservacao = this.retornarPalavraMaiuscula(this.veiculo.estadoConservacao);

@@ -2,14 +2,14 @@
   <v-container>
     <div id="app" style="margin: 60px -9% ; ">
       <v-card>
-        <v-data-table :headers="headers" :items="listaCondutores" items-per-page="5" :search="search" no-data-text="ss">
+        <v-data-table :headers="headers" :items="listaCondutores" :search="search" no-data-text="ss">
           <template v-slot:top style="width: 90%">
             <v-toolbar flat color="#">
               <v-toolbar-title>Lista de Condutores</v-toolbar-title>
               <v-dialog v-model="dialogDeletarVeiculo" max-width="350">
                 <v-card>
                   <v-card-title class="headline">Deletar condutor</v-card-title>
-                  <v-card-text v-if="condutorDeletar != null">Deseja de deletar o condutor:
+                  <v-card-text v-if="condutorDeletar != null">Deseja de deletar o condutor, nome:
                     {{ condutorDeletar.nome }}
                   </v-card-text>
                   <v-card-actions>
@@ -38,7 +38,8 @@
                     single-line
                     hide-details
                 ></v-text-field>
-                <v-btn style="margin-right: -6%; margin-left: 2%" @click="mostrarDialoFormularios">Novo Condutor</v-btn>
+                <v-btn style="margin-right: -6%; margin-left: 2%" @click="mostrarDialogFormularios">Novo Condutor
+                </v-btn>
               </v-card-title>
               <v-spacer></v-spacer>
               <v-dialog v-model="dialogFormularios" max-width="95%">
@@ -60,6 +61,7 @@
 
                           <v-col cols="12" sm="6" md="4">
                             <v-text-field
+
                                 v-model="condutor.cnh.numeroCNH"
                                 label="Número cnh"
                                 :rules="regra"
@@ -165,7 +167,7 @@
             <v-icon small @click="mostrarDialogDeletar(item)">mdi-delete</v-icon>
           </template>
           <template v-slot:no-data>
-            <v-btn color="primary" @click="buscaCondutores">Reset</v-btn>
+            <v-btn color="primary" @click="listarCondutores">Reset</v-btn>
           </template>
         </v-data-table>
       </v-card>
@@ -211,7 +213,7 @@ export default {
       id: null,
       nome: "",
       cnh: {
-        numeroCNH: 0,
+        numeroCNH: "",
         categoriaCNH: "",
         validade: "",
       },
@@ -221,7 +223,7 @@ export default {
         complemento: "",
         bairro: "",
         localidade: "",
-        numero: 0,
+        numero: "",
         uf: ""
       },
       cpf: "",
@@ -231,18 +233,12 @@ export default {
   }),
 
   computed: {
-    formTitle() {
-      return this.editedIndex === -1 ? "Novo condutor" : "Atualizar condutor";
-    },
     computedDateFormatted() {
       return this.formatDate(this.date)
     },
   },
 
   watch: {
-    dialog(val) {
-      val || this.fecharDialog();
-    },
     date(val) {
       this.listaCondutores.length
       console.log(`Data: `, val)
@@ -252,61 +248,52 @@ export default {
 
   created() {
     this.$vuetify.theme.dark = true;
-    this.buscaCondutores();
+    this.listarCondutores();
   },
 
   methods: {
     formatDate(date) {
       if (!date) return null
-
       const [year, month, day] = date.split('-')
       return `${day}/${month}/${year}`
     },
-  parseDate (date) {
-    if (!date) return null
 
-    const [month, day, year] = date.split('/')
-    return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
-  },
+    parseDate(date) {
+      if (!date) return null
+      const [month, day, year] = date.split('/')
+      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+    },
 
-
-    buscaCondutores() {
+    listarCondutores() {
       CondutorService.listar().then(resposta => {
         this.listaCondutores = resposta.data;
+      }).catch(error => {
+        console.log(error)
       });
     },
 
-    mostrarDialoFormularios() {
+    mostrarDialogFormularios() {
       this.dialogFormularios = true;
-      this.novoOuAtualizar = "Inserir novo veículo";
-      this.veiculo = Object.assign({}, []);
+      this.novoOuAtualizar = "Inserir novo condutor";
+      this.reset();
+    },
+    reset () {
+      this.$refs.form.reset()
     },
 
-    /*buscaCondutores:  async  function(){
-        this.listaCondutores = (await CondutorService.listar()).data
-    },*/
-
-    fecharDialog() {
-      this.dialogFormularios = false;
-      this.$nextTick(() => {
-        this.veiculo = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-      });
-    },
     inserirCondutor() {
-      console.log("this.dateFormatted: "+this.dateFormatted)
       this.condutor.cnh.validade = this.dateFormatted
       if (this.condutor.id == null) {
         CondutorService.inserirVeiculo(this.condutor).then(resposta => {
           console.log(resposta);
-          this.buscaCondutores();
+          this.listarCondutores();
         }).catch(error => {
           console.log(error)
         });
       } else {
         CondutorService.atualizar(this.condutor).then(resposta => {
           console.log(resposta);
-          this.buscaCondutores();
+          this.listarCondutores();
         }).catch(error => {
           console.log(error)
         });

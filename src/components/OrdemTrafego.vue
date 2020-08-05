@@ -17,7 +17,8 @@
             </v-card-title>
             <v-spacer></v-spacer>
 
-            <v-dialog v-model="dialog" max-width="95%" style="height: 0px">              <template v-slot:activator="{ on }">
+            <v-dialog v-model="dialog" max-width="95%" style="height: 0px">
+              <template v-slot:activator="{ on }">
                 <v-btn color="#" dark class="mb-2" v-on="on">Nova ordem de
                   tráfego
                 </v-btn>
@@ -194,15 +195,15 @@
                               </thead>
                               <tbody>
                               <tr>
-                                <td>{{listaVeiculos.marca }}</td>
-                                <td>{{listaVeiculos.marca }}</td>
-                                <td>{{listaVeiculos.kmRodados }}</td>
-                                <td>{{listaVeiculos.placa }}</td>
-                                <td>{{listaVeiculos.cor }}</td>
-                                <td>{{listaVeiculos.anoFabricacao }}</td>
-                                <td>{{listaVeiculos.categoriaVeiculo }}</td>
-                                <td>{{listaVeiculos.tipoCombustivel }}</td>
-                                <td>{{listaVeiculos.estadoConservacao }}</td>
+                                <td>{{ listaVeiculos.marca }}</td>
+                                <td>{{ listaVeiculos.marca }}</td>
+                                <td>{{ listaVeiculos.kmRodados }}</td>
+                                <td>{{ listaVeiculos.placa }}</td>
+                                <td>{{ listaVeiculos.cor }}</td>
+                                <td>{{ listaVeiculos.anoFabricacao }}</td>
+                                <td>{{ listaVeiculos.categoriaVeiculo }}</td>
+                                <td>{{ listaVeiculos.tipoCombustivel }}</td>
+                                <td>{{ listaVeiculos.estadoConservacao }}</td>
                               </tr>
                               </tbody>
                             </template>
@@ -251,7 +252,7 @@
                               </thead>
                               <tbody>
                               <tr>
-                                <td>{{listaCondutores.nome }}</td>
+                                <td>{{ listaCondutores.nome }}</td>
                                 <!--<td>{{listaVeiculos.marca }}</td>
                                 <td>{{listaVeiculos.kmRodados }}</td>
                                 <td>{{listaVeiculos.placa }}</td>
@@ -269,24 +270,24 @@
                     </v-card>
                   </v-tab-item>
 
-                 <!-- <v-tab-item>
-                    <v-card flat>
-                      <v-card-text>
-                        <v-card-text>
-                          <v-data-table
-                              v-model="idCondutor"
-                              :headers="colunasCondutor"
-                              :items="listaCondutores"
-                              :single-select="singleSelect"
-                              item-key="id"
-                              class="elevation-1"
-                              show-select
-                          >
-                          </v-data-table>
-                        </v-card-text>
-                      </v-card-text>
-                    </v-card>
-                  </v-tab-item>-->
+                  <!-- <v-tab-item>
+                     <v-card flat>
+                       <v-card-text>
+                         <v-card-text>
+                           <v-data-table
+                               v-model="idCondutor"
+                               :headers="colunasCondutor"
+                               :items="listaCondutores"
+                               :single-select="singleSelect"
+                               item-key="id"
+                               class="elevation-1"
+                               show-select
+                           >
+                           </v-data-table>
+                         </v-card-text>
+                       </v-card-text>
+                     </v-card>
+                   </v-tab-item>-->
 
                   <v-tab-item>
                     <v-card flat>
