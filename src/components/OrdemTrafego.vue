@@ -240,27 +240,24 @@
                               <thead>
                               <tr class="subtitle-2 Bold text">
                                 <th>Nome</th>
-                                <!--<th>Modelo</th>
-                                <th>Quilometragem</th>
-                                <th>Placa</th>
-                                <th>Cor</th>
-                                <th>Ano</th>
-                                <th>Categoria</th>
-                                <th>Combustível</th>
-                                <th>Conservação</th>-->
+                                <th>Categoria Cnh</th>
+                                <th>Validade Cnh</th>
+                                <th>Cidade</th>
+                                <th>Bairro</th>
+                                <th>CPF</th>
+                                <th>Matricula</th>
                               </tr>
                               </thead>
                               <tbody>
                               <tr>
                                 <td>{{ listaCondutores.nome }}</td>
-                                <!--<td>{{listaVeiculos.marca }}</td>
-                                <td>{{listaVeiculos.kmRodados }}</td>
-                                <td>{{listaVeiculos.placa }}</td>
-                                <td>{{listaVeiculos.cor }}</td>
-                                <td>{{listaVeiculos.anoFabricacao }}</td>
-                                <td>{{listaVeiculos.categoriaVeiculo }}</td>
-                                <td>{{listaVeiculos.tipoCombustivel }}</td>
-                                <td>{{listaVeiculos.estadoConservacao }}</td>-->
+                                <td>{{ listaCondutores.cnh.categoriaCNH }}</td>
+                                <td>{{ listaCondutores.cnh.validade }}</td>
+                                <td>{{ listaCondutores.endereco.localidade }}</td>
+                                <td>{{ listaCondutores.endereco.bairro }}</td>
+                                <td>{{ listaCondutores.cpf }}</td>
+                                <td>{{ listaCondutores.matricula }}</td>
+
                               </tr>
                               </tbody>
                             </template>
@@ -270,25 +267,6 @@
                     </v-card>
                   </v-tab-item>
 
-                  <!-- <v-tab-item>
-                     <v-card flat>
-                       <v-card-text>
-                         <v-card-text>
-                           <v-data-table
-                               v-model="idCondutor"
-                               :headers="colunasCondutor"
-                               :items="listaCondutores"
-                               :single-select="singleSelect"
-                               item-key="id"
-                               class="elevation-1"
-                               show-select
-                           >
-                           </v-data-table>
-                         </v-card-text>
-                       </v-card-text>
-                     </v-card>
-                   </v-tab-item>-->
-
                   <v-tab-item>
                     <v-card flat>
                       <v-card-text>
@@ -296,49 +274,72 @@
                           <v-col cols="12" sm="6" md="4">
                             <v-menu
                                 ref="menu"
-                                v-model="menu"
+                                v-model="menu3"
                                 :close-on-content-click="false"
-                                :return-value.sync="date"
+                                :nudge-right="40"
+                                :return-value.sync="time"
                                 transition="scale-transition"
                                 offset-y
+                                max-width="290px"
                                 min-width="290px"
                             >
-                              <template v-slot:activator="{ on }">
+                              <template v-slot:activator="{ on, attrs }">
                                 <v-text-field
-                                    v-model="ordemTrafego.data"
-                                    label="Data"
+                                    v-model="time"
+                                    label="Hora"
                                     readonly
-                                    required
+                                    v-bind="attrs"
+                                    v-on="on"
+                                ></v-text-field>
+                              </template>
+                              <v-time-picker
+                                  v-if="menu3"
+                                  v-model="time"
+                                  format="24hr"
+                                  full-width
+                                  @click:minute="$refs.menu.save(time)"
+                              ></v-time-picker>
+                            </v-menu>
+                          </v-col>
+
+                          <v-col cols="12" sm="6" md="4">
+                            <v-menu
+                                ref="menu4"
+                                v-model="menu4"
+                                :close-on-content-click="false"
+                                transition="scale-transition"
+                                offset-y
+                                max-width="290px"
+                                min-width="290px"
+                            >
+                              <template v-slot:activator="{ on, attrs }">
+                                <v-text-field
+                                    v-model="dateFormatted"
+                                    label="Data"
+                                    persistent-hint
+                                    v-bind="attrs"
+                                    @blur="date = parseDate(dateFormatted)"
+
                                     :rules="regra"
                                     v-on="on"
                                 ></v-text-field>
                               </template>
-                              <v-date-picker
-                                  v-model="ordemTrafego.data"
-                                  no-title
-                                  scrollable
-                                  locale="br"
-                              >
-                                <v-spacer></v-spacer>
-                                <v-btn text color="primary" @click="menu = false">
-                                  Cancelar
-                                </v-btn>
-                                <v-btn text color="primary"
-                                       @click="$refs.menu.save(date)">
-                                  OK
-                                </v-btn>
-                              </v-date-picker>
+                              <v-date-picker locale="br" v-model="date" no-title @input="menu1 = false"></v-date-picker>
                             </v-menu>
                           </v-col>
 
                           <v-col cols="12" sm="6" md="4">
                             <v-text-field v-model="ordemTrafego.distanciaPercorrer"
-                                          label="Distancia "></v-text-field>
+                                          label="Distância "></v-text-field>
                           </v-col>
 
                           <v-col cols="12" sm="6" md="4">
-                            <v-text-field v-model="ordemTrafego.status"
-                                          label="Status "></v-text-field>
+                            <v-select
+                                v-model="ordemTrafego.status"
+                                :items="statusOrdemTrafego"
+                                :rules="[v => !!v || 'Campo obrigatório']"
+                                label="Selecione o status *"
+                            ></v-select>
                           </v-col>
                         </v-row>
                       </v-card-text>
@@ -370,24 +371,16 @@ import VeiculosService from "../service/veiculoService";
 
 export default {
   name: 'ordemTrafego',
-  data: () => ({
+  data: (vm) => ({
+    dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
     descriptionLimit: 60,
     entries: [],
+    statusOrdemTrafego: ["ANDAMENTO",  "AGENDADA", "FINALIZADA"],
     entries2: [],
     isLoading: false,
     isLoading2: false,
     model: null,
     model1: null,
-    /*marca: "",
-    modelo: "",
-    km: null,
-    placa: "",
-    cor: "",
-    anoFabicacao: null,
-    categoriaVeiculo: "",
-    tipoCombustivel: "",
-    estadoConservacao: "",*/
-
     regra: [v => !!v || "Campo é obrigatorio"],
     date: new Date().toISOString().substr(0, 10),
     filtrar: '',
@@ -396,6 +389,9 @@ export default {
     menu: false,
     modal: false,
     menu2: false,
+    menu4: false,
+    time: null,
+    menu3: false,
     drawer: null,
     dialog: false,
     singleSelect: true,
@@ -420,7 +416,6 @@ export default {
       {text: "Combustível", sortable: false, class: "subtitle-2 Bold text", value: "tipoCombustivel"},
       {text: "Conservação", sortable: false, class: "subtitle-2 Bold text", value: "estadoConservacao"},
     ],
-
     colunasCondutor: [
       {text: "Nome", align: "start", sortable: false, value: "nome"},
       {text: "Categoria Cnh", sortable: false, value: "cnh.categoriaCNH"},
@@ -444,8 +439,6 @@ export default {
       tipoCombustivel: "",
       estadoConservacao: ""
     },
-    /*listaVeiculos: [],*/
-    /*listaCondutores: [],*/
     listaCondutores: {
       id: null,
       nome: "",
@@ -500,7 +493,6 @@ export default {
     }
   }),
 
-
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? "Nova ordem de tráfego" : "Atualizar ordem de tráfego";
@@ -511,14 +503,14 @@ export default {
         key;
         this.listaVeiculos.marca = this.model.marca;
         this.listaVeiculos.modelo = this.model.modelo;
-        this.listaVeiculos.km = this.model.km;
+        this.listaVeiculos.modelo = this.model.modelo;
+        this.listaVeiculos.kmRodados = this.model.kmRodados;
         this.listaVeiculos.placa = this.model.placa;
         this.listaVeiculos.cor = this.model.cor;
         this.listaVeiculos.anoFabicacao = this.model.anoFabicacao;
         this.listaVeiculos.categoriaVeiculo = this.model.categoriaVeiculo;
         this.listaVeiculos.tipoCombustivel = this.model.tipoCombustivel;
         this.listaVeiculos.estadoConservacao = this.model.estadoConservacao;
-        /*console.log("Lista de veículo: " + this.listaVeiculos.marca)*/
       })
     },
 
@@ -534,8 +526,13 @@ export default {
       return Object.keys(this.model1).map(key => {
         key;
         this.listaCondutores.nome = this.model1.nome;
+        this.listaCondutores.cnh.categoriaCNH = this.model1.cnh.categoriaCNH;
+        this.listaCondutores.cnh.validade = this.model1.cnh.validade;
+        this.listaCondutores.endereco.localidade = this.model1.endereco.localidade;
+        this.listaCondutores.endereco.bairro = this.model1.endereco.bairro;
+        this.listaCondutores.cpf = this.model1.cpf;
+        this.listaCondutores.matricula = this.model1.matricula;
 
-        /*console.log("Lista de veículo: " + this.listaVeiculos.marca)*/
       })
     },
 
@@ -548,6 +545,12 @@ export default {
   },
 
   watch: {
+    date(val) {
+
+      this.listaCondutores.length
+      console.log(`Data: `, val)
+      this.dateFormatted = this.formatDate(this.date)
+    },
     dialog(val) {
       val || this.fecharDialog();
     },
@@ -580,6 +583,17 @@ export default {
   },
 
   methods: {
+    formatDate(date) {
+      if (!date) return null
+      const [year, month, day] = date.split('-')
+      return `${day}/${month}/${year}`
+    },
+
+    parseDate(date) {
+      if (!date) return null
+      const [month, day, year] = date.split('/')
+      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+    },
     buscaOrdensTrafego() {
       OrdemTrafegoService.listar().then(resposta => {
         this.listaOrdensTrafego = resposta.data;
@@ -597,6 +611,7 @@ export default {
         this.listaCondutores = resposta.data;
       })
     },
+
     fecharDialog() {
       this.dialog = false;
       this.$nextTick(() => {
@@ -604,8 +619,15 @@ export default {
         this.editedIndex = -1;
       });
     },
+
     inserirOrdemTrafego() {
-      OrdemTrafegoService.inserir(this.ordemTrafego, this.idCondutor[0].id, this.idVeiculo[0].id).then(resposta => {
+      this.ordemTrafego.hora = this.time;
+      this.ordemTrafego.data = this.dateFormatted ;
+
+      console.log(this.ordemTrafego)
+      console.log(this.model.id)
+      console.log(this.model1.id)
+      OrdemTrafegoService.inserir(this.ordemTrafego).then(resposta => {
         console.log(resposta);
         this.buscaOrdensTrafego();
       });
@@ -616,6 +638,7 @@ export default {
       }*/
       this.fecharDialog();
     },
+
     editarOrdemTrafego(item) {
       this.editedIndex = this.listaOrdensTrafego.indexOf(item);
       this.ordemTrafego = Object.assign({}, item);
