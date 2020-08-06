@@ -24,7 +24,7 @@ npm run build
 ```
 npm run lint
 ```
-## Url da aplicação
+## Url para acessar aplicação.
 [Ordem de tráfego](https://ordem-trafego.netlify.app/).
 
 ## Tecnologias usadas
