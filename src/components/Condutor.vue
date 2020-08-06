@@ -56,12 +56,14 @@
                       >
                         <v-row>
                           <v-col cols="12" sm="6" md="4">
-                            <v-text-field v-model="condutor.nome" label="Nome" :rules="regra"></v-text-field>
+                            <v-text-field
+                                v-model="condutor.nome"
+                                label="Nome"
+                                :rules="regra"></v-text-field>
                           </v-col>
 
                           <v-col cols="12" sm="6" md="4">
                             <v-text-field
-
                                 v-model="condutor.cnh.numeroCNH"
                                 label="Número cnh"
                                 :rules="regra"
@@ -85,12 +87,16 @@
                                     persistent-hint
                                     v-bind="attrs"
                                     @blur="date = parseDate(dateFormatted)"
-
                                     :rules="regra"
                                     v-on="on"
                                 ></v-text-field>
                               </template>
-                              <v-date-picker locale="br" v-model="date" no-title @input="menu1 = false"></v-date-picker>
+                              <v-date-picker
+                                  locale="br"
+                                  v-model="date"
+                                  no-title
+                                  @input="menu1 =false">
+                              </v-date-picker>
                             </v-menu>
                           </v-col>
 
@@ -104,50 +110,68 @@
                           </v-col>
 
                           <v-col cols="12" sm="6" md="4">
-                            <v-text-field v-model="condutor.endereco.cep" label="Cep"
-                                          required
-                                          :rules="regra"></v-text-field>
+                            <v-text-field
+                                v-model="condutor.endereco.cep" label="Cep"
+                                required
+                                @keyup="teste"
+                                v-mask="'#####-###'"
+                                :rules="regra"></v-text-field>
                           </v-col>
 
                           <v-col cols="12" sm="6" md="4">
-                            <v-text-field v-model="condutor.endereco.localidade" label="Cidade"
-                                          required
-                                          :rules="regra"></v-text-field>
+                            <v-text-field
+                                v-model="condutor.endereco.localidade"
+                                label="Cidade"
+                                required
+                                :rules="regra"></v-text-field>
                           </v-col>
 
                           <v-col cols="12" sm="6" md="4">
-                            <v-text-field v-model="condutor.endereco.uf" label="Estado"
-                                          required
-                                          :rules="regra"></v-text-field>
+                            <v-text-field
+                                v-model="condutor.endereco.uf"
+                                label="Estado"
+                                required
+                                :rules="regra"></v-text-field>
                           </v-col>
 
                           <v-col cols="12" sm="6" md="4">
-                            <v-text-field v-model="condutor.endereco.logradouro" label="Logradouro"
-                                          required
-                                          :rules="regra"></v-text-field>
+                            <v-text-field
+                                v-model="condutor.endereco.logradouro"
+                                label="Logradouro"
+                                required
+                                :rules="regra"></v-text-field>
                           </v-col>
 
                           <v-col cols="12" sm="6" md="4">
-                            <v-text-field v-model="condutor.endereco.bairro" label="Bairro"
-                                          required
-                                          :rules="regra"></v-text-field>
+                            <v-text-field
+                                v-model="condutor.endereco.bairro"
+                                label="Bairro"
+                                required
+                                :rules="regra"></v-text-field>
                           </v-col>
 
                           <v-col cols="12" sm="6" md="4">
-                            <v-text-field v-model="condutor.endereco.numero" label="Número"
-                                          required
-                                          :rules="regra"></v-text-field>
+                            <v-text-field
+                                v-model="condutor.endereco.numero"
+                                label="Número"
+                                required
+                                :rules="regra"></v-text-field>
                           </v-col>
 
                           <v-col cols="12" sm="6" md="4">
-                            <v-text-field v-model="condutor.endereco.complemento"
-                                          label="Complemento" required
-                                          :rules="regra"></v-text-field>
+                            <v-text-field
+                                v-model="condutor.endereco.complemento"
+                                label="Complemento" required
+                                :rules="regra"></v-text-field>
                           </v-col>
 
                           <v-col cols="12" sm="6" md="4">
-                            <v-text-field v-model="condutor.cpf" label="CPF" required
-                                          :rules="regra"></v-text-field>
+                            <v-text-field
+                                v-model="condutor.cpf"
+                                label="CPF"
+                                required
+                                v-mask="'###.###.###-##'"
+                                :rules="regra"></v-text-field>
                           </v-col>
                         </v-row>
                       </v-form>
@@ -252,6 +276,19 @@ export default {
   },
 
   methods: {
+    teste() {
+      if (this.condutor.endereco.cep.length == 9) {
+        CondutorService.consultarCep(this.condutor.endereco.cep).then(resposta => {
+          console.log('Cep :'+resposta.data.localidade);
+          this.condutor.endereco.logradouro = resposta.data.logradouro;
+          this.condutor.endereco.bairro = resposta.data.bairro;
+          this.condutor.endereco.localidade = resposta.data.localidade;
+          this.condutor.endereco.uf = resposta.data.uf;
+        }).catch(error => {
+          console.log(error)
+        });
+      }
+    },
     formatDate(date) {
       if (!date) return null
       const [year, month, day] = date.split('-')
@@ -277,12 +314,13 @@ export default {
       this.novoOuAtualizar = "Inserir novo condutor";
       this.reset();
     },
-    reset () {
+    reset() {
       this.$refs.form.reset()
     },
 
     inserirCondutor() {
       this.condutor.cnh.validade = this.dateFormatted
+      this.condutor.endereco.cep = this.condutor.endereco.cep.replace("-", "");
       if (this.condutor.id == null) {
         CondutorService.inserirVeiculo(this.condutor).then(resposta => {
           console.log(resposta);
