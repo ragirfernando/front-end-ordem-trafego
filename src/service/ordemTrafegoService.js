@@ -7,7 +7,7 @@ export default {
     },
 
     inserir: (ordemTrafego, idCondutor, idVeiculo) => {
-        const url = `ordemTrefego/salvarOrdemTrafego/${idCondutor}/${idVeiculo}`;
+        const url = `ordemTrafego/inserirOrdemTrafego/${idCondutor}/${idVeiculo}`;
         return http.post(url,  ordemTrafego)
     },
 

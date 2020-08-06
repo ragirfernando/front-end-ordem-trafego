@@ -375,7 +375,7 @@ export default {
     dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
     descriptionLimit: 60,
     entries: [],
-    statusOrdemTrafego: ["ANDAMENTO",  "AGENDADA", "FINALIZADA"],
+    statusOrdemTrafego: ["ANDAMENTO", "AGENDADA", "FINALIZADA"],
     entries2: [],
     isLoading: false,
     isLoading2: false,
@@ -622,12 +622,12 @@ export default {
 
     inserirOrdemTrafego() {
       this.ordemTrafego.hora = this.time;
-      this.ordemTrafego.data = this.dateFormatted ;
+      this.ordemTrafego.data = this.dateFormatted;
 
       console.log(this.ordemTrafego)
       console.log(this.model.id)
       console.log(this.model1.id)
-      OrdemTrafegoService.inserir(this.ordemTrafego).then(resposta => {
+      OrdemTrafegoService.inserir(this.ordemTrafego, this.model.id, this.model1.id).then(resposta => {
         console.log(resposta);
         this.buscaOrdensTrafego();
       });
