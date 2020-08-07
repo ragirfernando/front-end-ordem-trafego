@@ -1,8 +1,8 @@
 <template>
   <v-container>
-    <div id="app" style="margin: 60px -9% ; ">
+    <div id="app" style="margin: 60px -9%;">
       <v-card>
-        <v-data-table :headers="headers" :items="listaCondutores" :search="search" no-data-text="ss">
+        <v-data-table :headers="headers" :items="listaCondutores" :search="search">
           <template v-slot:top style="width: 90%">
             <v-toolbar flat color="#">
               <v-toolbar-title>Lista de Condutores</v-toolbar-title>
@@ -51,7 +51,7 @@
                       color="deep-purple accent-4"
                       dark
                       dismissible
-                      >
+                  >
                     Por favor, digite um cep válido
                   </v-alert>
                 </div>
@@ -71,23 +71,32 @@
                           <v-col cols="12" sm="6" md="4">
                             <v-text-field
                                 v-model="condutor.nome"
-                                label="Nome"
+                                label="Nome *"
+                                :rules="regra"></v-text-field>
+                          </v-col>
+
+                          <v-col cols="12" sm="6" md="4">
+                            <v-text-field
+                                v-model="condutor.cpf"
+                                label="CPF *"
+                                required
+                                v-mask="'###.###.###-##'"
                                 :rules="regra"></v-text-field>
                           </v-col>
 
                           <v-col cols="12" sm="6" md="4">
                             <v-text-field
                                 v-model="condutor.cnh.numeroCNH"
-                                label="Número da CNH"
+                                label="Número da CNH *"
                                 v-mask="'##########'"
                                 :rules="regra"
                             ></v-text-field>
                           </v-col>
 
-                          <v-col cols="12" sm="6" md="4">
+                          <v-col class="alinhaInputs" cols="12" sm="6" md="4">
                             <v-menu
-                                ref="menu1"
-                                v-model="menu1"
+                                ref="dataValidadeCNH"
+                                v-model="dataValidadeCNH"
                                 :close-on-content-click="false"
                                 transition="scale-transition"
                                 offset-y
@@ -97,10 +106,9 @@
                               <template v-slot:activator="{ on, attrs }">
                                 <v-text-field
                                     v-model="dateFormatted"
-                                    label=" Data da validade da CNH"
+                                    label=" Data da validade da CNH *"
                                     persistent-hint
                                     v-bind="attrs"
-                                    @blur="date = parseDate(dateFormatted)"
                                     :rules="regra"
                                     v-on="on"
                                 ></v-text-field>
@@ -109,7 +117,7 @@
                                   locale="br"
                                   v-model="date"
                                   no-title
-                                  @input="menu1 =false">
+                                  @input="dataValidadeCNH =false">
                               </v-date-picker>
                             </v-menu>
                           </v-col>
@@ -125,7 +133,7 @@
 
                           <v-col class="alinhaInputs" cols="12" sm="6" md="4">
                             <v-text-field
-                                v-model="condutor.endereco.cep" label="Cep"
+                                v-model="condutor.endereco.cep" label="Cep *"
                                 required
                                 @keyup="consultarCep"
                                 v-mask="'#####-###'"
@@ -135,7 +143,7 @@
                           <v-col class="alinhaInputs" cols="12" sm="6" md="4">
                             <v-text-field
                                 v-model="condutor.endereco.localidade"
-                                label="Cidade"
+                                label="Cidade *"
                                 required
                                 :rules="regra"></v-text-field>
                           </v-col>
@@ -143,7 +151,7 @@
                           <v-col class="alinhaInputs" cols="12" sm="6" md="4">
                             <v-text-field
                                 v-model="condutor.endereco.uf"
-                                label="Estado"
+                                label="Estado *"
                                 required
                                 :rules="regra"></v-text-field>
                           </v-col>
@@ -151,7 +159,7 @@
                           <v-col class="alinhaInputs" cols="12" sm="6" md="4">
                             <v-text-field
                                 v-model="condutor.endereco.logradouro"
-                                label="Logradouro"
+                                label="Logradouro *"
                                 required
                                 :rules="regra"></v-text-field>
                           </v-col>
@@ -159,7 +167,7 @@
                           <v-col class="alinhaInputs" cols="12" sm="6" md="4">
                             <v-text-field
                                 v-model="condutor.endereco.bairro"
-                                label="Bairro"
+                                label="Bairro *"
                                 required
                                 :rules="regra"></v-text-field>
                           </v-col>
@@ -167,7 +175,7 @@
                           <v-col class="alinhaInputs" cols="12" sm="6" md="4">
                             <v-text-field
                                 v-model="condutor.endereco.numero"
-                                label="Número"
+                                label="Número *"
                                 required
                                 v-mask="'########'"
                                 :rules="regra"></v-text-field>
@@ -176,17 +184,8 @@
                           <v-col class="alinhaInputs" cols="12" sm="6" md="4">
                             <v-text-field
                                 v-model="condutor.endereco.complemento"
-                                label="Complemento"
+                                label="Complemento *"
                                 required
-                                :rules="regra"></v-text-field>
-                          </v-col>
-
-                          <v-col class="alinhaInputs" cols="12" sm="6" md="4">
-                            <v-text-field
-                                v-model="condutor.cpf"
-                                label="CPF"
-                                required
-                                v-mask="'###.###.###-##'"
                                 :rules="regra"></v-text-field>
                           </v-col>
                         </v-row>
@@ -207,7 +206,7 @@
             <v-icon small @click="mostrarDialogDeletar(item)">mdi-delete</v-icon>
           </template>
           <template v-slot:no-data>
-            <v-btn color="primary" @click="listarCondutores">Reset</v-btn>
+            <v-card-subtitle>Nenhum codutor para ser mostrado.</v-card-subtitle>
           </template>
         </v-data-table>
       </v-card>
@@ -221,9 +220,7 @@ import ConsultarCepService from '../service/cepService'
 
 export default {
   name: 'condutor',
-
   data: (vm) => ({
-    posicao: null,
     alert: false,
     dialogDeletarVeiculo: false,
     condutorDeletar: {},
@@ -231,8 +228,8 @@ export default {
     lazy: false,
     regra: [v => !!v || "Campo é obrigatorio"],
     date: new Date().toISOString().substr(0, 10),
-    dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
-    menu1: false,
+    dateFormatted: vm.formatarDataPadraoBR(new Date().toISOString().substr(0, 10)),
+    dataValidadeCNH: false,
     search: '',
     categoriaCnh: ["B", "C", "D", "E"],
     drawer: null,
@@ -240,17 +237,17 @@ export default {
     novoOuAtualizar: "",
     headers: [
       {text: "Nome", align: "start", sortable: false, value: "nome"},
-      {text: "Número Cnh", sortable: false, value: "cnh.numeroCNH"},
-      {text: "Categoria Cnh", sortable: false, value: "cnh.categoriaCNH"},
-      {text: "Validade", sortable: false, value: "cnh.validade"},
-      {text: "Cidade", sortable: false, value: "endereco.localidade"},
-      {text: "Bairro", sortable: false, value: "endereco.bairro"},
       {text: "CPF", sortable: false, value: "cpf"},
       {text: "Matricula", sortable: false, value: "matricula"},
+      {text: "Número CNH", sortable: false, value: "cnh.numeroCNH"},
+      {text: "Categoria CNH", sortable: false, value: "cnh.categoriaCNH"},
+      {text: "Validade da CNH", sortable: false, value: "cnh.validade"},
+      {text: "UF", sortable: false, value: "endereco.uf"},
+      {text: "Cidade", sortable: false, value: "endereco.localidade"},
+      {text: "Bairro", sortable: false, value: "endereco.bairro"},
       {text: "Ações", value: "acoes", sortable: false}
     ],
     listaCondutores: [],
-    editedIndex: -1,
     condutor: {
       id: null,
       nome: "",
@@ -275,15 +272,13 @@ export default {
   }),
 
   computed: {
-    computedDateFormatted() {
-      return this.formatDate(this.date)
-    },
   },
 
   watch: {
     date(val) {
       console.log(`Data: `, val)
-      this.dateFormatted = this.formatDate(this.date)
+      this.condutor.cnh.validade = val;
+      this.dateFormatted = this.formatarDataPadraoBR(this.date)
     },
   },
 
@@ -297,9 +292,12 @@ export default {
       this.alert = false;
       if (this.condutor.endereco.cep.length == 9) {
         ConsultarCepService.consultarCep(this.condutor.endereco.cep).then(resposta => {
-          console.log('Cep :' + resposta.data.erro);
           if (resposta.data.erro) {
             this.alert = true;
+            this.condutor.endereco.logradouro = "";
+            this.condutor.endereco.bairro = "";
+            this.condutor.endereco.localidade = "";
+            this.condutor.endereco.uf = "";
           } else {
             this.condutor.endereco.logradouro = resposta.data.logradouro;
             this.condutor.endereco.bairro = resposta.data.bairro;
@@ -307,25 +305,26 @@ export default {
             this.condutor.endereco.uf = resposta.data.uf;
           }
         }).catch(error => {
-          console.log(error.erro)
+          console.log(error)
         });
       }
     },
 
-    formatDate(date) {
+    formatarDataPadraoBR(date) {
       if (!date) return null
       const [year, month, day] = date.split('-')
       return `${day}/${month}/${year}`
     },
-
-    parseDate(date) {
-      if (!date) return null
-      const [month, day, year] = date.split('/')
-      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+    formatarDataInserir(date) {
+      const [day, month, year] = date.split('/')
+      return `${year}-${month}-${day}`
     },
 
     listarCondutores() {
       CondutorService.listar().then(resposta => {
+        resposta.data.forEach(da => {
+          da.cnh.validade = this.formatarDataPadraoBR(da.cnh.validade)
+        })
         this.listaCondutores = resposta.data;
       }).catch(error => {
         console.log(error)
@@ -335,7 +334,9 @@ export default {
     mostrarDialogFormularios() {
       this.dialogFormularios = true;
       this.novoOuAtualizar = "Inserir novo condutor";
-      this.reset();
+      if (!this.condutor.matricula.length == 0) {
+        this.reset();
+      }
     },
 
     reset() {
@@ -343,7 +344,6 @@ export default {
     },
 
     inserirCondutor() {
-      this.condutor.cnh.validade = this.dateFormatted
       this.condutor.endereco.cep = this.condutor.endereco.cep.replace("-", "");
       if (this.condutor.id == null) {
         CondutorService.inserirVeiculo(this.condutor).then(resposta => {
@@ -353,6 +353,7 @@ export default {
           console.log(error)
         });
       } else {
+        this.condutor.cnh.validade = this.formatarDataInserir(this.condutor.cnh.validade)
         CondutorService.atualizar(this.condutor).then(resposta => {
           console.log(resposta);
           this.listarCondutores();
@@ -365,20 +366,17 @@ export default {
 
     mostrarDialogDeletar(item) {
       this.condutorDeletar = item;
-      this.posicao = this.condutorDeletar[item];
       this.dialogDeletarVeiculo = true;
     },
 
     editarCondutor(item) {
-      this.editedIndex = this.listaCondutores.indexOf(item);
-      this.condutor = Object.assign({}, item);
+      this.condutor =  item ;
       this.dialogFormularios = true;
     },
 
     deletarCondutor() {
       CondutorService.apagar(this.condutorDeletar.id).then(resposta => {
         console.log(resposta.data)
-        /*this.listaCondutores.splice(this.posicao, 1)*/
         this.listarCondutores()
       }).catch(e => {
         console.log(e);
