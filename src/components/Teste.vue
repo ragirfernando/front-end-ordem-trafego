@@ -31,6 +31,7 @@
           </v-row>
         </v-container>
       </v-app>-->
+
       <!--<v-app id="inspire">
           <v-card dark>
               <v-card-title>Pesquisar APIs públicas</v-card-title>
@@ -89,7 +90,7 @@
           </v-card>
       </v-app>-->
 
-      <v-app id="inspire">
+      <!--<v-app id="inspire">
         <v-row>
           <v-col cols="11" sm="5">
             <v-menu
@@ -121,6 +122,35 @@
               ></v-time-picker>
             </v-menu>
           </v-col>
+        </v-row>
+      </v-app>-->
+      <v-app id="inspire">
+        <v-row justify="center">
+          <v-btn
+              color="primary"
+              dark
+              @click.stop="dialog = true"
+          >
+            Open Dialog
+          </v-btn>
+
+          <v-dialog
+              v-model="dialog"
+              max-width=80%
+
+          >
+            <v-card>
+              <v-card-title class="headline">Por favor, digite um cep válido.
+
+                <v-btn
+                    text
+                    @click="dialog = false"
+                >
+                  Ok
+                </v-btn>
+              </v-card-title>
+            </v-card>
+          </v-dialog>
         </v-row>
       </v-app>
     </div>
@@ -165,6 +195,7 @@ export default {
       return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
     },
   },*/
+
   /*data: () => ({
     descriptionLimit: 60,
     entries: [],
@@ -221,10 +252,16 @@ export default {
     },
   },*/
 
-  data () {
+  /*data () {
     return {
       time: null,
       menu2: false,
+    }
+  },*/
+
+  data () {
+    return {
+      dialog: false,
     }
   },
 };

@@ -18,8 +18,4 @@ export default{
     apagar:(id) => {
         return http.delete(`condutor/deletarCondutorId/${id}`)
     },
-
-    consultarCep:(cep) => {
-        return http.get(`https://viacep.com.br/ws/${cep}/json/`)
-    }
 }

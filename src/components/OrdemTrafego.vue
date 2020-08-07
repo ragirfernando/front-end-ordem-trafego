@@ -318,7 +318,7 @@
                                     label="Data"
                                     persistent-hint
                                     v-bind="attrs"
-                                    @blur="date = parseDate(dateFormatted)"
+
 
                                     :rules="regra"
                                     v-on="on"
@@ -546,8 +546,8 @@ export default {
 
   watch: {
     date(val) {
-
-      this.listaCondutores.length
+      /*this.listaCondutores.length*/
+      this.ordemTrafego.data = val;
       console.log(`Data: `, val)
       this.dateFormatted = this.formatDate(this.date)
     },
@@ -589,6 +589,12 @@ export default {
       return `${day}/${month}/${year}`
     },
 
+    formatDat(date) {
+      if (!date) return null
+      const [year, month, day] = date.split('/')
+      return `${year }/${month}/${day}`
+    },
+
     parseDate(date) {
       if (!date) return null
       const [month, day, year] = date.split('/')
@@ -596,6 +602,9 @@ export default {
     },
     buscaOrdensTrafego() {
       OrdemTrafegoService.listar().then(resposta => {
+        resposta.data.forEach(da =>{
+          da.data= this.formatDate(da.data)
+        })
         this.listaOrdensTrafego = resposta.data;
       });
     },
@@ -622,12 +631,10 @@ export default {
 
     inserirOrdemTrafego() {
       this.ordemTrafego.hora = this.time;
-      this.ordemTrafego.data = this.dateFormatted;
-
       console.log(this.ordemTrafego)
       console.log(this.model.id)
       console.log(this.model1.id)
-      OrdemTrafegoService.inserir(this.ordemTrafego, this.model.id, this.model1.id).then(resposta => {
+      OrdemTrafegoService.inserir(this.ordemTrafego,  this.model1.id,this.model.id,).then(resposta => {
         console.log(resposta);
         this.buscaOrdensTrafego();
       });
