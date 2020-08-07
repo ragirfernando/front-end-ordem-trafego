@@ -320,10 +320,12 @@ export default {
       return `${year}-${month}-${day}`
     },
 
-    listarCondutores() {
+
+listarCondutores() {
       CondutorService.listar().then(resposta => {
         resposta.data.forEach(da => {
-          da.cnh.validade = this.formatarDataPadraoBR(da.cnh.validade)
+          console.log(this.formatarDataPadraoBR(da.cnh.validade))
+          da.cnh.validade = this.formatarDataPadraoBR(da.cnh.validade).substring(20, 30)
         })
         this.listaCondutores = resposta.data;
       }).catch(error => {
