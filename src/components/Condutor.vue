@@ -91,12 +91,12 @@
                                 v-mask="'##########'"
                                 :rules="regra"
                             ></v-text-field>
+
                           </v-col>
 
                           <v-col class="alinhaInputs" cols="12" sm="6" md="4">
                             <v-menu
-                                ref="dataValidadeCNH"
-                                v-model="dataValidadeCNH"
+                                v-model="menu1"
                                 :close-on-content-click="false"
                                 transition="scale-transition"
                                 offset-y
@@ -105,20 +105,14 @@
                             >
                               <template v-slot:activator="{ on, attrs }">
                                 <v-text-field
-                                    v-model="dateFormatted"
-                                    label=" Data da validade da CNH *"
+                                    v-model="condutor.cnh.validade"
+                                    label="Date"
                                     persistent-hint
                                     v-bind="attrs"
-                                    :rules="regra"
                                     v-on="on"
                                 ></v-text-field>
                               </template>
-                              <v-date-picker
-                                  locale="br"
-                                  v-model="date"
-                                  no-title
-                                  @input="dataValidadeCNH =false">
-                              </v-date-picker>
+                              <v-date-picker locale="br" v-model="date" no-title @input="menu1 = false"></v-date-picker>
                             </v-menu>
                           </v-col>
 
@@ -220,15 +214,16 @@ import ConsultarCepService from '../service/cepService'
 
 export default {
   name: 'condutor',
-  data: (vm) => ({
+  data: () => ({
+    date: "",
+    dateFormatted: "",
+    menu1: false,
     alert: false,
     dialogDeletarVeiculo: false,
     condutorDeletar: {},
     valid: true,
     lazy: false,
     regra: [v => !!v || "Campo é obrigatorio"],
-    date: new Date().toISOString().substr(0, 10),
-    dateFormatted: vm.formatarDataPadraoBR(new Date().toISOString().substr(0, 10)),
     dataValidadeCNH: false,
     search: '',
     categoriaCnh: ["B", "C", "D", "E"],
@@ -272,13 +267,13 @@ export default {
   }),
 
   computed: {
+
   },
 
   watch: {
-    date(val) {
-      console.log(`Data: `, val)
-      this.condutor.cnh.validade = val;
-      this.dateFormatted = this.formatarDataPadraoBR(this.date)
+    date (val) {
+      console.log(val)
+      this.condutor.cnh.validade = this.formatDate(this.date)
     },
   },
 
@@ -310,24 +305,26 @@ export default {
       }
     },
 
-    formatarDataPadraoBR(date) {
+    formatDate (date) {
       if (!date) return null
       const [year, month, day] = date.split('-')
       return `${day}/${month}/${year}`
     },
-    formatarDataInserir(date) {
-      const [day, month, year] = date.split('/')
-      return `${year}-${month}-${day}`
+
+    formatDateBr(date) {
+      const dateFormatada = date.split('-')
+      return `${dateFormatada[2]}/${dateFormatada[1]}/${dateFormatada[0]}`
     },
 
-
-listarCondutores() {
+    listarCondutores() {
+      let lista = []
       CondutorService.listar().then(resposta => {
         resposta.data.forEach(da => {
-          console.log(this.formatarDataPadraoBR(da.cnh.validade))
-          da.cnh.validade = this.formatarDataPadraoBR(da.cnh.validade).substring(20, 30)
+          da.cnh.validade = this.formatDateBr(da.cnh.validade)
+          lista.push(da)
         })
-        this.listaCondutores = resposta.data;
+        this.listaCondutores = lista
+        console.log(this.listaCondutores)
       }).catch(error => {
         console.log(error)
       });
@@ -336,16 +333,21 @@ listarCondutores() {
     mostrarDialogFormularios() {
       this.dialogFormularios = true;
       this.novoOuAtualizar = "Inserir novo condutor";
-      if (!this.condutor.matricula.length == 0) {
-        this.reset();
-      }
+      this.reset();
+
     },
 
     reset() {
       this.$refs.form.reset()
     },
 
+    formatarDataInserir(date) {
+      const dateFormatada = date.split('/')
+      return `${dateFormatada[2]}-${dateFormatada[1]}-${dateFormatada[0]}`
+    },
+
     inserirCondutor() {
+      this.condutor.cnh.validade = this.formatarDataInserir(this.condutor.cnh.validade)
       this.condutor.endereco.cep = this.condutor.endereco.cep.replace("-", "");
       if (this.condutor.id == null) {
         CondutorService.inserirVeiculo(this.condutor).then(resposta => {
@@ -354,8 +356,9 @@ listarCondutores() {
         }).catch(error => {
           console.log(error)
         });
+
       } else {
-        this.condutor.cnh.validade = this.formatarDataInserir(this.condutor.cnh.validade)
+        this.condutor.endereco.cep = this.condutor.endereco.cep.replace("-", "");
         CondutorService.atualizar(this.condutor).then(resposta => {
           console.log(resposta);
           this.listarCondutores();
@@ -372,8 +375,8 @@ listarCondutores() {
     },
 
     editarCondutor(item) {
-      this.condutor =  item ;
       this.dialogFormularios = true;
+      this.condutor = item;
     },
 
     deletarCondutor() {
