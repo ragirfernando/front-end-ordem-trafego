@@ -2,6 +2,13 @@
   <v-container>
     <div id="app" style="margin: 60px -9%;">
       <v-card>
+        <v-alert
+            v-model="alertSucesso"
+            type="success"
+            close-text="Close Alert"
+            dismissible>
+          {{mensagem}}
+        </v-alert>
         <v-data-table :headers="headers" :items="listaCondutores" :search="search">
           <template v-slot:top style="width: 90%">
             <v-toolbar flat color="#">
@@ -46,10 +53,8 @@
                 <div>
                   <v-alert
                       v-model="alert"
-                      border="left"
+                      type="error"
                       close-text="Close Alert"
-                      color="deep-purple accent-4"
-                      dark
                       dismissible
                   >
                     Por favor, digite um cep válido
@@ -216,7 +221,8 @@ export default {
   name: 'condutor',
   data: () => ({
     date: "",
-    posicao: "",
+    mensagem: "",
+    alertSucesso: false,
     dateFormatted: "",
     menu1: false,
     alert: false,
@@ -356,13 +362,19 @@ export default {
         CondutorService.inserirVeiculo(this.condutor).then(resposta => {
           console.log(resposta);
           this.listarCondutores();
+          this.alertSucesso = true
+          this.mensagem = "Condutor salvo com sucesso!"
+          setTimeout(this.fecharAlertSucesso, 3000);
         }).catch(error => {
           console.log(error)
         });
       } else {
         CondutorService.atualizar(this.condutor).then(resposta => {
           console.log(resposta);
+          this.mensagem = "Condutor atualizado com sucesso!"
+          this.alertSucesso = true
           this.listarCondutores();
+          setTimeout(this.fecharAlertSucesso, 3000);
         }).catch(error => {
           console.log(error)
         });
@@ -381,10 +393,17 @@ export default {
       this.condutor = item;
     },
 
+    fecharAlertSucesso(){
+      this.alertSucesso = false;
+    },
+
     deletarCondutor() {
       CondutorService.apagar(this.condutorDeletar.id).then(resposta => {
         console.log(resposta.data)
         this.listarCondutores()
+        this.alertSucesso = true
+        this.mensagem = resposta.data
+        setTimeout(this.fecharAlertSucesso, 3000);
       }).catch(e => {
         console.log(e);
       });
