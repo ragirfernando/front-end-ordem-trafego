@@ -247,11 +247,13 @@ export default {
       id: null,
       nome: "",
       cnh: {
+        id: null,
         numeroCNH: "",
         categoriaCNH: "",
         validade: "",
       },
       endereco: {
+        id: null,
         cep: "",
         logradouro: "",
         complemento: "",
@@ -324,7 +326,6 @@ export default {
           lista.push(da)
         })
         this.listaCondutores = lista
-        console.log(this.listaCondutores)
       }).catch(error => {
         console.log(error)
       });
@@ -333,9 +334,11 @@ export default {
     mostrarDialogFormularios() {
       this.dialogFormularios = true;
       this.novoOuAtualizar = "Inserir novo condutor";
+      this.condutor.id = null
+      this.condutor.cnh.id = null
+      this.condutor.endereco.id = null
       this.reset();
-      this.condutor.id = null;
-
+      this.listarCondutores()
     },
 
     reset() {
@@ -348,20 +351,16 @@ export default {
     },
 
     inserirCondutor() {
-      this.condutor.cnh.validade = this.formatarDataInserir(this.condutor.cnh.validade)
       this.condutor.endereco.cep = this.condutor.endereco.cep.replace("-", "");
+      this.condutor.cnh.validade = this.formatarDataInserir(this.condutor.cnh.validade);
       if (this.condutor.id == null) {
-        console.log(this.condutor.id)
         CondutorService.inserirVeiculo(this.condutor).then(resposta => {
           console.log(resposta);
           this.listarCondutores();
         }).catch(error => {
           console.log(error)
         });
-
       } else {
-        console.log(this.condutor.id)
-        this.condutor.endereco.cep = this.condutor.endereco.cep.replace("-", "");
         CondutorService.atualizar(this.condutor).then(resposta => {
           console.log(resposta);
           this.listarCondutores();
@@ -378,6 +377,7 @@ export default {
     },
 
     editarCondutor(item) {
+      this.novoOuAtualizar = "Atualizar condutor";
       this.dialogFormularios = true;
       this.condutor = item;
     },
