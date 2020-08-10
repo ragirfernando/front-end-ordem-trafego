@@ -334,6 +334,7 @@ export default {
       this.dialogFormularios = true;
       this.novoOuAtualizar = "Inserir novo condutor";
       this.reset();
+      this.condutor.id = null;
 
     },
 
