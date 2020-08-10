@@ -94,7 +94,7 @@
 
                           </v-col>
 
-                          <v-col class="alinhaInputs" cols="12" sm="6" md="4">
+                          <v-col cols="12" sm="6" md="4">
                             <v-menu
                                 v-model="menu1"
                                 :close-on-content-click="false"
@@ -116,7 +116,7 @@
                             </v-menu>
                           </v-col>
 
-                          <v-col class="alinhaInputs" cols="12" sm="6" md="4">
+                          <v-col cols="12" sm="6" md="4">
                             <v-select
                                 v-model="condutor.cnh.categoriaCNH"
                                 :items="categoriaCnh"
@@ -125,7 +125,7 @@
                             ></v-select>
                           </v-col>
 
-                          <v-col class="alinhaInputs" cols="12" sm="6" md="4">
+                          <v-col cols="12" sm="6" md="4">
                             <v-text-field
                                 v-model="condutor.endereco.cep" label="Cep *"
                                 required
@@ -134,7 +134,7 @@
                                 :rules="regra"></v-text-field>
                           </v-col>
 
-                          <v-col class="alinhaInputs" cols="12" sm="6" md="4">
+                          <v-col cols="12" sm="6" md="4">
                             <v-text-field
                                 v-model="condutor.endereco.localidade"
                                 label="Cidade *"
@@ -142,7 +142,7 @@
                                 :rules="regra"></v-text-field>
                           </v-col>
 
-                          <v-col class="alinhaInputs" cols="12" sm="6" md="4">
+                          <v-col cols="12" sm="6" md="4">
                             <v-text-field
                                 v-model="condutor.endereco.uf"
                                 label="Estado *"
@@ -150,7 +150,7 @@
                                 :rules="regra"></v-text-field>
                           </v-col>
 
-                          <v-col class="alinhaInputs" cols="12" sm="6" md="4">
+                          <v-col cols="12" sm="6" md="4">
                             <v-text-field
                                 v-model="condutor.endereco.logradouro"
                                 label="Logradouro *"
@@ -158,7 +158,7 @@
                                 :rules="regra"></v-text-field>
                           </v-col>
 
-                          <v-col class="alinhaInputs" cols="12" sm="6" md="4">
+                          <v-col cols="12" sm="6" md="4">
                             <v-text-field
                                 v-model="condutor.endereco.bairro"
                                 label="Bairro *"
@@ -166,7 +166,7 @@
                                 :rules="regra"></v-text-field>
                           </v-col>
 
-                          <v-col class="alinhaInputs" cols="12" sm="6" md="4">
+                          <v-col cols="12" sm="6" md="4">
                             <v-text-field
                                 v-model="condutor.endereco.numero"
                                 label="Número *"
@@ -175,7 +175,7 @@
                                 :rules="regra"></v-text-field>
                           </v-col>
 
-                          <v-col class="alinhaInputs" cols="12" sm="6" md="4">
+                          <v-col cols="12" sm="6" md="4">
                             <v-text-field
                                 v-model="condutor.endereco.complemento"
                                 label="Complemento *"
@@ -186,7 +186,7 @@
                       </v-form>
                     </v-container>
                   </v-card-text>
-                  <v-card-actions style="margin-top: -60px">
+                  <v-card-actions >
                     <v-spacer></v-spacer>
                     <v-btn color="white" text @click="dialogFormularios = false ">Cancelar</v-btn>
                     <v-btn color="white" :disabled="!valid" text @click="inserirCondutor">Salvar</v-btn>
@@ -195,7 +195,7 @@
               </v-dialog>
             </v-toolbar>
           </template>
-          <template v-slot:item.acoes="{ item }">
+          <template v-slot:item.acoes="{item}">
             <v-icon small class="mr-2" @click="editarCondutor(item)">mdi-pencil</v-icon>
             <v-icon small @click="mostrarDialogDeletar(item)">mdi-delete</v-icon>
           </template>
@@ -216,6 +216,7 @@ export default {
   name: 'condutor',
   data: () => ({
     date: "",
+    posicao: "",
     dateFormatted: "",
     menu1: false,
     alert: false,
@@ -268,12 +269,10 @@ export default {
 
   }),
 
-  computed: {
-
-  },
+  computed: {},
 
   watch: {
-    date (val) {
+    date(val) {
       console.log(val)
       this.condutor.cnh.validade = this.formatDate(this.date)
     },
@@ -307,7 +306,7 @@ export default {
       }
     },
 
-    formatDate (date) {
+    formatDate(date) {
       if (!date) return null
       const [year, month, day] = date.split('-')
       return `${day}/${month}/${year}`
@@ -338,7 +337,7 @@ export default {
       this.condutor.cnh.id = null
       this.condutor.endereco.id = null
       this.reset();
-      this.listarCondutores()
+      this.listarCondutores();
     },
 
     reset() {
@@ -396,7 +395,5 @@ export default {
 </script>
 
 <style>
-.alinhaInputs {
-  margin-top: -30px;
-}
+
 </style>
