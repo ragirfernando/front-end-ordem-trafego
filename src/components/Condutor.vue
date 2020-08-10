@@ -350,6 +350,7 @@ export default {
       this.condutor.cnh.validade = this.formatarDataInserir(this.condutor.cnh.validade)
       this.condutor.endereco.cep = this.condutor.endereco.cep.replace("-", "");
       if (this.condutor.id == null) {
+        console.log(this.condutor.id)
         CondutorService.inserirVeiculo(this.condutor).then(resposta => {
           console.log(resposta);
           this.listarCondutores();
@@ -358,6 +359,7 @@ export default {
         });
 
       } else {
+        console.log(this.condutor.id)
         this.condutor.endereco.cep = this.condutor.endereco.cep.replace("-", "");
         CondutorService.atualizar(this.condutor).then(resposta => {
           console.log(resposta);
