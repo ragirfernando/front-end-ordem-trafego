@@ -304,8 +304,7 @@
 
                           <v-col cols="12" sm="6" md="4">
                             <v-menu
-                                ref="menu4"
-                                v-model="menu4"
+                                v-model="menu1"
                                 :close-on-content-click="false"
                                 transition="scale-transition"
                                 offset-y
@@ -314,17 +313,19 @@
                             >
                               <template v-slot:activator="{ on, attrs }">
                                 <v-text-field
-                                    v-model="dateFormatted"
-                                    label="Data"
+                                    v-model="ordemTrafego.data"
+                                    label="Date"
                                     persistent-hint
                                     v-bind="attrs"
-
-
-                                    :rules="regra"
                                     v-on="on"
                                 ></v-text-field>
                               </template>
-                              <v-date-picker locale="br" v-model="date" no-title @input="menu1 = false"></v-date-picker>
+                              <v-date-picker
+                                  locale="br"
+                                  v-model="date"
+                                  no-title
+                                  @input="menu1 = false"
+                              ></v-date-picker>
                             </v-menu>
                           </v-col>
 
@@ -371,8 +372,8 @@ import VeiculosService from "../service/veiculoService";
 
 export default {
   name: 'ordemTrafego',
-  data: (vm) => ({
-    dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
+  data: () => ({
+    dateFormatted: "",
     descriptionLimit: 60,
     entries: [],
     statusOrdemTrafego: ["ANDAMENTO", "AGENDADA", "FINALIZADA"],
@@ -380,9 +381,10 @@ export default {
     isLoading: false,
     isLoading2: false,
     model: null,
+    menu1: false,
     model1: null,
     regra: [v => !!v || "Campo é obrigatorio"],
-    date: new Date().toISOString().substr(0, 10),
+    date: "",
     filtrar: '',
     search1: null,
     search2: null,
@@ -479,18 +481,12 @@ export default {
         numero: "",
         uf: ""
       },
+      id: null,
       hora: "",
       status: "",
       data: "",
       distanciaPercorrer: ""
     },
-    defaultItem: {
-      name: "",
-      calories: 0,
-      fat: 0,
-      carbs: 0,
-      protein: 0
-    }
   }),
 
   computed: {
@@ -546,10 +542,8 @@ export default {
 
   watch: {
     date(val) {
-      /*this.listaCondutores.length*/
-      this.ordemTrafego.data = val;
-      console.log(`Data: `, val)
-      this.dateFormatted = this.formatDate(this.date)
+      console.log(val)
+      this.ordemTrafego.data = this.formatDate(this.date)
     },
     dialog(val) {
       val || this.fecharDialog();
@@ -589,12 +583,6 @@ export default {
       return `${day}/${month}/${year}`
     },
 
-    formatDat(date) {
-      if (!date) return null
-      const [year, month, day] = date.split('/')
-      return `${year }/${month}/${day}`
-    },
-
     parseDate(date) {
       if (!date) return null
       const [month, day, year] = date.split('/')
@@ -602,69 +590,69 @@ export default {
     },
     buscaOrdensTrafego() {
       OrdemTrafegoService.listar().then(resposta => {
-        resposta.data.forEach(da =>{
-          da.data= this.formatDate(da.data)
+        resposta.data.forEach(da => {
+          da.data = this.formatDate(da.data)
         })
         this.listaOrdensTrafego = resposta.data;
       });
     },
-    /*buscarVeiculos() {
-      VeiculoServce.listarVeiculos().then(resposta => {
-        this.listaVeiculos = resposta.data;
-      })
-      this.buscarCondutores();
-    },*/
-
-    buscarCondutores() {
-      CondutorService.listar().then(resposta => {
-        this.listaCondutores = resposta.data;
-      })
-    },
 
     fecharDialog() {
       this.dialog = false;
-      this.$nextTick(() => {
-        this.veiculo = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-      });
+
+    },
+
+    formatarDataInserir(date) {
+      console.log(date)
+      const dateFormatada = date.split('/')
+      return `${dateFormatada[2]}-${dateFormatada[1]}-${dateFormatada[0]}`
     },
 
     inserirOrdemTrafego() {
-      this.ordemTrafego.hora = this.time;
-      console.log(this.ordemTrafego)
-      console.log(this.model.id)
-      console.log(this.model1.id)
-      OrdemTrafegoService.inserir(this.ordemTrafego,  this.model1.id,this.model.id,).then(resposta => {
-        console.log(resposta);
-        this.buscaOrdensTrafego();
-      });
-      /*if (this.editedIndex > -1) {
-        Object.assign(this.desserts[this.editedIndex], this.editedItem);
+      this.ordemTrafego.hora = this.time
+
+      this.ordemTrafego.data = this.formatarDataInserir(this.ordemTrafego.data)
+
+      console.log("Orde " + this.ordemTrafego)
+      if (this.ordemTrafego.id == null) {
+        OrdemTrafegoService.inserir(this.ordemTrafego, this.model1.id, this.model.id,).then(resposta => {
+          console.log(resposta);
+          this.buscaOrdensTrafego();
+        });
+        this.fecharDialog();
       } else {
-        this.desserts.push(this.editedItem);
-      }*/
-      this.fecharDialog();
+
+        /* this.ordemTrafego.data = this.formatarDataInserir(this.ordemTrafego.data)*/
+        OrdemTrafegoService.editar(this.ordemTrafego, this.model1.id, this.model.id,).then(resposta => {
+          console.log(resposta);
+          this.buscaOrdensTrafego();
+        });
+        this.fecharDialog();
+      }
     },
 
     editarOrdemTrafego(item) {
       this.editedIndex = this.listaOrdensTrafego.indexOf(item);
       this.ordemTrafego = Object.assign({}, item);
-      this.idCondutor[0] = Object.assign({}, item.condutor);
-      this.idVeiculo[0] = Object.assign({}, item.veiculo);
+      this.time = this.ordemTrafego.hora;
+      console.log(this.ordemTrafego)
+
+      this.model1 = Object.assign({}, item.condutor);
+      this.model = Object.assign({}, item.veiculo);
       this.dialog = true;
     },
 
-    deletarCondutor(/*item*/) {
-      /*if (confirm("Deseja excluir o condutor " + item.nome + " ? ")) {
-          CondutorService.apagar(item)
-              .then(resposta => {
-                  this.buscaCondutores();
-                  console.log(resposta);
-              })
-              .catch(e => {
-                  console.log(e);
-              });
-      }*/
+    deletarCondutor(item) {
+      if (confirm("Deseja excluir a ordem " + item.status + " ? ")) {
+        OrdemTrafegoService.deletar(item.id)
+            .then(resposta => {
+              this.buscaOrdensTrafego();
+              console.log(resposta);
+            })
+            .catch(e => {
+              console.log(e);
+            });
+      }
     }
   }
 };

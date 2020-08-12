@@ -293,6 +293,7 @@ export default {
       if (this.veiculo.id == null) {
         VeiculoService.inserirVeiculo(this.veiculo).then(resposta => {
           console.log(resposta);
+          this.listarVeiculos()
         }).catch(error => {
           console.log(error)
         });

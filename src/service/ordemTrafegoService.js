@@ -12,7 +12,12 @@ export default {
     },
 
     editar: (ordemTrafego, idCondutor, idVeiculo) => {
-        const url = `ordemTrefego/editarOrdemTrafego/${idCondutor}/${idVeiculo}`;
+        const url = `ordemTrafego/atualizarOrdemTrafego/${idCondutor}/${idVeiculo}`;
         return http.put(url,  ordemTrafego)
+    },
+
+    deletar: (id) => {
+        const url = `ordemTrafego/deletarOrdemTrafego/${id}`;
+        return http.delete(url)
     },
 }
