@@ -63,6 +63,8 @@
                           <v-col cols="12" sm="6" md="4">
                             <v-text-field v-model="ordemTrafego.origem.cep" label="Cep"
                                           required
+                                          @keyup="consultarCep('origem')"
+                                          v-mask="'#####-###'"
                                           :rules="regra"></v-text-field>
                           </v-col>
 
@@ -93,6 +95,7 @@
                           <v-col cols="12" sm="6" md="4">
                             <v-text-field v-model="ordemTrafego.origem.numero" label="Número"
                                           required
+                                          v-mask="'###############'"
                                           :rules="regra"></v-text-field>
                           </v-col>
 
@@ -181,22 +184,22 @@
                           <v-simple-table>
                             <template v-slot:default>
                               <thead>
-                              <tr class="subtitle-2 Bold text">
-                                <th>Marca</th>
-                                <th>Modelo</th>
-                                <th>Quilometragem</th>
-                                <th>Placa</th>
-                                <th>Cor</th>
-                                <th>Ano</th>
-                                <th>Categoria</th>
-                                <th>Combustível</th>
-                                <th>Conservação</th>
+                              <tr>
+                                <th class="subtitle-1 Bold text">Marca</th>
+                                <th class="subtitle-1 Bold text">Modelo</th>
+                                <th class="subtitle-1 Bold text">Quilometragem</th>
+                                <th class="subtitle-1 Bold text">Placa</th>
+                                <th class="subtitle-1 Bold text">Cor</th>
+                                <th class="subtitle-1 Bold text">Ano de fabricação</th>
+                                <th class="subtitle-1 Bold text">Categoria</th>
+                                <th class="subtitle-1 Bold text">Combustível</th>
+                                <th class="subtitle-1 Bold text">Conservação</th>
                               </tr>
                               </thead>
                               <tbody>
                               <tr>
                                 <td>{{ listaVeiculos.marca }}</td>
-                                <td>{{ listaVeiculos.marca }}</td>
+                                <td>{{ listaVeiculos.modelo }}</td>
                                 <td>{{ listaVeiculos.kmRodados }}</td>
                                 <td>{{ listaVeiculos.placa }}</td>
                                 <td>{{ listaVeiculos.cor }}</td>
@@ -369,6 +372,7 @@
 import OrdemTrafegoService from '../service/ordemTrafegoService';
 import CondutorService from '../service/condutorService';
 import VeiculosService from "../service/veiculoService";
+import ConsultarCepService from "@/service/cepService";
 
 export default {
   name: 'ordemTrafego',
@@ -398,14 +402,20 @@ export default {
     dialog: false,
     singleSelect: true,
     headers: [
-      {text: "Cidade de Origem", align: "start", sortable: false, value: "origem.localidade"},
-      {text: "Cidade de Destino", sortable: false, value: "destino.localidade"},
-      {text: "Data", sortable: false, value: "data"},
-      {text: "Condutor", sortable: false, value: "condutor.nome"},
-      {text: "Veiculo", sortable: false, value: "veiculo.modelo"},
-      {text: "Status", sortable: false, value: "status"},
-      {text: "Distância", sortable: false, value: "distanciaPercorrer"},
-      {text: "Ações", value: "acoes", sortable: false}
+      {
+        text: "Cidade de Origem",
+        align: "start",
+        class: "subtitle-1 Bold text",
+        sortable: false,
+        value: "origem.localidade"
+      },
+      {text: "Cidade de Destino", class: "subtitle-1 Bold text", sortable: false, value: "destino.localidade"},
+      {text: "Data", class: "subtitle-1 Bold text", sortable: false, value: "data"},
+      {text: "Condutor", class: "subtitle-1 Bold text", sortable: false, value: "condutor.nome"},
+      {text: "Veículo", class: "subtitle-1 Bold text", sortable: false, value: "veiculo.modelo"},
+      {text: "Status", class: "subtitle-1 Bold text", sortable: false, value: "status"},
+      {text: "Distância", class: "subtitle-1 Bold text", sortable: false, value: "distanciaPercorrer"},
+      {text: "Ações", class: "subtitle-1 Bold text", value: "acoes", sortable: false}
     ],
     colunasVeiculo: [
       {text: "Marca", align: "start", class: "subtitle-2 Bold text", sortable: false, value: "marca"},
@@ -497,16 +507,17 @@ export default {
       if (!this.model) return []
       return Object.keys(this.model).map(key => {
         key;
-        this.listaVeiculos.marca = this.model.marca;
+        this.listaVeiculos = this.model;
+        /*this.listaVeiculos.marca = this.model.marca;
         this.listaVeiculos.modelo = this.model.modelo;
         this.listaVeiculos.modelo = this.model.modelo;
         this.listaVeiculos.kmRodados = this.model.kmRodados;
         this.listaVeiculos.placa = this.model.placa;
         this.listaVeiculos.cor = this.model.cor;
-        this.listaVeiculos.anoFabicacao = this.model.anoFabicacao;
+        this.listaVeiculos.anoFabricacao = this.model.anoFabricacao;
         this.listaVeiculos.categoriaVeiculo = this.model.categoriaVeiculo;
         this.listaVeiculos.tipoCombustivel = this.model.tipoCombustivel;
-        this.listaVeiculos.estadoConservacao = this.model.estadoConservacao;
+        this.listaVeiculos.estadoConservacao = this.model.estadoConservacao;*/
       })
     },
 
@@ -521,13 +532,14 @@ export default {
       if (!this.model1) return []
       return Object.keys(this.model1).map(key => {
         key;
-        this.listaCondutores.nome = this.model1.nome;
+        this.listaCondutores = this.model1
+        /*this.listaCondutores.nome = this.model1.nome;
         this.listaCondutores.cnh.categoriaCNH = this.model1.cnh.categoriaCNH;
         this.listaCondutores.cnh.validade = this.model1.cnh.validade;
         this.listaCondutores.endereco.localidade = this.model1.endereco.localidade;
         this.listaCondutores.endereco.bairro = this.model1.endereco.bairro;
         this.listaCondutores.cpf = this.model1.cpf;
-        this.listaCondutores.matricula = this.model1.matricula;
+        this.listaCondutores.matricula = this.model1.matricula;*/
 
       })
     },
@@ -577,6 +589,38 @@ export default {
   },
 
   methods: {
+    cep(cep) {
+      let enderecoRespostaApi = {};
+      ConsultarCepService.consultarCep(cep).then(resposta => {
+        enderecoRespostaApi = resposta.data;
+      }).catch(error => {
+        console.log(error)
+      });
+
+      return enderecoRespostaApi;
+    },
+
+    consultarCep(endereco) {
+      if (endereco === "origem") {
+        if (this.ordemTrafego.origem.cep.length == 9) {
+          const enderecoCep = this.cep(this.ordemTrafego.origem.cep)
+
+          if (enderecoCep) {
+            /*console.log("endereco "+enderecoCep)*/
+            this.ordemTrafego.origem.logradouro = "";
+            this.ordemTrafego.origem.logradouro = "";
+            this.ordemTrafego.origem.bairro = "";
+            this.ordemTrafego.origem.localidade = "";
+            this.ordemTrafego.origem.uf = "";
+          } else {
+            this.ordemTrafego.origem.logradouro = enderecoCep.logradouro;
+            this.ordemTrafego.origem.bairro = enderecoCep.bairro;
+            this.ordemTrafego.origem.localidade = enderecoCep.localidade;
+            this.ordemTrafego.origem.uf = enderecoCep.uf;
+          }
+        }
+      }
+    },
     formatDate(date) {
       if (!date) return null
       const [year, month, day] = date.split('-')
@@ -635,10 +679,10 @@ export default {
       this.editedIndex = this.listaOrdensTrafego.indexOf(item);
       this.ordemTrafego = Object.assign({}, item);
       this.time = this.ordemTrafego.hora;
-      console.log(this.ordemTrafego)
 
       this.model1 = Object.assign({}, item.condutor);
       this.model = Object.assign({}, item.veiculo);
+      console.log(this.model)
       this.dialog = true;
     },
 

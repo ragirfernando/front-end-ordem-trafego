@@ -238,16 +238,16 @@ export default {
     dialogFormularios: false,
     novoOuAtualizar: "",
     headers: [
-      {text: "Nome", align: "start", sortable: false, value: "nome"},
-      {text: "CPF", sortable: false, value: "cpf"},
-      {text: "Matricula", sortable: false, value: "matricula"},
-      {text: "Número CNH", sortable: false, value: "cnh.numeroCNH"},
-      {text: "Categoria CNH", sortable: false, value: "cnh.categoriaCNH"},
-      {text: "Validade da CNH", sortable: false, value: "cnh.validade"},
-      {text: "UF", sortable: false, value: "endereco.uf"},
-      {text: "Cidade", sortable: false, value: "endereco.localidade"},
-      {text: "Bairro", sortable: false, value: "endereco.bairro"},
-      {text: "Ações", value: "acoes", sortable: false}
+      {text: "Nome", class:"subtitle-1 Bold text", align: "start", sortable: false, value: "nome"},
+      {text: "CPF", class:"subtitle-1 Bold text", sortable: false, value: "cpf"},
+      {text: "Matricula", class:"subtitle-1 Bold text", sortable: false, value: "matricula"},
+      {text: "Número CNH", class:"subtitle-1 Bold text", sortable: false, value: "cnh.numeroCNH"},
+      {text: "Categoria CNH", class:"subtitle-1 Bold text", sortable: false, value: "cnh.categoriaCNH"},
+      {text: "Validade da CNH", class:"subtitle-1 Bold text", sortable: false, value: "cnh.validade"},
+      {text: "UF", sortable: false, class:"subtitle-1 Bold text", value: "endereco.uf"},
+      {text: "Cidade", class:"subtitle-1 Bold text", sortable: false, value: "endereco.localidade"},
+      {text: "Bairro", class:"subtitle-1 Bold text", sortable: false, value: "endereco.bairro"},
+      {text: "Ações", class:"subtitle-1 Bold text", value: "acoes", sortable: false}
     ],
     listaCondutores: [],
     condutor: {
