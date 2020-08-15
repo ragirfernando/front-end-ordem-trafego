@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <div id="app" style="margin: 60px -9% ; ">
+    <div id="app" style="margin: 60px -7% ; ">
       <v-data-table :headers="headers" :items="listaOrdensTrafego" class="elevation-1 subtitle-1" :search="filtrar">
         <template v-slot:top>
           <v-toolbar flat color="#">
@@ -29,7 +29,7 @@
                 </v-card-title>
 
                 <v-tabs botton>
-                  <v-tab show-arrows="true">
+                  <v-tab>
                     <v-icon left>mdi-account</v-icon>
                     Origem
 
@@ -63,7 +63,7 @@
                           <v-col cols="12" sm="6" md="4">
                             <v-text-field v-model="ordemTrafego.origem.cep" label="Cep"
                                           required
-                                          @keyup="consultarCep('origem')"
+                                          @keyup="consultarCepOrigem"
                                           v-mask="'#####-###'"
                                           :rules="regra"></v-text-field>
                           </v-col>
@@ -116,6 +116,8 @@
                           <v-col cols="12" sm="6" md="4">
                             <v-text-field v-model="ordemTrafego.destino.cep" label="Cep"
                                           required
+                                          @keyup="consultarCepDestino"
+                                          v-mask="'#####-###'"
                                           :rules="regra"></v-text-field>
                           </v-col>
 
@@ -160,114 +162,90 @@
                   </v-tab-item>
 
                   <v-tab-item>
-                    <v-card flat>
-                      <v-card dark>
-                        <v-card-text>
-                          <v-autocomplete
-                              v-model="model"
-                              :items="items1"
-                              :loading="isLoading"
-                              :search-input.sync="search1"
-                              color="white"
-                              hide-no-data
-                              hide-selected
-                              item-text="modelo"
-                              item-value="API"
-                              placeholder="Digitar para pesquisar"
-                              prepend-icon="mdi-database-search"
-                              return-object
-                          ></v-autocomplete>
-                        </v-card-text>
+                    <v-simple-table >
+                      <template v-slot:default>
+                        <thead>
+                        <tr>
+                          <th class="text-left">Name</th>
+                          <th class="text-left">Modelo</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                          <td>{{ veiculo.anoFabricacao }}</td>
+                          <td>{{ veiculo.modelo }}</td>
+                        </tr>
+                        </tbody>
+                      </template>
+                    </v-simple-table>
+                    <hr/>
+                    <v-expansion-panels popout>
+                      <v-expansion-panel>
+                        <v-expansion-panel-header @click="listarVeiculos">Lista de veículos</v-expansion-panel-header>
+                        <v-expansion-panel-content>
+                           <v-text-field
+                               v-model="filtrarVeiculo"
+                               append-icon="mdi-magnify"
+                               label="Filtrar"
+                               single-line
+                               hide-details
+                           ></v-text-field>
 
-                        <v-card>
-                          <span style="display: none">{{ fields1 }}></span>
-                          <v-simple-table>
-                            <template v-slot:default>
-                              <thead>
-                              <tr>
-                                <th class="subtitle-1 Bold text">Marca</th>
-                                <th class="subtitle-1 Bold text">Modelo</th>
-                                <th class="subtitle-1 Bold text">Quilometragem</th>
-                                <th class="subtitle-1 Bold text">Placa</th>
-                                <th class="subtitle-1 Bold text">Cor</th>
-                                <th class="subtitle-1 Bold text">Ano de fabricação</th>
-                                <th class="subtitle-1 Bold text">Categoria</th>
-                                <th class="subtitle-1 Bold text">Combustível</th>
-                                <th class="subtitle-1 Bold text">Conservação</th>
-                              </tr>
-                              </thead>
-                              <tbody>
-                              <tr>
-                                <td>{{ listaVeiculos.marca }}</td>
-                                <td>{{ listaVeiculos.modelo }}</td>
-                                <td>{{ listaVeiculos.kmRodados }}</td>
-                                <td>{{ listaVeiculos.placa }}</td>
-                                <td>{{ listaVeiculos.cor }}</td>
-                                <td>{{ listaVeiculos.anoFabricacao }}</td>
-                                <td>{{ listaVeiculos.categoriaVeiculo }}</td>
-                                <td>{{ listaVeiculos.tipoCombustivel }}</td>
-                                <td>{{ listaVeiculos.estadoConservacao }}</td>
-                              </tr>
-                              </tbody>
+                          <v-data-table :headers="colunasVeiculo" :items="listaVeiculos" :search="filtrarVeiculo">
+                            <template v-slot:item.acoes="{item}">
+                              <v-icon @click="selecionarVeiculo(item)">mdi-pencil</v-icon>
                             </template>
-                          </v-simple-table>
-                        </v-card>
-                      </v-card>
-                    </v-card>
+                          </v-data-table>
+
+                        </v-expansion-panel-content>
+                      </v-expansion-panel>
+                    </v-expansion-panels>
+
+
+
+
                   </v-tab-item>
 
                   <v-tab-item>
-                    <v-card flat>
-                      <v-card dark>
-                        <v-card-text>
-                          <v-autocomplete
-                              v-model="model1"
-                              :items="items2"
-                              :loading="isLoading2"
-                              :search-input.sync="search2"
-                              color="white"
-                              hide-no-data
-                              hide-selected
-                              item-text="nome"
-                              item-value="API"
-                              placeholder="Digitar para pesquisar"
-                              prepend-icon="mdi-database-search"
-                              return-object
-                          ></v-autocomplete>
-                        </v-card-text>
+                    <!--<v-simple-table style="margin-bottom: 20px">
+                      <template v-slot:default>
+                        <thead>
+                        <tr>
+                          <th class="text-left">Name</th>
+                          <th class="text-left">Modelo</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                          <td>{{ dveiculo.anoFabricacao }}</td>
+                          <td>{{ dveiculo.modelo }}</td>
+                        </tr>
+                        </tbody>
+                      </template>
+                    </v-simple-table>
 
-                        <v-card>
-                          <span style="display: none">{{ fields2 }}></span>
-                          <v-simple-table>
-                            <template v-slot:default>
-                              <thead>
-                              <tr class="subtitle-2 Bold text">
-                                <th>Nome</th>
-                                <th>Categoria Cnh</th>
-                                <th>Validade Cnh</th>
-                                <th>Cidade</th>
-                                <th>Bairro</th>
-                                <th>CPF</th>
-                                <th>Matricula</th>
-                              </tr>
-                              </thead>
-                              <tbody>
-                              <tr>
-                                <td>{{ listaCondutores.nome }}</td>
-                                <td>{{ listaCondutores.cnh.categoriaCNH }}</td>
-                                <td>{{ listaCondutores.cnh.validade }}</td>
-                                <td>{{ listaCondutores.endereco.localidade }}</td>
-                                <td>{{ listaCondutores.endereco.bairro }}</td>
-                                <td>{{ listaCondutores.cpf }}</td>
-                                <td>{{ listaCondutores.matricula }}</td>
-
-                              </tr>
-                              </tbody>
+                    <v-expansion-panels focusable>
+                      <v-expansion-panel>
+                        <v-expansion-panel-header @click="f">Lista de veículos</v-expansion-panel-header>
+                        <v-expansion-panel-content >
+                          <v-text-field
+                              v-model="filtrarCondutor"
+                              append-icon="mdi-magnify"
+                              label="Filtrar"
+                              single-line
+                              hide-details
+                          ></v-text-field>
+                          <v-data-table :headers="colunasCondutor" loading="true" :items="listaCondutores" :search="filtrarCondutor">
+                            <template v-slot:item.acoes="{item}">
+                              <v-icon @click="selecionar(item)">mdi-pencil</v-icon>
                             </template>
-                          </v-simple-table>
-                        </v-card>
-                      </v-card>
-                    </v-card>
+                            <template v-slot:no-data>
+                              <v-btn color="primary" @click="buscaOrdensTrafego">Reset</v-btn>
+                            </template>
+                          </v-data-table>
+                        </v-expansion-panel-content>
+                      </v-expansion-panel>
+                    </v-expansion-panels>-->
                   </v-tab-item>
 
                   <v-tab-item>
@@ -370,9 +348,10 @@
 
 <script>
 import OrdemTrafegoService from '../service/ordemTrafegoService';
-import CondutorService from '../service/condutorService';
-import VeiculosService from "../service/veiculoService";
+/*import CondutorService from '../service/condutorService';
+import VeiculosService from "../service/veiculoService";*/
 import ConsultarCepService from "@/service/cepService";
+import VeiculoService from "@/service/veiculoService";
 
 export default {
   name: 'ordemTrafego',
@@ -390,6 +369,8 @@ export default {
     regra: [v => !!v || "Campo é obrigatorio"],
     date: "",
     filtrar: '',
+    filtrarVeiculo: '',
+    filtrarCondutor: '',
     search1: null,
     search2: null,
     menu: false,
@@ -427,6 +408,7 @@ export default {
       {text: "Categoria", sortable: false, class: "subtitle-2 Bold text", value: "categoriaVeiculo"},
       {text: "Combustível", sortable: false, class: "subtitle-2 Bold text", value: "tipoCombustivel"},
       {text: "Conservação", sortable: false, class: "subtitle-2 Bold text", value: "estadoConservacao"},
+      {text: "Ações", value: "acoes", class: "subtitle-2 Bold text", sortable: false}
     ],
     colunasCondutor: [
       {text: "Nome", align: "start", sortable: false, value: "nome"},
@@ -440,7 +422,22 @@ export default {
     listaOrdensTrafego: [],
     idVeiculo: [],
     idCondutor: [],
-    listaVeiculos: {
+
+    veiculo: {
+      marca: "",
+      modelo: "",
+      kmRodados: "",
+      placa: "",
+      cor: "",
+      anoFabricacao: "Por favor, clique em Lista de veículos e selecione um veículo.",
+      categoriaVeiculo: "",
+      tipoCombustivel: "",
+      estadoConservacao: ""
+    },
+
+    listaVeiculos: [],
+
+    /*listaVeiculos: {
       marca: "",
       modelo: "",
       kmRodados: "",
@@ -450,7 +447,7 @@ export default {
       categoriaVeiculo: "",
       tipoCombustivel: "",
       estadoConservacao: ""
-    },
+    },*/
     listaCondutores: {
       id: null,
       nome: "",
@@ -503,53 +500,7 @@ export default {
     formTitle() {
       return this.editedIndex === -1 ? "Nova ordem de tráfego" : "Atualizar ordem de tráfego";
     },
-    fields1() {
-      if (!this.model) return []
-      return Object.keys(this.model).map(key => {
-        key;
-        this.listaVeiculos = this.model;
-        /*this.listaVeiculos.marca = this.model.marca;
-        this.listaVeiculos.modelo = this.model.modelo;
-        this.listaVeiculos.modelo = this.model.modelo;
-        this.listaVeiculos.kmRodados = this.model.kmRodados;
-        this.listaVeiculos.placa = this.model.placa;
-        this.listaVeiculos.cor = this.model.cor;
-        this.listaVeiculos.anoFabricacao = this.model.anoFabricacao;
-        this.listaVeiculos.categoriaVeiculo = this.model.categoriaVeiculo;
-        this.listaVeiculos.tipoCombustivel = this.model.tipoCombustivel;
-        this.listaVeiculos.estadoConservacao = this.model.estadoConservacao;*/
-      })
-    },
 
-    items1() {
-      return this.entries.map(entry => {
-        const modelo = entry.modelo
-        return Object.assign({}, entry, {modelo})
-      })
-    },
-
-    fields2() {
-      if (!this.model1) return []
-      return Object.keys(this.model1).map(key => {
-        key;
-        this.listaCondutores = this.model1
-        /*this.listaCondutores.nome = this.model1.nome;
-        this.listaCondutores.cnh.categoriaCNH = this.model1.cnh.categoriaCNH;
-        this.listaCondutores.cnh.validade = this.model1.cnh.validade;
-        this.listaCondutores.endereco.localidade = this.model1.endereco.localidade;
-        this.listaCondutores.endereco.bairro = this.model1.endereco.bairro;
-        this.listaCondutores.cpf = this.model1.cpf;
-        this.listaCondutores.matricula = this.model1.matricula;*/
-
-      })
-    },
-
-    items2() {
-      return this.entries2.map(entry => {
-        const nome = entry.nome
-        return Object.assign({}, entry, {nome})
-      })
-    },
   },
 
   watch: {
@@ -560,27 +511,7 @@ export default {
     dialog(val) {
       val || this.fecharDialog();
     },
-    search1() {
-      if (this.items1.length > 0) return
-      if (this.isLoading) return
-      this.isLoading = true
-      VeiculosService.listarVeiculos().then(res => {
-        this.entries = res.data
-      }).catch(err => {
-        console.log(err)
-      }).finally(() => (this.isLoading = false))
-    },
 
-    search2() {
-      if (this.items2.length > 0) return
-      if (this.isLoading2) return
-      this.isLoading2 = true
-      CondutorService.listar().then(res => {
-        this.entries2 = res.data
-      }).catch(err => {
-        console.log(err)
-      }).finally(() => (this.isLoading2 = false))
-    },
   },
 
   created() {
@@ -589,36 +520,57 @@ export default {
   },
 
   methods: {
-    cep(cep) {
-      let enderecoRespostaApi = {};
-      ConsultarCepService.consultarCep(cep).then(resposta => {
-        enderecoRespostaApi = resposta.data;
+    listarVeiculos() {
+      VeiculoService.listarVeiculos().then(resposta => {
+        this.listaVeiculos = resposta.data;
+        console.log(this.listaVeiculos)
       }).catch(error => {
         console.log(error)
-      });
-
-      return enderecoRespostaApi;
+      })
     },
 
-    consultarCep(endereco) {
-      if (endereco === "origem") {
-        if (this.ordemTrafego.origem.cep.length == 9) {
-          const enderecoCep = this.cep(this.ordemTrafego.origem.cep)
 
-          if (enderecoCep) {
-            /*console.log("endereco "+enderecoCep)*/
-            this.ordemTrafego.origem.logradouro = "";
+    selecionarVeiculo(item) {
+      this.veiculo = item
+      console.log(item)
+    },
+    consultarCepOrigem() {
+      if (this.ordemTrafego.origem.cep.length == 9) {
+        ConsultarCepService.consultarCep(this.ordemTrafego.origem.cep).then(resposta => {
+          if (resposta.data.erro) {
             this.ordemTrafego.origem.logradouro = "";
             this.ordemTrafego.origem.bairro = "";
             this.ordemTrafego.origem.localidade = "";
             this.ordemTrafego.origem.uf = "";
           } else {
-            this.ordemTrafego.origem.logradouro = enderecoCep.logradouro;
-            this.ordemTrafego.origem.bairro = enderecoCep.bairro;
-            this.ordemTrafego.origem.localidade = enderecoCep.localidade;
-            this.ordemTrafego.origem.uf = enderecoCep.uf;
+            this.ordemTrafego.origem.logradouro = resposta.data.logradouro;
+            this.ordemTrafego.origem.bairro = resposta.data.bairro;
+            this.ordemTrafego.origem.localidade = resposta.data.localidade;
+            this.ordemTrafego.origem.uf = resposta.data.uf;
           }
-        }
+        }).catch(error => {
+          console.log(error)
+        });
+      }
+    },
+
+    consultarCepDestino() {
+      if (this.ordemTrafego.destino.cep.length == 9) {
+        ConsultarCepService.consultarCep(this.ordemTrafego.destino.cep).then(resposta => {
+          if (resposta.data.erro) {
+            this.ordemTrafego.destino.logradouro = "";
+            this.ordemTrafego.destino.bairro = "";
+            this.ordemTrafego.destino.localidade = "";
+            this.ordemTrafego.origem.uf = "";
+          } else {
+            this.ordemTrafego.destino.logradouro = resposta.data.logradouro;
+            this.ordemTrafego.destino.bairro = resposta.data.bairro;
+            this.ordemTrafego.destino.localidade = resposta.data.localidade;
+            this.ordemTrafego.destino.uf = resposta.data.uf;
+          }
+        }).catch(error => {
+          console.log(error)
+        });
       }
     },
     formatDate(date) {

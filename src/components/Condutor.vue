@@ -31,6 +31,7 @@
                         color="darken-1"
                         text
                         @click="deletarCondutor"
+
                     >Deletar
                     </v-btn>
                   </v-card-actions>
@@ -111,7 +112,7 @@
                               <template v-slot:activator="{ on, attrs }">
                                 <v-text-field
                                     v-model="condutor.cnh.validade"
-                                    label="Date"
+                                    label="Validade da CNH"
                                     persistent-hint
                                     v-bind="attrs"
                                     v-on="on"
@@ -414,5 +415,8 @@ export default {
 </script>
 
 <style>
+.c{
+  background-color: beige;
+}
 
 </style>
