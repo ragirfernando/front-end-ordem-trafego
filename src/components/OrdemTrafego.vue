@@ -1,13 +1,19 @@
 <template>
   <v-container>
     <div id="app" style="margin: 60px -7% ; ">
-      <v-data-table :headers="cabecalhoOrdensTrafego" :items="listaOrdensTrafego" class="elevation-1 subtitle-1"
-                    :search="filtrar">
+      <v-alert
+          v-model="alertSucesso"
+          type="success"
+          close-text="Close Alert"
+          dismissible>
+        {{ mensagemSucesso }}
+      </v-alert>
+      <v-data-table :headers="cabecalhoOrdensTrafego" :items="listaOrdensTrafego" class="elevation-1 subtitle-1" :search="filtrar">
         <template v-slot:top>
           <v-toolbar flat color="#">
             <v-toolbar-title>Lista de Ordens de tráfego</v-toolbar-title>
             <v-divider class="mx-4" inset vertical></v-divider>
-            <v-card-title style="width: 45%">
+            <v-card-title style="width: 60%">
               <v-text-field
                   v-model="filtrar"
                   append-icon="mdi-magnify"
@@ -56,321 +62,294 @@
                       close-text="Close Alert"
                       dismissible
                   >
-                    {{ mesagemError }}
+                    {{ mensagemError }}
                   </v-alert>
                 </div>
                 <v-card-title>
-                  <span class="headline">{{ editarOuAtualizar }}</span>
+                  <span class="headline">{{ inserirOuAtualizar }}</span>
                 </v-card-title>
-                <v-form
-                    ref="form"
-                    v-model="valid"
-                    :lazy-validation="lazy"
-                >
-                  <v-tabs botton>
-                    <v-tab>
-                      <v-icon left>{{ iconVeiculo }}</v-icon>
-                      Veículo
-                    </v-tab>
+                <v-tabs botton>
+                  <v-tab>
+                    <v-icon left>{{ iconVeiculo }}</v-icon>
+                    Veículo
+                  </v-tab>
 
-                    <v-tab>
-                      <v-icon left>{{ iconCondutor }}</v-icon>
-                      Condutor
-                    </v-tab>
+                  <v-tab>
+                    <v-icon left>{{ iconCondutor }}</v-icon>
+                    Condutor
+                  </v-tab>
 
-                    <v-tab>
-                      <v-icon left>{{ iconOrigem }}</v-icon>
-                      Origem
-                    </v-tab>
+                  <v-tab>
+                    <v-icon left>{{ iconOrigem }}</v-icon>
+                    Origem
+                  </v-tab>
 
-                    <v-tab>
-                      <v-icon left>{{ iconDestino }}</v-icon>
-                      Destino
-                    </v-tab>
+                  <v-tab>
+                    <v-icon left>{{ iconDestino }}</v-icon>
+                    Destino
+                  </v-tab>
 
-                    <v-tab>
-                      <v-icon left>{{ iconSalvar }}</v-icon>
-                      Salvar
-                    </v-tab>
+                  <v-tab>
+                    <v-icon left>{{ iconSalvar }}</v-icon>
+                    Salvar
+                  </v-tab>
 
-                    <v-tab-item>
-                      <hr/>
-                      <v-data-table :headers="cabecalhoVeiculoSelecionado" :items="veiculoSelecionado" :rules="regra">
-                        <template v-slot:no-data>
-                          <v-card-subtitle>Nenhum veículo adicionado</v-card-subtitle>
-                        </template>
-                      </v-data-table>
-                      <hr/>
-                      <v-expansion-panels popout>
-                        <v-expansion-panel>
-                          <v-expansion-panel-header style="font-size: 25px" @click="listarVeiculos">
-                            Lista de veículos
-                          </v-expansion-panel-header>
-                          <v-expansion-panel-content>
-                            <v-text-field
-                                v-model="filtrarVeiculo"
-                                append-icon="mdi-magnify"
-                                label="Filtrar"
-                                single-line
-                                hide-details
-                            ></v-text-field>
-                            <hr/>
-                            <v-data-table :headers="cabecalhoVeiculos" :items="listaVeiculos" :search="filtrarVeiculo">
-                              <template v-slot:item.acoes="{item}">
-                                <v-icon @click="selecionarVeiculo(item)">{{ iconSelecionar }}</v-icon>
+                  <v-tab-item>
+                    <hr/>
+                    <v-data-table :headers="cabecalhoVeiculoSelecionado" :items="veiculoSelecionado">
+                      <template v-slot:no-data>
+                        <v-card-subtitle>Nenhum veículo adicionado</v-card-subtitle>
+                      </template>
+                    </v-data-table>
+                    <hr/>
+                    <v-expansion-panels popout>
+                      <v-expansion-panel>
+                        <v-expansion-panel-header style="font-size: 25px" @click="listarVeiculos">
+                          Lista de veículos
+                        </v-expansion-panel-header>
+                        <v-expansion-panel-content>
+                          <v-text-field
+                              v-model="filtrarVeiculo"
+                              append-icon="mdi-magnify"
+                              label="Filtrar"
+                              single-line
+                              hide-details
+                          ></v-text-field>
+                          <hr/>
+                          <v-data-table :headers="cabecalhoVeiculos" :items="listaVeiculos" :search="filtrarVeiculo">
+                            <template v-slot:item.acoes="{item}">
+                              <v-icon @click="selecionarVeiculo(item)">{{ iconSelecionar }}</v-icon>
+                            </template>
+                          </v-data-table>
+                        </v-expansion-panel-content>
+                      </v-expansion-panel>
+                    </v-expansion-panels>
+                  </v-tab-item>
+
+                  <v-tab-item>
+                    <hr/>
+                    <v-data-table :headers="cabecalhoCondutorSelecionado" :items="condutorSelecionado">
+                      <template v-slot:no-data>
+                        <v-card-subtitle>Nenhum condutor adicionado</v-card-subtitle>
+                      </template>
+                    </v-data-table>
+                    <hr/>
+                    <v-expansion-panels popout>
+                      <v-expansion-panel>
+                        <v-expansion-panel-header @click="listarCondutores" style="font-size: 25px">Lista de
+                          condutores
+                        </v-expansion-panel-header>
+                        <v-expansion-panel-content>
+                          <v-text-field
+                              v-model="filtrarCondutor"
+                              append-icon="mdi-magnify"
+                              label="Filtrar"
+                              single-line
+                              hide-details
+                          ></v-text-field>
+                          <hr/>
+                          <v-data-table :headers="cabecalhoCondutores" :items="listaCondutores"
+                                        :search="filtrarCondutor">
+                            <template v-slot:item.acoes="{item}">
+                              <v-icon @click="selecionarCondutor(item)">{{ iconSelecionar }}</v-icon>
+                            </template>
+                          </v-data-table>
+
+                        </v-expansion-panel-content>
+                      </v-expansion-panel>
+                    </v-expansion-panels>
+                  </v-tab-item>
+
+                  <v-tab-item>
+                    <v-card flat>
+                      <v-card-text>
+                        <v-row>
+                          <v-col cols="12" sm="6" md="4">
+                            <v-text-field v-model="ordemTrafego.origem.cep" label="Cep *"
+                                          @keyup="consultarCepOrigem"
+                                          v-mask="'#####-###'">
+                            </v-text-field>
+                          </v-col>
+
+                          <v-col cols="12" sm="6" md="4">
+                            <v-text-field v-model="ordemTrafego.origem.localidade"
+                                          label="Cidade *">
+                            </v-text-field>
+                          </v-col>
+
+                          <v-col cols="12" sm="6" md="4">
+                            <v-text-field v-model="ordemTrafego.origem.uf"
+                                          label="Estado *">
+
+                            </v-text-field>
+                          </v-col>
+
+                          <v-col cols="12" sm="6" md="4">
+                            <v-text-field v-model="ordemTrafego.origem.logradouro"
+                                          label="Logradouro *">
+                            </v-text-field>
+                          </v-col>
+
+                          <v-col cols="12" sm="6" md="4">
+                            <v-text-field v-model="ordemTrafego.origem.bairro"
+                                          label="Bairro *">
+                            </v-text-field>
+                          </v-col>
+
+                          <v-col cols="12" sm="6" md="4">
+                            <v-text-field v-model="ordemTrafego.origem.numero"
+                                          label="Número *"
+                                          v-mask="'###############'">
+                            </v-text-field>
+                          </v-col>
+
+                          <v-col cols="12" sm="6" md="4">
+                            <v-text-field v-model="ordemTrafego.origem.complemento"
+                                          label="Complemento *">
+                            </v-text-field>
+                          </v-col>
+                        </v-row>
+                      </v-card-text>
+                    </v-card>
+                  </v-tab-item>
+
+                  <v-tab-item>
+                    <v-card flat>
+                      <v-card-text>
+                        <v-row>
+                          <v-col cols="12" sm="6" md="4">
+                            <v-text-field v-model="ordemTrafego.destino.cep"
+                                          label="Cep *"
+                                          @keyup="consultarCepDestino"
+                                          v-mask="'#####-###'">
+                            </v-text-field>
+                          </v-col>
+
+                          <v-col cols="12" sm="6" md="4">
+                            <v-text-field v-model="ordemTrafego.destino.localidade"
+                                          label="Cidade *">
+                            </v-text-field>
+                          </v-col>
+
+                          <v-col cols="12" sm="6" md="4">
+                            <v-text-field v-model="ordemTrafego.destino.uf"
+                                          label="Estado *">
+                            </v-text-field>
+                          </v-col>
+
+                          <v-col cols="12" sm="6" md="4">
+                            <v-text-field v-model="ordemTrafego.destino.logradouro"
+                                          label="Logradouro *">
+                            </v-text-field>
+                          </v-col>
+
+                          <v-col cols="12" sm="6" md="4">
+                            <v-text-field v-model="ordemTrafego.destino.bairro"
+                                          label="Bairro *">
+                            </v-text-field>
+                          </v-col>
+
+                          <v-col cols="12" sm="6" md="4">
+                            <v-text-field v-model="ordemTrafego.destino.numero"
+                                          label="Número *">
+                            </v-text-field>
+                          </v-col>
+
+                          <v-col cols="12" sm="6" md="4">
+                            <v-text-field v-model="ordemTrafego.destino.complemento"
+                                          label="Complemento *">
+                            </v-text-field>
+                          </v-col>
+                        </v-row>
+                      </v-card-text>
+                    </v-card>
+                  </v-tab-item>
+
+                  <v-tab-item>
+                    <v-card flat>
+                      <v-card-text>
+                        <v-row>
+                          <v-col cols="12" sm="6" md="4">
+                            <v-menu
+                                ref="menu"
+                                v-model="menu3"
+                                :close-on-content-click="false"
+                                :nudge-right="40"
+                                :return-value.sync="time"
+                                transition="scale-transition"
+                                offset-y
+                                max-width="290px"
+                                min-width="290px"
+                            >
+                              <template v-slot:activator="{ on, attrs }">
+                                <v-text-field
+                                    v-model="ordemTrafego.hora"
+                                    label="Hora *"
+                                    readonly
+                                    v-bind="attrs"
+                                    v-on="on"
+                                ></v-text-field>
                               </template>
-                            </v-data-table>
-                          </v-expansion-panel-content>
-                        </v-expansion-panel>
-                      </v-expansion-panels>
-                    </v-tab-item>
+                              <v-time-picker
+                                  v-if="menu3"
+                                  v-model="ordemTrafego.hora"
+                                  format="24hr"
+                                  full-width
+                                  @click:minute="$refs.menu.save(ordemTrafego.hora)"
+                              ></v-time-picker>
+                            </v-menu>
+                          </v-col>
 
-                    <v-tab-item>
-                      <hr/>
-                      <v-data-table :headers="cabecalhoCondutorSelecionado" :items="condutorSelecionado" :rules="regra">
-                        <template v-slot:no-data>
-                          <v-card-subtitle>Nenhum condutor adicionado</v-card-subtitle>
-                        </template>
-                      </v-data-table>
-                      <hr/>
-                      <v-expansion-panels popout>
-                        <v-expansion-panel>
-                          <v-expansion-panel-header @click="listarCondutores" style="font-size: 25px">Lista de
-                            condutores
-                          </v-expansion-panel-header>
-                          <v-expansion-panel-content>
-                            <v-text-field
-                                v-model="filtrarCondutor"
-                                append-icon="mdi-magnify"
-                                label="Filtrar"
-                                single-line
-                                hide-details
-                            ></v-text-field>
-                            <hr/>
-                            <v-data-table :headers="cabecalhoCondutores" :items="listaCondutores"
-                                          :search="filtrarCondutor">
-                              <template v-slot:item.acoes="{item}">
-                                <v-icon @click="selecionarCondutor(item)">{{ iconSelecionar }}</v-icon>
+                          <v-col cols="12" sm="6" md="4">
+                            <v-menu
+                                v-model="menu1"
+                                :close-on-content-click="false"
+                                transition="scale-transition"
+                                offset-y
+                                max-width="290px"
+                                min-width="290px"
+                            >
+                              <template v-slot:activator="{ on, attrs }">
+                                <v-text-field
+                                    v-model="ordemTrafego.data"
+                                    label="Data *"
+                                    persistent-hint
+                                    v-bind="attrs"
+                                    v-on="on"
+                                ></v-text-field>
                               </template>
-                            </v-data-table>
+                              <v-date-picker
+                                  locale="br"
+                                  v-model="date"
+                                  no-title
+                                  @input="menu1 = false"
+                              ></v-date-picker>
+                            </v-menu>
+                          </v-col>
 
-                          </v-expansion-panel-content>
-                        </v-expansion-panel>
-                      </v-expansion-panels>
-                    </v-tab-item>
+                          <v-col cols="12" sm="6" md="4">
+                            <v-text-field v-model="ordemTrafego.distanciaPercorrer"
+                                          label="Distância *">
+                            </v-text-field>
+                          </v-col>
 
-                    <v-tab-item>
-                      <v-card flat>
-                        <v-card-text>
-                          <v-form
-                              ref="formOrigem"
-                              v-model="valid1"
-                              :lazy-validation="lazy1"
-                          >
-                            <v-row>
-                              <v-col cols="12" sm="6" md="4">
-                                <v-text-field v-model="ordemTrafego.origem.cep" label="Cep"
-                                              required
-                                              @keyup="consultarCepOrigem"
-                                              v-mask="'#####-###'"
-                                              :rules="regra"></v-text-field>
-                              </v-col>
-
-                              <v-col cols="12" sm="6" md="4">
-                                <v-text-field v-model="ordemTrafego.origem.localidade" label="Cidade"
-                                              required
-                                              :rules="regra"></v-text-field>
-                              </v-col>
-
-                              <v-col cols="12" sm="6" md="4">
-                                <v-text-field v-model="ordemTrafego.origem.uf" label="Estado"
-                                              required
-                                              :rules="regra"></v-text-field>
-                              </v-col>
-
-                              <v-col cols="12" sm="6" md="4">
-                                <v-text-field v-model="ordemTrafego.origem.logradouro" label="Logradouro"
-                                              required
-                                              :rules="regra"></v-text-field>
-                              </v-col>
-
-                              <v-col cols="12" sm="6" md="4">
-                                <v-text-field v-model="ordemTrafego.origem.bairro" label="Bairro"
-                                              required
-                                              :rules="regra"></v-text-field>
-                              </v-col>
-
-                              <v-col cols="12" sm="6" md="4">
-                                <v-text-field v-model="ordemTrafego.origem.numero" label="Número"
-                                              required
-                                              v-mask="'###############'"
-                                              :rules="regra"></v-text-field>
-                              </v-col>
-
-                              <v-col cols="12" sm="6" md="4">
-                                <v-text-field v-model="ordemTrafego.origem.complemento"
-                                              label="Complemento" required
-                                              :rules="regra"></v-text-field>
-                              </v-col>
-                            </v-row>
-                          </v-form>
-                        </v-card-text>
-                      </v-card>
-                    </v-tab-item>
-
-                    <v-tab-item>
-                      <v-card flat>
-                        <v-card-text>
-                          <v-form
-                              ref="formDestino"
-                              v-model="valid2"
-                              :lazy-validation="lazy2"
-                          >
-                            <v-row>
-                              <v-col cols="12" sm="6" md="4">
-                                <v-text-field v-model="ordemTrafego.destino.cep" label="Cep"
-                                              required
-                                              @keyup="consultarCepDestino"
-                                              v-mask="'#####-###'"
-                                              :rules="regra"></v-text-field>
-                              </v-col>
-
-                              <v-col cols="12" sm="6" md="4">
-                                <v-text-field v-model="ordemTrafego.destino.localidade" label="Cidade"
-                                              required
-                                              :rules="regra"></v-text-field>
-                              </v-col>
-
-                              <v-col cols="12" sm="6" md="4">
-                                <v-text-field v-model="ordemTrafego.destino.uf" label="Estado"
-                                              required
-                                              :rules="regra"></v-text-field>
-                              </v-col>
-
-                              <v-col cols="12" sm="6" md="4">
-                                <v-text-field v-model="ordemTrafego.destino.logradouro" label="Logradouro"
-                                              required
-                                              :rules="regra"></v-text-field>
-                              </v-col>
-
-                              <v-col cols="12" sm="6" md="4">
-                                <v-text-field v-model="ordemTrafego.destino.bairro" label="Bairro"
-                                              required
-                                              :rules="regra"></v-text-field>
-                              </v-col>
-
-                              <v-col cols="12" sm="6" md="4">
-                                <v-text-field v-model="ordemTrafego.destino.numero" label="Número"
-                                              required
-                                              :rules="regra"></v-text-field>
-                              </v-col>
-
-                              <v-col cols="12" sm="6" md="4">
-                                <v-text-field v-model="ordemTrafego.destino.complemento"
-                                              label="Complemento" required
-                                              :rules="regra"></v-text-field>
-                              </v-col>
-                            </v-row>
-                          </v-form>
-                        </v-card-text>
-                      </v-card>
-                    </v-tab-item>
-
-                    <v-tab-item>
-                      <v-card flat>
-                        <v-card-text>
-                          <!--<v-form
-                              ref="formStatus"
-                              v-model="valid3"
-                              :lazy-validation="lazy3"
-                          >-->
-                            <v-row>
-                              <v-col cols="12" sm="6" md="4">
-                                <v-menu
-                                    ref="menu"
-                                    v-model="menu3"
-                                    :close-on-content-click="false"
-                                    :nudge-right="40"
-                                    :return-value.sync="time"
-                                    transition="scale-transition"
-                                    offset-y
-                                    max-width="290px"
-                                    min-width="290px"
-                                >
-                                  <template v-slot:activator="{ on, attrs }">
-                                    <v-text-field
-                                        v-model="time"
-                                        label="Hora"
-                                        readonly
-                                        :rules="regra"
-                                        v-bind="attrs"
-                                        v-on="on"
-                                    ></v-text-field>
-                                  </template>
-                                  <v-time-picker
-                                      v-if="menu3"
-                                      v-model="time"
-                                      format="24hr"
-                                      full-width
-                                      @click:minute="$refs.menu.save(time)"
-                                  ></v-time-picker>
-                                </v-menu>
-                              </v-col>
-
-                              <v-col cols="12" sm="6" md="4">
-                                <v-menu
-                                    v-model="menu1"
-                                    :close-on-content-click="false"
-                                    transition="scale-transition"
-                                    offset-y
-                                    max-width="290px"
-                                    min-width="290px"
-                                >
-                                  <template v-slot:activator="{ on, attrs }">
-                                    <v-text-field
-                                        v-model="ordemTrafego.data"
-                                        label="Data"
-                                        persistent-hint
-                                        v-bind="attrs"
-                                        :rules="regra"
-                                        v-on="on"
-                                    ></v-text-field>
-                                  </template>
-                                  <v-date-picker
-                                      locale="br"
-                                      v-model="date"
-                                      no-title
-                                      @input="menu1 = false"
-                                  ></v-date-picker>
-                                </v-menu>
-                              </v-col>
-
-                              <v-col cols="12" sm="6" md="4">
-                                <v-text-field v-model="ordemTrafego.distanciaPercorrer"
-                                              :rules="regra"
-                                              label="Distância "></v-text-field>
-                              </v-col>
-
-                              <v-col cols="12" sm="6" md="4">
-                                <v-select
-                                    v-model="ordemTrafego.status"
-                                    :items="statusOrdemTrafego"
-                                    :rules="regra"
-                                    label="Selecione o status *"
-                                ></v-select>
-                              </v-col>
-                            </v-row>
-                          <!--</v-form>-->
-                        </v-card-text>
-                        <v-card-actions>
-                          <v-spacer></v-spacer>
-                          <v-btn color="white" text @click="fecharDialog">Cancelar</v-btn>
-                          <v-btn color="white" :disabled="!valid" text @click="inserirOrdemTrafego">Salvar</v-btn>
-                        </v-card-actions>
-                      </v-card>
-                    </v-tab-item>
-                  </v-tabs>
-                </v-form>
+                          <v-col cols="12" sm="6" md="4">
+                            <v-select
+                                v-model="ordemTrafego.status"
+                                :items="statusOrdemTrafego"
+                                label="Selecione o status *"
+                            ></v-select>
+                          </v-col>
+                        </v-row>
+                      </v-card-text>
+                      <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="white" text @click="fecharDialog">Cancelar</v-btn>
+                        <v-btn color="white" text @click="inserirOrdemTrafego">Salvar</v-btn>
+                      </v-card-actions>
+                    </v-card>
+                  </v-tab-item>
+                </v-tabs>
               </v-card>
             </v-dialog>
           </v-toolbar>
@@ -398,15 +377,9 @@ export default {
   name: 'ordemTrafego',
   data: () => ({
     alert: false,
-    mesagemError: "",
-    valid: true,
-    lazy: false,
-    valid1: true,
-    lazy1: false,
-    valid2: true,
-    lazy2: false,
-    valid3: false,
-    lazy3: true ,
+    alertSucesso: false,
+    mensagemError: "",
+    mensagemSucesso: "",
     iconOrigem: mdiHomeFloor1,
     iconDestino: mdiHomeFloor2,
     iconVeiculo: mdiCarBack,
@@ -415,10 +388,7 @@ export default {
     iconSelecionar: mdiPlusBox,
     idAuxiliar: "",
     statusOrdemTrafego: ["ANDAMENTO", "AGENDADA", "FINALIZADA"],
-    model: null,
     menu1: false,
-    model1: null,
-    regra: [v => !!v || "Campo é obrigatorio"],
     date: "",
     filtrar: '',
     filtrarVeiculo: '',
@@ -466,7 +436,6 @@ export default {
     cabecalhoCondutores: [
       {text: "Nome", align: "start", class: "subtitle-1 Bold text", sortable: false, value: "nome"},
       {text: "Categoria Cnh", class: "subtitle-1 Bold text", sortable: false, value: "cnh.categoriaCNH"},
-      {text: "Validade", class: "subtitle-1 Bold text", sortable: false, value: "cnh.validade"},
       {text: "Cidade", class: "subtitle-1 Bold text", sortable: false, value: "endereco.localidade"},
       {text: "Bairro", class: "subtitle-1 Bold text", sortable: false, value: "endereco.bairro"},
       {text: "CPF", class: "subtitle-1 Bold text", sortable: false, value: "cpf"},
@@ -476,7 +445,6 @@ export default {
     cabecalhoCondutorSelecionado: [
       {text: "Nome", class: "subtitle-1 Bold text", align: "start", sortable: false, value: "nome"},
       {text: "Categoria Cnh", class: "subtitle-1 Bold text", sortable: false, value: "cnh.categoriaCNH"},
-      {text: "Validade", class: "subtitle-1 Bold text", sortable: false, value: "cnh.validade"},
       {text: "Cidade", class: "subtitle-1 Bold text", sortable: false, value: "endereco.localidade"},
       {text: "Bairro", class: "subtitle-1 Bold text", sortable: false, value: "endereco.bairro"},
       {text: "CPF", class: "subtitle-1 Bold text", sortable: false, value: "cpf"},
@@ -544,13 +512,10 @@ export default {
       data: "",
       distanciaPercorrer: ""
     },
-    editarOuAtualizar: "",
+    inserirOuAtualizar: "",
   }),
 
   computed: {
-    formTitle() {
-      return this.editedIndex === -1 ? "Nova ordem de tráfego" : "Atualizar ordem de tráfego";
-    },
   },
 
   watch: {
@@ -571,7 +536,6 @@ export default {
       OrdemTrafegoService.listar().then(resposta => {
         resposta.data.forEach(da => {
           da.data = this.formatDate(da.data)
-          da.condutor.cnh.validade = this.formatDate(da.condutor.cnh.validade)
           listaAuxiliar.push(da)
         })
         this.listaOrdensTrafego = listaAuxiliar;
@@ -588,13 +552,8 @@ export default {
     },
 
     listarCondutores() {
-      let listaAuxiliar = []
       CondutorService.listar().then(resposta => {
-        resposta.data.forEach(da => {
-          da.cnh.validade = this.formatDate(da.cnh.validade)
-          listaAuxiliar.push(da)
-        })
-        this.listaCondutores = listaAuxiliar
+        this.listaCondutores = resposta.data
       }).catch(error => {
         console.log(error)
       })
@@ -609,10 +568,14 @@ export default {
       this.condutorSelecionado = []
       this.condutorSelecionado.push(item)
     },
+
     consultarCepOrigem() {
+      this.alert = false;
       if (this.ordemTrafego.origem.cep.length == 9) {
         ConsultarCepService.consultarCep(this.ordemTrafego.origem.cep).then(resposta => {
           if (resposta.data.erro) {
+            this.alert = true;
+            this.mensagemError = " Por favor, digite um cep válido!"
             this.ordemTrafego.origem.logradouro = "";
             this.ordemTrafego.origem.bairro = "";
             this.ordemTrafego.origem.localidade = "";
@@ -630,9 +593,12 @@ export default {
     },
 
     consultarCepDestino() {
+      this.alert = false;
       if (this.ordemTrafego.destino.cep.length == 9) {
         ConsultarCepService.consultarCep(this.ordemTrafego.destino.cep).then(resposta => {
           if (resposta.data.erro) {
+            this.alert = true;
+            this.mensagemError = " Por favor, digite um cep válido!"
             this.ordemTrafego.destino.logradouro = "";
             this.ordemTrafego.destino.bairro = "";
             this.ordemTrafego.destino.localidade = "";
@@ -662,18 +628,35 @@ export default {
     },
 
     novaOrdemTrafego() {
-      this.ordemTrafego.id = null;
-      this.ordemTrafego.origem.id = null;
-      this.ordemTrafego.destino.id = null;
-      this.dialog = true;
-      this.reset()
       this.listarOrdensTrafego();
-    },
+      this.inserirOuAtualizar = "Inserir nova ordem de tráfego"
+      this.ordemTrafego.origem.id = null;
+      this.ordemTrafego.origem.cep = "";
+      this.ordemTrafego.origem.logradouro = "";
+      this.ordemTrafego.origem.complemento = "";
+      this.ordemTrafego.origem.bairro = "";
+      this.ordemTrafego.origem.localidade = "";
+      this.ordemTrafego.origem.numero = "";
+      this.ordemTrafego.origem.uf = "";
 
-    reset() {
-      this.$refs.formOrigem.reset()
-      this.$refs.formDestino.reset()
-      this.$refs.formStatus.reset()
+      this.ordemTrafego.destino.id = null;
+      this.ordemTrafego.destino.cep = "";
+      this.ordemTrafego.destino.logradouro = "";
+      this.ordemTrafego.destino.complemento = "";
+      this.ordemTrafego.destino.bairro = "";
+      this.ordemTrafego.destino.localidade = "";
+      this.ordemTrafego.destino.numero = "";
+      this.ordemTrafego.destino.uf = "";
+
+      this.ordemTrafego.id = null;
+      this.ordemTrafego.hora = "";
+      this.ordemTrafego.data = "";
+      this.ordemTrafego.status = "";
+      this.ordemTrafego.distanciaPercorrer = "";
+
+      this.condutorSelecionado = [];
+      this.veiculoSelecionado = []
+      this.dialog = true;
     },
 
     fecharDialog() {
@@ -689,24 +672,25 @@ export default {
     inserirOrdemTrafego() {
       if (this.veiculoSelecionado.length <= 0 || this.condutorSelecionado.length <= 0) {
         this.alert = true;
-        this.mesagemError = "Por favor, selecione o veículo e condutor!"
+        this.mensagemError = "Por favor, selecione o veículo e condutor!"
       } else {
         this.alert = false;
-        this.mesagemError = "";
-
-        this.ordemTrafego.hora = this.time
+        this.mensagemError = "";
         this.ordemTrafego.data = this.formatarDataInserir(this.ordemTrafego.data)
-
-
         if (this.ordemTrafego.id == null) {
           OrdemTrafegoService.inserir(this.ordemTrafego, this.condutorSelecionado[0].id, this.veiculoSelecionado[0].id).then(resposta => {
             console.log(resposta);
+            this.alertSucesso = true
+            this.mensagemSucesso = "Ordem de tráfego inserida com sucesso"
+            setTimeout(this.fecharAlertSucesso, 3000);
             this.listarOrdensTrafego();
           });
         } else {
-          this.ordemTrafego.condutor.cnh.validade = this.formatarDataInserir(this.ordemTrafego.condutor.cnh.validade)
           OrdemTrafegoService.editar(this.ordemTrafego, this.condutorSelecionado[0].id, this.veiculoSelecionado[0].id).then(resposta => {
             console.log(resposta);
+            this.alertSucesso = true
+            this.mensagemSucesso = "Ordem de tráfego atualizada com sucesso!"
+            setTimeout(this.fecharAlertSucesso, 3000);
             this.listarOrdensTrafego();
           });
         }
@@ -715,15 +699,12 @@ export default {
     },
 
     editarOrdemTrafego(item) {
-      this.ordemTrafego = item;
-      this.time = this.ordemTrafego.hora;
-
+      this.inserirOuAtualizar = "Atualizar ordem de trafego"
       this.veiculoSelecionado = [];
       this.condutorSelecionado = [];
-
+      this.ordemTrafego = item
       this.veiculoSelecionado.push(item.veiculo);
       this.condutorSelecionado.push(item.condutor)
-
       this.dialog = true;
     },
 
@@ -732,17 +713,23 @@ export default {
       this.dialogoDeletar = true;
     },
 
+    fecharAlertSucesso() {
+      this.alertSucesso = false;
+    },
+
     deletarOrdemTrafego() {
       OrdemTrafegoService.deletar(this.idAuxiliar).then(resposta => {
         this.listarOrdensTrafego();
         console.log(resposta);
+        this.alertSucesso = true
+        this.mensagemSucesso = "Ordem de tráfego deletada com sucesso!"
+        setTimeout(this.fecharAlertSucesso, 3000);
       }).catch(e => {
         console.log(e);
       });
       this.idAuxiliar = "";
       this.dialogoDeletar = false;
     }
-
   }
 };
 </script>
