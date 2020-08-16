@@ -1,142 +1,262 @@
 <template>
   <v-container>
     <div id="app" style="margin-top: 60px">
-
       <v-app id="inspire">
-        <v-simple-table style="margin-bottom: 20px">
-          <template v-slot:default>
-            <thead>
-            <tr>
-              <th class="text-left">Name</th>
-              <th class="text-left">Modelo</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-              <td>{{ dveiculo.anoFabricacao }}</td>
-              <td>{{ dveiculo.modelo }}</td>
-            </tr>
-            </tbody>
-          </template>
-        </v-simple-table>
+        <div>
+          <v-row
+              justify="center"
+          >
+            <!--<v-btn
+                color="primary"
+                class="ma-2"
+                dark
+                @click="dialog = true"
+            >
+              Open Dialog 1
+            </v-btn>-->
+            <!--<v-btn
+                color="primary"
+                class="ma-2"
+                dark
+                @click="dialog2 = true"
+            >
+              Open Dialog 2
+            </v-btn>-->
+            <v-btn
+                color="primary"
+                class="ma-2"
+                dark
+                @click="dialog3 = true"
+            >
+              Open Dialog 3
+            </v-btn>
 
-        <v-expansion-panels focusable>
-          <v-expansion-panel>
-            <v-expansion-panel-header @click="f">Lista de veículos</v-expansion-panel-header>
-            <v-expansion-panel-content>
-              <v-text-field
-                  v-model="filtrar"
-                  append-icon="mdi-magnify"
-                  label="Filtrar"
-                  single-line
-                  hide-details
-              ></v-text-field>
-              <v-data-table :headers="nomeColunas" loading="true" :items="listaVeiculos" :search="filtrar">
-                <template v-slot:item.acoes="{item}">
-                  <v-icon @click="selecionar(item)">mdi-pencil</v-icon>
-                </template>
-              </v-data-table>
-            </v-expansion-panel-content>
-          </v-expansion-panel>
-        </v-expansion-panels>
-      </v-app>
+            <!--<v-menu
+                bottom
+                offset-y
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                    class="ma-2"
+                    v-bind="attrs"
+                    v-on="on"
+                >A Menu</v-btn>
+              </template>
+              <v-list>
+                <v-list-item
+                    v-for="(item, i) in items"
+                    :key="i"
+                    @click="() => {}"
+                >
+                  <v-list-item-title>{{ item.title }}</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>-->
+            <!--<v-dialog
+                v-model="dialog"
+                fullscreen
+                hide-overlay
+                transition="dialog-bottom-transition"
+                scrollable
+            >
+              <v-card tile>
+                <v-toolbar
+                    flat
+                    dark
+                    color="primary"
+                >
+                  <v-btn
+                      icon
+                      dark
+                      @click="dialog = false"
+                  >
+                    <v-icon>mdi-close</v-icon>
+                  </v-btn>
+                  <v-toolbar-title>Settings</v-toolbar-title>
+                  <v-spacer></v-spacer>
+                  <v-toolbar-items>
+                    <v-btn
+                        dark
+                        text
+                        @click="dialog = false"
+                    >
+                      Save
+                    </v-btn>
+                  </v-toolbar-items>
+                  <v-menu
+                      bottom
+                      right
+                      offset-y
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                          dark
+                          icon
+                          v-bind="attrs"
+                          v-on="on"
+                      >
+                        <v-icon>mdi-dots-vertical</v-icon>
+                      </v-btn>
+                    </template>
+                    <v-list>
+                      <v-list-item
+                          v-for="(item, i) in items"
+                          :key="i"
+                          @click="() => {}"
+                      >
+                        <v-list-item-title>{{ item.title }}</v-list-item-title>
+                      </v-list-item>
+                    </v-list>
+                  </v-menu>
+                </v-toolbar>
+                <v-card-text>
+                  <v-btn
+                      color="primary"
+                      dark
+                      class="ma-2"
+                      @click="dialog2 = !dialog2"
+                  >
+                    Open Dialog 2
+                  </v-btn>
+                  <v-tooltip right>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                          class="ma-2"
+                          v-bind="attrs"
+                          v-on="on"
+                      >Tool Tip Activator</v-btn>
+                    </template>
+                    Tool Tip
+                  </v-tooltip>
+                  <v-list
+                      three-line
+                      subheader
+                  >
+                    <v-subheader>User Controls</v-subheader>
+                    <v-list-item>
+                      <v-list-item-content>
+                        <v-list-item-title>Content filtering</v-list-item-title>
+                        <v-list-item-subtitle>Set the content filtering level to restrict apps that can be downloaded</v-list-item-subtitle>
+                      </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item>
+                      <v-list-item-content>
+                        <v-list-item-title>Password</v-list-item-title>
+                        <v-list-item-subtitle>Require password for purchase or use password to restrict purchase</v-list-item-subtitle>
+                      </v-list-item-content>
+                    </v-list-item>
+                  </v-list>
+                  <v-divider></v-divider>
+                  <v-list
+                      three-line
+                      subheader
+                  >
+                    <v-subheader>General</v-subheader>
+                    <v-list-item>
+                      <v-list-item-action>
+                        <v-checkbox v-model="notifications"></v-checkbox>
+                      </v-list-item-action>
+                      <v-list-item-content>
+                        <v-list-item-title>Notifications</v-list-item-title>
+                        <v-list-item-subtitle>Notify me about updates to apps or games that I downloaded</v-list-item-subtitle>
+                      </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item>
+                      <v-list-item-action>
+                        <v-checkbox v-model="sound"></v-checkbox>
+                      </v-list-item-action>
+                      <v-list-item-content>
+                        <v-list-item-title>Sound</v-list-item-title>
+                        <v-list-item-subtitle>Auto-update apps at any time. Data charges may apply</v-list-item-subtitle>
+                      </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item>
+                      <v-list-item-action>
+                        <v-checkbox v-model="widgets"></v-checkbox>
+                      </v-list-item-action>
+                      <v-list-item-content>
+                        <v-list-item-title>Auto-add widgets</v-list-item-title>
+                        <v-list-item-subtitle>Automatically add home screen widgets</v-list-item-subtitle>
+                      </v-list-item-content>
+                    </v-list-item>
+                  </v-list>
+                </v-card-text>
 
-      <!--<v-app id="inspire">
-        <v-data-table
-            v-model="selected"
-            :headers="headers"
-            :items="desserts"
-            @item-selected="t"
-            :single-select="singleSelect"
-            item-key="name"
-            show-select
-            class="elevation-1"
-        >
-        </v-data-table>
-      </v-app>-->
-      <!--<v-app id="inspire">
-        <v-container>
-          <v-row>
-            <v-col cols="12" lg="6">
-              <v-menu
-                  v-model="menu1"
-                  :close-on-content-click="false"
-                  transition="scale-transition"
-                  offset-y
-                  max-width="290px"
-                  min-width="290px"
-              >
-                <template v-slot:activator="{ on, attrs }">
-                  <v-text-field
-                      v-model="dateFormatted"
-                      label="Date"
-                      persistent-hint
-                      v-bind="attrs"
-                      @blur="date = parseDate(dateFormatted)"
-                      v-on="on"
-                  ></v-text-field>
-                </template>
-                <v-date-picker v-model="date" no-title @input="menu1 = false"></v-date-picker>
-              </v-menu>
-            </v-col>
+                <div style="flex: 1 1 auto;"></div>
+              </v-card>
+            </v-dialog>-->
+
+            <!--<v-dialog
+                v-model="dialog2"
+                max-width="500px"
+            >
+              <v-card>
+                <v-card-title>
+                  Dialog 2
+                </v-card-title>
+                <v-card-text>
+                  <v-btn
+                      color="primary"
+                      dark
+                      @click="dialog3 = !dialog3"
+                  >
+                    Open Dialog 3
+                  </v-btn>
+                  <v-select
+                      :items="select"
+                      label="A Select List"
+                      item-value="text"
+                  ></v-select>
+                </v-card-text>
+                <v-card-actions>
+                  <v-btn
+                      color="primary"
+                      text
+                      @click="dialog2 = false"
+                  >
+                    Close
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>-->
+            <v-dialog
+                v-model="dialog3"
+                max-width="500px"
+            >
+              <v-card>
+                <v-card-title>
+                  <span>Dialog 3</span>
+                </v-card-title>
+                <v-spacer></v-spacer>
+                <v-card-actions>
+                  <v-btn
+                      color="primary"
+                      text
+                      @click="dialog3 = false"
+                  >
+                    Close
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
 
           </v-row>
-        </v-container>
-      </v-app>-->
+        </div>
+      </v-app>
+
     </div>
   </v-container>
 </template>
 <script>
 
-import VeiculoService from "@/service/veiculoService";
 
 export default {
   name: 'teste',
 
-  data() {
+  data () {
     return {
-      desserts: [],
-      filtrar: '',
+      dialog3: false,
 
-
-      veiculo: {
-        id: null,
-        marca: "",
-        modelo: "",
-        kmRodados: 0,
-        placa: "",
-        cor: "",
-        anoFabricacao: 0,
-        categoriaVeiculo: "",
-        tipoCombustivel: "",
-        estadoConservacao: ""
-      },
-
-      dveiculo: {
-        id: null,
-        marca: "",
-        modelo: "",
-        kmRodados: 0,
-        placa: "",
-        cor: "",
-        anoFabricacao: "Por favor, clique em Lista de veículos e selecione um veículo.",
-        categoriaVeiculo: "",
-        tipoCombustivel: "",
-        estadoConservacao: ""
-      },
-      listaVeiculos: [],
-      nomeColunas: [
-        {text: "Marca", align: "start", class: "subtitle-2 Bold text", sortable: false, value: "marca"},
-        {text: "Modelo", sortable: false, class: "subtitle-2 Bold text", value: "modelo"},
-        {text: "Quilometragem ", class: "subtitle-2 Bold text", sortable: false, value: "kmRodados"},
-        {text: "Placa", sortable: false, class: "subtitle-2 Bold text", value: "placa"},
-        {text: "Cor", sortable: false, class: "subtitle-2 Bold text", value: "cor"},
-        {text: "Ano", sortable: false, class: "subtitle-2 Bold text", value: "anoFabricacao"},
-        {text: "Categoria", sortable: false, class: "subtitle-2 Bold text", value: "categoriaVeiculo"},
-        {text: "Combustível", sortable: false, class: "subtitle-2 Bold text", value: "tipoCombustivel"},
-        {text: "Conservação", sortable: false, class: "subtitle-2 Bold text", value: "estadoConservacao"},
-        {text: "Ações", value: "acoes", class: "subtitle-2 Bold text", sortable: false}
-      ],
     }
   },
   created() {
@@ -145,54 +265,9 @@ export default {
   },
 
   methods: {
-    f(){
-      this.listarVeiculos();
-    },
-    listarVeiculos() {
-      VeiculoService.listarVeiculos().then(resposta => {
-        this.listaVeiculos = resposta.data;
-        console.log(this.listaVeiculos)
-      }).catch(error => {
-        console.log(error)
-      })
-    },
 
-    selecionar(item){
-      this.dveiculo.anoFabricacao = item.anoFabricacao;
-      this.dveiculo.modelo = item.modelo;
-    }
   }
 
-  /*data: vm => ({
-    date: new Date().toISOString().substr(0, 10),
-    dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
-    menu1: false,
-  }),
 
-  computed: {
-    computedDateFormatted () {
-      return this.formatDate(this.date)
-    },
-  },
-
-  watch: {
-    date (val) {
-      console.log(val)
-      this.dateFormatted = this.formatDate(this.date)
-    },
-  },
-
-  methods: {
-    formatDate (date) {
-      if (!date) return null
-      const [year, month, day] = date.split('-')
-      return `${day}/${month}/${year}`
-    },
-    parseDate (date) {
-      if (!date) return null
-      const [month, day, year] = date.split('/')
-      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
-    },
-  },*/
 };
 </script>
