@@ -131,6 +131,8 @@
                         <v-col cols="12" sm="6" md="4">
                           <v-text-field
                               v-model="veiculo.placa"
+                              v-mask="'AAA-####'"
+                              @keyup="maskPlaca"
                               label="Placa *"
                               :rules="[v => !!v || 'Campo obrigatório']"
                           ></v-text-field>
@@ -161,6 +163,7 @@
 </template>
 <script>
 import VeiculoService from '../service/veiculoService';
+
 export default {
   name: "veiculo",
   data: () => ({
@@ -210,9 +213,7 @@ export default {
 
   computed: {},
 
-  watch: {
-
-  },
+  watch: {},
 
   created() {
     this.$vuetify.theme.dark = true;
@@ -220,6 +221,9 @@ export default {
   },
 
   methods: {
+    maskPlaca(){
+      this.veiculo.placa = this.veiculo.placa.toUpperCase();
+    },
     preencherAnoVeiculo() {
       const anoAtual = new Date().getFullYear();
       let incremento = 0;
@@ -241,7 +245,7 @@ export default {
       this.novoOuAtualizar = "Inserir novo veículo";
       this.reset();
     },
-    reset () {
+    reset() {
       this.$refs.form.reset()
     },
 
