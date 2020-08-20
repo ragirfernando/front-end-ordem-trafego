@@ -1,7 +1,102 @@
 <template>
   <v-container style="width: 100%">
     <div id="app" style="margin: 60px -9% ; ">
-      <v-data-table :headers="nomeColunas" loading="true" :items="listaVeiculos" :search="search">
+      <v-alert
+          v-model="alertInfo"
+          type="info"
+          close-text="Close Alert"
+          dismissible>
+        {{ mensagemInfo }}
+      </v-alert>
+      <v-expansion-panels popout>
+        <v-expansion-panel>
+          <v-expansion-panel-header style="font-size: 25px">Consultas</v-expansion-panel-header>
+          <v-expansion-panel-content>
+            <v-tabs botton>
+              <v-tab>
+                <v-icon left>{{ iconMarca }}</v-icon>
+                Por marca
+              </v-tab>
+
+              <v-tab>
+                <v-icon left>{{ iconModelo }}</v-icon>
+                Por marca
+              </v-tab>
+
+              <v-tab>
+                <v-icon left>{{ iconKm }}</v-icon>
+                Por intervalo de km rodados
+              </v-tab>
+
+              <v-tab>
+                <v-icon left>{{ iconEstadoConservacao }}</v-icon>
+                Por estado de conservação
+              </v-tab>
+              <v-tab-item>
+                <v-row>
+                  <v-col cols="12" sm="6" md="4">
+                    <v-select
+                        v-model="veiculoMarca"
+                        :items="marcaVeiculo"
+                        label="Selecione a marca *"
+                    ></v-select>
+                  </v-col>
+
+                  <v-btn style="margin-top: 25px" @click="listarVeiculosMarca()">Buscar veículos</v-btn>
+                </v-row>
+              </v-tab-item>
+
+              <v-tab-item>
+                <v-row>
+                  <v-col cols="12" sm="6" md="4">
+                    <v-text-field
+                        v-model="veiculoModelo"
+                        label="Modelo *"
+                    ></v-text-field>
+                  </v-col>
+                  <v-btn style="margin-top: 25px" @click="listarVeiculosModelo()">Buscar veículos</v-btn>
+                </v-row>
+              </v-tab-item>
+
+              <v-tab-item>
+                <v-row>
+                  <v-col cols="12" sm="6" md="4">
+                    <v-text-field
+                        v-model="kmInicial"
+                        label="Quilometragem inicial *"
+                    ></v-text-field>
+                  </v-col>
+
+                  <v-col cols="12" sm="6" md="4">
+                    <v-text-field
+                        v-model="kmFinal"
+                        label="Quilometragem final *"
+                    ></v-text-field>
+                  </v-col>
+                  <v-btn style="margin-top: 25px" @click="listarVeiculosIntervaloKmRodados()">Buscar veículos</v-btn>
+                </v-row>
+              </v-tab-item>
+
+              <v-tab-item>
+                <v-row>
+                  <v-col cols="12" sm="6" md="4">
+                    <v-select
+                        v-model="veiculoEstadoConservacao"
+                        :items="estadoConservacao"
+                        label="Selecione o estado de conservação *"
+                    ></v-select>
+                  </v-col>
+
+                  <v-btn style="margin-top: 25px" @click="listarVeiculosEstadoConservacao()">Buscar veículos</v-btn>
+                </v-row>
+              </v-tab-item>
+
+            </v-tabs>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+      </v-expansion-panels>
+      <br/>
+      <v-data-table :headers="nomeColunas" :items="listaVeiculos" :search="search">
         <template v-slot:top>
           <v-toolbar flat color="#">
             <v-dialog v-model="dialogDeletarVeiculo" max-width="350">
@@ -155,7 +250,7 @@
           <v-icon small @click="mostrarDialogDeletar(item)">mdi-delete</v-icon>
         </template>
         <template v-slot:no-data>
-          <v-btn color="#" dark @click="listarVeiculos">Sem veículos</v-btn>
+          <h3 color="#" dark>Sem veículos</h3>
         </template>
       </v-data-table>
     </div>
@@ -163,10 +258,23 @@
 </template>
 <script>
 import VeiculoService from '../service/veiculoService';
+import {mdiMagnify, mdiWatermark, mdiGlobeModel, mdiSpeedometer, mdiCarDoor} from '@mdi/js';
 
 export default {
   name: "veiculo",
   data: () => ({
+    alertInfo: false,
+    mensagemInfo: "",
+    veiculoMarca: "",
+    veiculoModelo: "",
+    veiculoEstadoConservacao: "",
+    kmInicial: "",
+    kmFinal: "",
+    iconKm: mdiSpeedometer,
+    iconBuscar: mdiMagnify,
+    iconMarca: mdiWatermark,
+    iconModelo: mdiGlobeModel,
+    iconEstadoConservacao: mdiCarDoor,
     valid: true,
     lazy: false,
     dialogCamposObrigatorios: false,
@@ -179,7 +287,7 @@ export default {
     anoVeiculo: [],
     categoriaVeiculo: ["Passeio", "Suv", "Caminhonete", "Ônibus", "Van"],
     combustivelVeiculo: ["Diesel", "Gasolina", "Álcool", "Flex"],
-    estadoConservacao: ["Novo", "Seminovo", "Usado"],
+    estadoConservacao: ["NOVO", "SEMINOVO", "USADO"],
     drawer: null,
     dialogFormularios: false,
     nomeColunas: [
@@ -221,7 +329,7 @@ export default {
   },
 
   methods: {
-    maskPlaca(){
+    maskPlaca() {
       this.veiculo.placa = this.veiculo.placa.toUpperCase();
     },
     preencherAnoVeiculo() {
@@ -259,18 +367,71 @@ export default {
     },
 
     listarVeiculos() {
-      let lista = [];
       VeiculoService.listarVeiculos().then(resposta => {
-        resposta.data.forEach(list => {
-          list.categoriaVeiculo = this.retornarPrimeiraLetraMaiuscula(list.categoriaVeiculo);
-          list.tipoCombustivel = this.retornarPrimeiraLetraMaiuscula(list.tipoCombustivel);
-          list.estadoConservacao = this.retornarPrimeiraLetraMaiuscula(list.estadoConservacao);
-          lista.push(list)
-        })
+        this.listaVeiculos = resposta.data;
       }).catch(error => {
         console.log(error)
       })
-      this.listaVeiculos = lista;
+    },
+
+    listarVeiculosMarca() {
+      VeiculoService.listarVeiculosMarca(this.veiculoMarca).then(resposta => {
+        this.listaVeiculos = [];
+        this.listaVeiculos = resposta.data;
+        if (this.listaVeiculos.length == 0){
+          this.alertInfo = true
+          this.mensagemInfo = "Nenhum veículo com a marca "+this.veiculoMarca+" esta salvo na base de dados!"
+          setTimeout(this.fecharAlertInfo, 5000);
+        }
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+
+    listarVeiculosModelo() {
+      VeiculoService.listarVeiculosModelo(this.veiculoModelo).then(resposta => {
+        this.listaVeiculos = [];
+        this.listaVeiculos = resposta.data;
+        if (this.listaVeiculos.length == 0){
+          this.alertInfo = true
+          this.mensagemInfo = "Nenhum veículo com a marca "+this.veiculoModelo+" esta salvo na base de dados!"
+          setTimeout(this.fecharAlertInfo, 5000);
+        }
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+
+    listarVeiculosIntervaloKmRodados() {
+      VeiculoService.listarVeiculosIntervaloKmRodados(this.kmInicial, this.kmFinal).then(resposta => {
+        this.listaVeiculos = [];
+        this.listaVeiculos = resposta.data;
+        if (this.listaVeiculos.length == 0){
+          this.alertInfo = true
+          this.mensagemInfo = "Nenhum veículo entre o intervalo de quilometragem rodados esta salvo na base de dados!"
+          setTimeout(this.fecharAlertInfo, 5000);
+        }
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+
+    listarVeiculosEstadoConservacao() {
+      VeiculoService.listarVeiculosEstadoConservacao(this.veiculoEstadoConservacao).then(resposta => {
+        this.listaVeiculos = [];
+        this.listaVeiculos = resposta.data;
+        if (this.listaVeiculos.length == 0){
+          this.alertInfo = true
+          this.mensagemInfo = "Nenhum veículo com estado conservação '"+this.veiculoEstadoConservacao+"' esta salvo na base de dados!"
+          setTimeout(this.fecharAlertInfo, 5000);
+        }
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+
+    fecharAlertInfo(){
+      this.alertInfo = false
     },
 
     atualizarVeiculo(item) {

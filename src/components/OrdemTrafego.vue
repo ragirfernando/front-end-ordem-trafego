@@ -13,7 +13,7 @@
           <v-toolbar flat color="#">
             <v-toolbar-title>Lista de Ordens de tráfego</v-toolbar-title>
             <v-divider class="mx-4" inset vertical></v-divider>
-            <v-card-title style="width: 60%">
+            <v-card-title style="width: 45%">
               <v-text-field
                   v-model="filtrar"
                   append-icon="mdi-magnify"
