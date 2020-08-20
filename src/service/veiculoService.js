@@ -21,6 +21,10 @@ export default {
         return http.get(`/veiculo/listarVeiculosEstadoConservacao/${estadoConservacao}`)
     },
 
+    listarOrdensTrafegoRelacionadaVeiculo: (idVeiculo) => {
+        return http.get(`/veiculo/listarOrdensTrafegoVeiculo/${idVeiculo}`)
+    },
+
     inserirVeiculo: (veiculo) => {
         return http.post('veiculo/inserirVeiculo', veiculo)
     },

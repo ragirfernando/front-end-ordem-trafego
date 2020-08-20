@@ -90,7 +90,6 @@
                   <v-btn style="margin-top: 25px" @click="listarVeiculosEstadoConservacao()">Buscar veículos</v-btn>
                 </v-row>
               </v-tab-item>
-
             </v-tabs>
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -246,8 +245,43 @@
           </v-toolbar>
         </template>
         <template v-slot:item.acoes="{item}">
-          <v-icon small class="mr-2" @click="atualizarVeiculo(item)">mdi-pencil</v-icon>
-          <v-icon small @click="mostrarDialogDeletar(item)">mdi-delete</v-icon>
+          <v-menu
+              transition="slide-x-transition"
+              bottom
+              right
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                  class="deep-orange"
+                  color="primary"
+                  dark
+                  v-bind="attrs"
+                  v-on="on"
+              >
+                Ações
+              </v-btn>
+            </template>
+
+            <v-list>
+              <v-list-item @click="atualizarVeiculo(item)">
+                <v-list-item-title>Atualizar</v-list-item-title>
+              </v-list-item>
+
+              <v-list-item @click="mostrarDialogDeletar(item)">
+                <v-list-item-title>Deletar</v-list-item-title>
+              </v-list-item>
+
+              <!--<v-list-item @click="listarOrdensTrafego">
+                <v-list-item-title>Ordem tráfego veículo</v-list-item-title>
+              </v-list-item>-->
+
+              <v-list-item @click="listarOrdensTrafegoRelacionadaVeiculo(item)">
+                <v-list-item-title>Ordem tráfego veículo</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+          <!--<v-icon small class="mr-2" @click="atualizarVeiculo(item)">mdi-pencil</v-icon>
+          <v-icon small @click="mostrarDialogDeletar(item)">mdi-delete</v-icon>-->
         </template>
         <template v-slot:no-data>
           <h3 color="#" dark>Sem veículos</h3>
@@ -428,6 +462,24 @@ export default {
       }).catch(error => {
         console.log(error)
       })
+    },
+
+    listarOrdensTrafegoRelacionadaVeiculo(item) {
+
+      /*let listaAuxiliar = [];*/
+      VeiculoService.listarOrdensTrafegoRelacionadaVeiculo(item.id).then(resposta => {
+        console.log(resposta.data)
+       /* resposta.data.forEach(da => {
+          da.data = this.formatDate(da.data)
+          listaAuxiliar.push(da)
+        })
+        this.listaOrdensTrafego = listaAuxiliar;*/
+      });
+    },
+    formatDate(date) {
+      if (!date) return null
+      const [year, month, day] = date.split('-')
+      return `${day}/${month}/${year}`
     },
 
     fecharAlertInfo(){
