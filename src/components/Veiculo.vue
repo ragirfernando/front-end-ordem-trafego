@@ -512,14 +512,18 @@ export default {
     listarOrdensTrafegoRelacionadaVeiculo(item) {
       let listaAuxiliar = [];
       VeiculoService.listarOrdensTrafegoRelacionadaVeiculo(item.id).then(resposta => {
-        console.log(resposta.data)
-        resposta.data.forEach(res =>{
-          res.data = this.formatDate(res.data);
-          listaAuxiliar.push(res);
-        })
-        this.listaOrdensTrafego = listaAuxiliar
-
-        this.dialogOrdensTrafego = true;
+        if (resposta.data.length == 0) {
+          this.alertInfo = true
+          this.mensagemInfo = "Esse veículo não está relacionado a nenhuma ordem de tráfego!"
+          setTimeout(this.fecharAlertInfo, 5000);
+        } else {
+          resposta.data.forEach(res => {
+            res.data = this.formatDate(res.data);
+            listaAuxiliar.push(res);
+          })
+          this.listaOrdensTrafego = listaAuxiliar
+          this.dialogOrdensTrafego = true;
+        }
       });
     },
     formatDate(date) {
