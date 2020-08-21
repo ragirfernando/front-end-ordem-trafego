@@ -1,43 +1,14 @@
 <template>
   <v-container>
     <div id="app" style="margin-top: 60px">
-      <v-app id="inspire">
-        <v-row justify="space-around">
-          <v-menu
-              transition="slide-x-transition"
-              bottom
-              right
-          >
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                  class="deep-orange"
-                  color="primary"
-                  dark
-                  v-bind="attrs"
-                  v-on="on"
-              >
-                Slide X Transition
-              </v-btn>
-            </template>
-
-            <v-list>
-              <v-list-item @click="m">
-                <v-list-item-title>dsdsds</v-list-item-title>
-              </v-list-item>
-
-              <v-list-item @click="m">
-                <v-list-item-title>dsdsds</v-list-item-title>
-              </v-list-item>
-
-              <v-list-item @click="m">
-                <v-list-item-title @click="m">dsdsds</v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
-
-        </v-row>
-      </v-app>
-
+      <v-checkbox v-model="v0" label="Fechar"></v-checkbox>
+      <v-banner v-model="v0" single-line transition="slide-y-transition">
+        No Internet connection
+        <template v-slot:actions="{ dismiss }">
+          <v-btn text color="primary" @click="dismiss">Dismiss</v-btn>
+          <v-btn text color="primary">Retry</v-btn>
+        </template>
+      </v-banner>
     </div>
   </v-container>
 </template>
@@ -46,20 +17,10 @@
 
 export default {
   name: 'teste',
-
   data: () => ({
-    items: [
-      {title: 'Click Me'},
-      {title: 'Click Me'},
-      {title: 'Click Me'},
-      {title: 'Click Me 2'},
-    ],
+    v0: false,
   }),
-  methods: {
-    m() {
-      alert("zxdvsd")
-    }
-  }
+
 
 
 };

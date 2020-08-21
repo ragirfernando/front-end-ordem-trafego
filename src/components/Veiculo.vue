@@ -95,6 +95,13 @@
         </v-expansion-panel>
       </v-expansion-panels>
       <br/>
+      <v-banner v-model="dialogOrdensTrafego" single-line transition="slide-y-transition">
+        <v-checkbox v-model="dialogOrdensTrafego" label="Fechar"></v-checkbox>
+        <v-data-table style="margin-left: 55px" :headers="cabecalhoOrdensTrafego" :items="listaOrdensTrafego">
+        </v-data-table>
+
+      </v-banner>
+      <br/>
       <v-data-table :headers="nomeColunas" :items="listaVeiculos" :search="search">
         <template v-slot:top>
           <v-toolbar flat color="#">
@@ -122,7 +129,6 @@
               </v-card>
             </v-dialog>
             <v-toolbar-title>Lista de veículos</v-toolbar-title>
-
             <v-divider class="mx-4" inset vertical></v-divider>
             <v-card-title style="width: 85%">
               <v-text-field
@@ -235,6 +241,7 @@
                     </v-form>
                   </v-container>
                 </v-card-text>
+
                 <v-card-actions>
                   <v-spacer></v-spacer>
                   <v-btn color="white" text @click="dialogFormularios = false">Cancelar</v-btn>
@@ -271,10 +278,6 @@
                 <v-list-item-title>Deletar</v-list-item-title>
               </v-list-item>
 
-              <!--<v-list-item @click="listarOrdensTrafego">
-                <v-list-item-title>Ordem tráfego veículo</v-list-item-title>
-              </v-list-item>-->
-
               <v-list-item @click="listarOrdensTrafegoRelacionadaVeiculo(item)">
                 <v-list-item-title>Ordem tráfego veículo</v-list-item-title>
               </v-list-item>
@@ -298,6 +301,7 @@ export default {
   name: "veiculo",
   data: () => ({
     alertInfo: false,
+    teste: false,
     mensagemInfo: "",
     veiculoMarca: "",
     veiculoModelo: "",
@@ -313,6 +317,8 @@ export default {
     lazy: false,
     dialogCamposObrigatorios: false,
     dialogDeletarVeiculo: false,
+    dialogListarVeiculos: true,
+    dialogOrdensTrafego: false,
     posicao: null,
     anoAtual: "",
     search: '',
@@ -337,6 +343,7 @@ export default {
       {text: "Ações", value: "acoes", class: "subtitle-2 Bold text", sortable: false}
     ],
     listaVeiculos: [],
+    listaOrdensTrafego: [],
     veiculoDeletar: {},
     novoOuAtualizar: "",
     veiculo: {
@@ -350,6 +357,44 @@ export default {
       categoriaVeiculo: "",
       tipoCombustivel: "",
       estadoConservacao: ""
+    },
+    cabecalhoOrdensTrafego: [
+      {text: "Cidade de Origem", class: "subtitle-1 Bold text", sortable: false, value: "origem.localidade"},
+      {text: "uf de Origem", class: "subtitle-1 Bold text", sortable: false, value: "origem.uf"},
+      {text: "Cidade de Destino", class: "subtitle-1 Bold text", sortable: false, value: "destino.localidade"},
+      {text: "uf de Destino", class: "subtitle-1 Bold text", sortable: false, value: "origem.uf"},
+      {text: "Data", class: "subtitle-1 Bold text", sortable: false, value: "data"},
+      {text: "Hora", class: "subtitle-1 Bold text", sortable: false, value: "hora"},
+      {text: "Condutor", class: "subtitle-1 Bold text", sortable: false, value: "condutor.nome"},
+      {text: "Veículo", class: "subtitle-1 Bold text", sortable: false, value: "veiculo.modelo"},
+      {text: "Status", class: "subtitle-1 Bold text", sortable: false, value: "status"},
+      {text: "Distância", class: "subtitle-1 Bold text", sortable: false, value: "distanciaPercorrer"},
+    ],
+    ordemTrafego: {
+      origem: {
+        id: null,
+        cep: "",
+        logradouro: "",
+        complemento: "",
+        bairro: "",
+        localidade: "",
+        numero: "",
+        uf: ""
+      },
+      destino: {
+        cep: "",
+        logradouro: "",
+        complemento: "",
+        bairro: "",
+        localidade: "",
+        numero: "",
+        uf: ""
+      },
+      id: null,
+      hora: "",
+      status: "",
+      data: "",
+      distanciaPercorrer: ""
     },
   }),
 
@@ -412,9 +457,9 @@ export default {
       VeiculoService.listarVeiculosMarca(this.veiculoMarca).then(resposta => {
         this.listaVeiculos = [];
         this.listaVeiculos = resposta.data;
-        if (this.listaVeiculos.length == 0){
+        if (this.listaVeiculos.length == 0) {
           this.alertInfo = true
-          this.mensagemInfo = "Nenhum veículo com a marca "+this.veiculoMarca+" esta salvo na base de dados!"
+          this.mensagemInfo = "Nenhum veículo com a marca " + this.veiculoMarca + " esta salvo na base de dados!"
           setTimeout(this.fecharAlertInfo, 5000);
         }
       }).catch(error => {
@@ -426,9 +471,9 @@ export default {
       VeiculoService.listarVeiculosModelo(this.veiculoModelo).then(resposta => {
         this.listaVeiculos = [];
         this.listaVeiculos = resposta.data;
-        if (this.listaVeiculos.length == 0){
+        if (this.listaVeiculos.length == 0) {
           this.alertInfo = true
-          this.mensagemInfo = "Nenhum veículo com a marca "+this.veiculoModelo+" esta salvo na base de dados!"
+          this.mensagemInfo = "Nenhum veículo com a marca " + this.veiculoModelo + " esta salvo na base de dados!"
           setTimeout(this.fecharAlertInfo, 5000);
         }
       }).catch(error => {
@@ -440,7 +485,7 @@ export default {
       VeiculoService.listarVeiculosIntervaloKmRodados(this.kmInicial, this.kmFinal).then(resposta => {
         this.listaVeiculos = [];
         this.listaVeiculos = resposta.data;
-        if (this.listaVeiculos.length == 0){
+        if (this.listaVeiculos.length == 0) {
           this.alertInfo = true
           this.mensagemInfo = "Nenhum veículo entre o intervalo de quilometragem rodados esta salvo na base de dados!"
           setTimeout(this.fecharAlertInfo, 5000);
@@ -454,9 +499,9 @@ export default {
       VeiculoService.listarVeiculosEstadoConservacao(this.veiculoEstadoConservacao).then(resposta => {
         this.listaVeiculos = [];
         this.listaVeiculos = resposta.data;
-        if (this.listaVeiculos.length == 0){
+        if (this.listaVeiculos.length == 0) {
           this.alertInfo = true
-          this.mensagemInfo = "Nenhum veículo com estado conservação '"+this.veiculoEstadoConservacao+"' esta salvo na base de dados!"
+          this.mensagemInfo = "Nenhum veículo com estado conservação '" + this.veiculoEstadoConservacao + "' esta salvo na base de dados!"
           setTimeout(this.fecharAlertInfo, 5000);
         }
       }).catch(error => {
@@ -465,15 +510,16 @@ export default {
     },
 
     listarOrdensTrafegoRelacionadaVeiculo(item) {
-
-      /*let listaAuxiliar = [];*/
+      let listaAuxiliar = [];
       VeiculoService.listarOrdensTrafegoRelacionadaVeiculo(item.id).then(resposta => {
         console.log(resposta.data)
-       /* resposta.data.forEach(da => {
-          da.data = this.formatDate(da.data)
-          listaAuxiliar.push(da)
+        resposta.data.forEach(res =>{
+          res.data = this.formatDate(res.data);
+          listaAuxiliar.push(res);
         })
-        this.listaOrdensTrafego = listaAuxiliar;*/
+        this.listaOrdensTrafego = listaAuxiliar
+
+        this.dialogOrdensTrafego = true;
       });
     },
     formatDate(date) {
@@ -482,7 +528,7 @@ export default {
       return `${day}/${month}/${year}`
     },
 
-    fecharAlertInfo(){
+    fecharAlertInfo() {
       this.alertInfo = false
     },
 
