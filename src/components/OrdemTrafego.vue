@@ -8,7 +8,137 @@
           dismissible>
         {{ mensagemSucesso }}
       </v-alert>
-      <v-data-table :headers="cabecalhoOrdensTrafego" :items="listaOrdensTrafego" class="elevation-1 subtitle-1" :search="filtrar">
+
+      <v-alert
+          v-model="alertInfo"
+          type="info"
+          close-text="Close Alert"
+          dismissible>
+        {{ mensagemInfo }}
+      </v-alert>
+
+      <v-alert
+          v-model="alertError"
+          type="error"
+          close-text="Close Alert"
+          dismissible
+      >
+        {{ mensagemError }}
+      </v-alert>
+
+      <v-expansion-panels popout style="margin-bottom: 10px;">
+        <v-expansion-panel>
+          <v-expansion-panel-header style="font-size: 25px">Consultas</v-expansion-panel-header>
+          <v-expansion-panel-content>
+            <v-tabs botton>
+              <v-tab>
+                <v-icon left>{{ iconDate }}</v-icon>
+                Intervalo entre datas
+              </v-tab>
+
+              <v-tab>
+                <v-icon left>{{ iconOrigem }}</v-icon>
+                Origem
+              </v-tab>
+
+              <!--<v-tab>
+                <v-icon left>{{ iconnomeCondutor }}</v-icon>
+                Nome
+              </v-tab>-->
+
+              <v-tab-item>
+                <v-row>
+                  <v-col cols="12" sm="6" md="4">
+                    <v-menu
+                        v-model="menuDataInicial"
+                        :close-on-content-click="false"
+                        transition="scale-transition"
+                        offset-y
+                        max-width="290px"
+                        min-width="290px"
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                            v-model="dataInicial"
+                            label="Data inicial *"
+                            persistent-hint
+                            v-bind="attrs"
+                            v-on="on"
+                        ></v-text-field>
+                      </template>
+                      <v-date-picker
+                          locale="br"
+                          v-model="dateInicial"
+                          no-title
+                          @input="menuDataInicial = false"
+                      ></v-date-picker>
+                    </v-menu>
+                  </v-col>
+
+                  <v-col cols="12" sm="6" md="4">
+                    <v-menu
+                        v-model="menuDataFinal"
+                        :close-on-content-click="false"
+                        transition="scale-transition"
+                        offset-y
+                        max-width="290px"
+                        min-width="290px"
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                            v-model="dataFinal"
+                            label="Data final *"
+                            persistent-hint
+                            v-bind="attrs"
+                            v-on="on"
+                        ></v-text-field>
+                      </template>
+                      <v-date-picker
+                          locale="br"
+                          v-model="dateFinal"
+                          no-title
+                          @input="menuDataFinal = false"
+                      ></v-date-picker>
+                    </v-menu>
+                  </v-col>
+                  <v-btn style="margin-top: 25px" :disabled="valid" @click="listarOrdensTrafegoIntervaloData()">Buscar
+                    condutor
+                  </v-btn>
+                </v-row>
+              </v-tab-item>
+
+              <v-tab-item>
+                <v-row>
+                  <v-col cols="12" sm="6" md="4">
+                    <v-text-field
+                        v-model="nomeCondutor"
+                        label="Digite o nome do condutor *"
+                    ></v-text-field>
+                  </v-col>
+                  <v-btn style="margin-top: 25px" @click="buscaCondutorNome">Buscar condutor</v-btn>
+                </v-row>
+              </v-tab-item>
+
+              <!-- <v-tab-item>
+                 <v-row>
+                   <v-col cols="12" sm="6" md="4">
+                     <v-select
+                         v-model="categoriaCnhCondutor"
+                         :items="categoriaCnh"
+                         :rules="regra"
+                         label="Selecione a categoria da CNH *"
+                     ></v-select>
+                   </v-col>
+                   <v-btn style="margin-top: 25px" @click="listarCondutoresCategoriaCnh()">Buscar condutores</v-btn>
+                 </v-row>
+               </v-tab-item>-->
+            </v-tabs>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+      </v-expansion-panels>
+
+      <v-data-table :headers="cabecalhoOrdensTrafego" :items="listaOrdensTrafego" class="elevation-1 subtitle-1"
+                    :search="filtrar">
         <template v-slot:top>
           <v-toolbar flat color="#">
             <v-toolbar-title>Lista de Ordens de tráfego</v-toolbar-title>
@@ -354,10 +484,39 @@
             </v-dialog>
           </v-toolbar>
         </template>
+
         <template v-slot:item.acoes="{ item }">
-          <v-icon small class="mr-2" @click="editarOrdemTrafego(item)">mdi-pencil</v-icon>
-          <v-icon small @click="dialogoDeletarOrdemTrafego(item)">mdi-delete</v-icon>
+          <v-menu
+              transition="slide-x-transition"
+              bottom
+              right
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                  dark
+                  v-bind="attrs"
+                  v-on="on"
+              >{{ iconClick }}
+              </v-icon>
+            </template>
+            <v-list>
+              <v-list-item @click="editarOrdemTrafego(item)">
+                <v-list-item-title>Atualizar</v-list-item-title>
+              </v-list-item>
+
+              <v-list-item @click="dialogoDeletarOrdemTrafego(item)">
+                <v-list-item-title>Deletar</v-list-item-title>
+              </v-list-item>
+
+              <!--<v-list-item @click="listarOrdensTrafegoRelacionadaCondutor(item)">
+                <v-list-item-title>Ordem tráfego veículo</v-list-item-title>
+              </v-list-item>-->
+            </v-list>
+          </v-menu>
+          <!-- <v-icon small class="mr-2" @click="editarOrdemTrafego(item)">mdi-pencil</v-icon>
+           <v-icon small @click="dialogoDeletarOrdemTrafego(item)">mdi-delete</v-icon>-->
         </template>
+
         <template v-slot:no-data>
           <v-btn color="primary" @click="listarOrdensTrafego">Reset</v-btn>
         </template>
@@ -367,7 +526,16 @@
 </template>
 
 <script>
-import {mdiHomeFloor1, mdiHomeFloor2, mdiCarBack, mdiCardAccountDetails, mdiContentSaveAll, mdiPlusBox} from '@mdi/js';
+import {
+  mdiHomeFloor1,
+  mdiHomeFloor2,
+  mdiCarBack,
+  mdiCardAccountDetails,
+  mdiContentSaveAll,
+  mdiPlusBox,
+  mdiCursorDefaultClick,
+  mdiCalendarRange
+} from '@mdi/js';
 import OrdemTrafegoService from '../service/ordemTrafegoService';
 import CondutorService from '../service/condutorService';
 import ConsultarCepService from "@/service/cepService";
@@ -376,10 +544,16 @@ import VeiculoService from "@/service/veiculoService";
 export default {
   name: 'ordemTrafego',
   data: () => ({
+    valid: true,
     alert: false,
+    alertError: false,
+    alertInfo: false,
     alertSucesso: false,
     mensagemError: "",
     mensagemSucesso: "",
+    mensagemInfo: "",
+    iconDate: mdiCalendarRange,
+    iconClick: mdiCursorDefaultClick,
     iconOrigem: mdiHomeFloor1,
     iconDestino: mdiHomeFloor2,
     iconVeiculo: mdiCarBack,
@@ -389,7 +563,15 @@ export default {
     idAuxiliar: "",
     statusOrdemTrafego: ["ANDAMENTO", "AGENDADA", "FINALIZADA"],
     menu1: false,
+    menuDataInicial: false,
+    menuDataFinal: false,
     date: "",
+    dateInicial: "",
+    dateFinal: "",
+    dataInicial: "",
+    dataFinalComparar: "",
+    dataInicialComparar: "",
+    dataFinal: "",
     filtrar: '',
     filtrarVeiculo: '',
     filtrarCondutor: '',
@@ -515,13 +697,24 @@ export default {
     inserirOuAtualizar: "",
   }),
 
-  computed: {
-  },
+  computed: {},
 
   watch: {
     date(val) {
       console.log(val)
-      this.ordemTrafego.data = this.formatDate(this.date)
+      this.ordemTrafego.data = this.formatDate(this.date);
+    },
+
+    dateInicial(val) {
+      this.dataInicialComparar = val;
+      this.dataInicial = this.formatDate(val)
+      this.compararDatas()
+    },
+
+    dateFinal(val) {
+      this.dataFinalComparar = val;
+      this.dataFinal = this.formatDate(val)
+      this.compararDatas()
     },
   },
 
@@ -531,6 +724,34 @@ export default {
   },
 
   methods: {
+    compararDatas() {
+      if (this.dataFinalComparar.length > 0 && this.dataInicialComparar.length > 0) {
+        var inicial = new Date(this.dataInicialComparar);
+        var final = new Date(this.dataFinalComparar);
+        if (inicial.getTime() > final.getTime()) {
+          this.valid = true;
+          this.alertError = true
+          this.mensagemError = "A data inicial não pode ser maior que data final!"
+          setTimeout(this.fecharAlerError, 5000);
+        } else {
+          this.valid = false;
+        }
+      }
+    },
+
+    listarOrdensTrafegoIntervaloData() {
+      let listaAuxiliar = [];
+      OrdemTrafegoService.listarOrdensTrafegoIntervaloData(this.dataInicialComparar, this.dataFinalComparar).then(resposta => {
+        console.log(resposta.data)
+        resposta.data.forEach(da => {
+          da.data = this.formatDate(da.data)
+          listaAuxiliar.push(da)
+        })
+        this.listaOrdensTrafego = listaAuxiliar;
+      });
+
+    },
+
     listarOrdensTrafego() {
       let listaAuxiliar = [];
       OrdemTrafegoService.listar().then(resposta => {
@@ -619,6 +840,13 @@ export default {
       if (!date) return null
       const [year, month, day] = date.split('-')
       return `${day}/${month}/${year}`
+    },
+
+    fecharAlertInfo() {
+      this.alertInfo = false
+    },
+    fecharAlerError() {
+      this.alertError = false
     },
 
     parseDate(date) {
