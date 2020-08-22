@@ -41,10 +41,15 @@
                 Origem
               </v-tab>
 
-              <!--<v-tab>
-                <v-icon left>{{ iconnomeCondutor }}</v-icon>
-                Nome
-              </v-tab>-->
+              <v-tab>
+                <v-icon left>{{ iconDestino }}</v-icon>
+                Destino
+              </v-tab>
+
+              <v-tab>
+                <v-icon left>{{ iconStatus }}</v-icon>
+                Status
+              </v-tab>
 
               <v-tab-item>
                 <v-row>
@@ -111,27 +116,38 @@
                 <v-row>
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
-                        v-model="nomeCondutor"
-                        label="Digite o nome do condutor *"
+                        v-model="origemOrdemTrafego"
+                        label="Digite a cidade de origem *"
                     ></v-text-field>
                   </v-col>
-                  <v-btn style="margin-top: 25px" @click="buscaCondutorNome">Buscar condutor</v-btn>
+                  <v-btn style="margin-top: 25px" @click="listarOrdensTrafegoCidadeOrigem">Buscar condutor</v-btn>
                 </v-row>
               </v-tab-item>
 
-              <!-- <v-tab-item>
-                 <v-row>
-                   <v-col cols="12" sm="6" md="4">
-                     <v-select
-                         v-model="categoriaCnhCondutor"
-                         :items="categoriaCnh"
-                         :rules="regra"
-                         label="Selecione a categoria da CNH *"
-                     ></v-select>
-                   </v-col>
-                   <v-btn style="margin-top: 25px" @click="listarCondutoresCategoriaCnh()">Buscar condutores</v-btn>
-                 </v-row>
-               </v-tab-item>-->
+              <v-tab-item>
+                <v-row>
+                  <v-col cols="12" sm="6" md="4">
+                    <v-text-field
+                        v-model="destinoOrdemTrafego"
+                        label="Digite a cidade de destino *"
+                    ></v-text-field>
+                  </v-col>
+                  <v-btn style="margin-top: 25px" @click="listarOrdemTrafegoCidadeDestino">Buscar condutor</v-btn>
+                </v-row>
+              </v-tab-item>
+
+              <v-tab-item>
+                <v-row>
+                  <v-col cols="12" sm="6" md="4">
+                    <v-select
+                        v-model="statusOrdemTrafegoP"
+                        :items="statusOrdemTrafego"
+                        label="Selecione o status *"
+                    ></v-select>
+                  </v-col>
+                  <v-btn style="margin-top: 25px" @click="listarOrdemTrafegoStatus">Buscar condutor</v-btn>
+                </v-row>
+              </v-tab-item>
             </v-tabs>
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -527,6 +543,7 @@
 
 <script>
 import {
+  mdiPlaylistCheck,
   mdiHomeFloor1,
   mdiHomeFloor2,
   mdiCarBack,
@@ -534,7 +551,8 @@ import {
   mdiContentSaveAll,
   mdiPlusBox,
   mdiCursorDefaultClick,
-  mdiCalendarRange
+  mdiCalendarRange,
+
 } from '@mdi/js';
 import OrdemTrafegoService from '../service/ordemTrafegoService';
 import CondutorService from '../service/condutorService';
@@ -552,6 +570,7 @@ export default {
     mensagemError: "",
     mensagemSucesso: "",
     mensagemInfo: "",
+    iconStatus: mdiPlaylistCheck,
     iconDate: mdiCalendarRange,
     iconClick: mdiCursorDefaultClick,
     iconOrigem: mdiHomeFloor1,
@@ -571,6 +590,9 @@ export default {
     dataInicial: "",
     dataFinalComparar: "",
     dataInicialComparar: "",
+    origemOrdemTrafego: "",
+    destinoOrdemTrafego: "",
+    statusOrdemTrafegoP: "",
     dataFinal: "",
     filtrar: '',
     filtrarVeiculo: '',
@@ -742,14 +764,76 @@ export default {
     listarOrdensTrafegoIntervaloData() {
       let listaAuxiliar = [];
       OrdemTrafegoService.listarOrdensTrafegoIntervaloData(this.dataInicialComparar, this.dataFinalComparar).then(resposta => {
-        console.log(resposta.data)
-        resposta.data.forEach(da => {
-          da.data = this.formatDate(da.data)
-          listaAuxiliar.push(da)
-        })
-        this.listaOrdensTrafego = listaAuxiliar;
+        if (resposta.data.length == 0) {
+          this.alertInfo = true
+          this.dialogOrdensTrafego = false;
+          this.mensagemInfo = "Nenhuma ordem de tráfego entre as datas '"+this.dataInicial +" a "+this.dataFinal +"' esta salvo em nossa base de dados!"
+          setTimeout(this.fecharAlertInfo, 5000);
+        } else {
+          console.log(resposta.data)
+          resposta.data.forEach(da => {
+            da.data = this.formatDate(da.data)
+            listaAuxiliar.push(da)
+          })
+          this.listaOrdensTrafego = listaAuxiliar;
+        }
       });
 
+    },
+
+    listarOrdensTrafegoCidadeOrigem() {
+      let listaAuxiliar = [];
+      OrdemTrafegoService.listarOrdensTrafegoCidadeOrigem(this.origemOrdemTrafego).then(resposta => {
+        if (resposta.data.length == 0) {
+          this.alertInfo = true
+          this.dialogOrdensTrafego = false;
+          this.mensagemInfo = "Nenhuma ordem de tráfego com a cidade com a origem '"+this.origemOrdemTrafego +"'  esta salvo em nossa base de dados!"
+          setTimeout(this.fecharAlertInfo, 5000);
+        } else {
+          console.log(resposta.data)
+          resposta.data.forEach(da => {
+            da.data = this.formatDate(da.data)
+            listaAuxiliar.push(da)
+          })
+          this.listaOrdensTrafego = listaAuxiliar;
+        }
+      });
+    },
+
+    listarOrdemTrafegoCidadeDestino() {
+      let listaAuxiliar = [];
+      OrdemTrafegoService.listarOrdemTrafegoCidadeDestino(this.destinoOrdemTrafego).then(resposta => {
+        if (resposta.data.length == 0) {
+          this.alertInfo = true
+          this.dialogOrdensTrafego = false;
+          this.mensagemInfo = "Nenhuma ordem de tráfego com a cidade com a destino '"+this.destinoOrdemTrafego +"'  esta salvo em nossa base de dados!"
+          setTimeout(this.fecharAlertInfo, 5000);
+        } else {
+          resposta.data.forEach(da => {
+            da.data = this.formatDate(da.data)
+            listaAuxiliar.push(da)
+          })
+          this.listaOrdensTrafego = listaAuxiliar;
+        }
+      });
+    },
+
+    listarOrdemTrafegoStatus() {
+      let listaAuxiliar = [];
+      OrdemTrafegoService.listarOrdemTrafegoStatus(this.statusOrdemTrafegoP).then(resposta => {
+        if (resposta.data.length == 0) {
+          this.alertInfo = true
+          this.dialogOrdensTrafego = false;
+          this.mensagemInfo = "Nenhuma ordem de tráfego com status '"+this.statusOrdemTrafegoP +"'  esta salvo em nossa base de dados!"
+          setTimeout(this.fecharAlertInfo, 5000);
+        } else {
+          resposta.data.forEach(da => {
+            da.data = this.formatDate(da.data)
+            listaAuxiliar.push(da)
+          })
+          this.listaOrdensTrafego = listaAuxiliar;
+        }
+      });
     },
 
     listarOrdensTrafego() {
@@ -845,6 +929,7 @@ export default {
     fecharAlertInfo() {
       this.alertInfo = false
     },
+
     fecharAlerError() {
       this.alertError = false
     },

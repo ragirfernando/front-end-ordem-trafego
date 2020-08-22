@@ -10,6 +10,18 @@ export default {
         return http.get(`/ordemTrafego/listarOrdensTrafegoData/${dataInicial}/${dataFinal}`)
     },
 
+    listarOrdensTrafegoCidadeOrigem: (cidadeOrigem) => {
+        return http.get(`/ordemTrafego/buscarOrdemTrafegoOrigem/${cidadeOrigem}`)
+    },
+
+    listarOrdemTrafegoStatus: (status) => {
+        return http.get(`/ordemTrafego/buscarOrdensStatus/${status}`)
+    },
+
+    listarOrdemTrafegoCidadeDestino: (cidadeDestino) => {
+        return http.get(`ordemTrafego/buscarOrdemTrafegoDestino/${cidadeDestino}`)
+    },
+
     inserir: (ordemTrafego, idCondutor, idVeiculo) => {
         const url = `ordemTrafego/inserirOrdemTrafego/${idCondutor}/${idVeiculo}`;
         return http.post(url,  ordemTrafego)
