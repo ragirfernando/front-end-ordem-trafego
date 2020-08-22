@@ -8,7 +8,7 @@
           dismissible>
         {{ mensagemInfo }}
       </v-alert>
-      <v-expansion-panels popout>
+      <v-expansion-panels popout style="margin-bottom: 10px;" >
         <v-expansion-panel>
           <v-expansion-panel-header style="font-size: 25px">Consultas</v-expansion-panel-header>
           <v-expansion-panel-content>
@@ -94,14 +94,13 @@
           </v-expansion-panel-content>
         </v-expansion-panel>
       </v-expansion-panels>
-      <br/>
-      <v-banner v-model="dialogOrdensTrafego" single-line transition="slide-y-transition">
+
+      <v-banner style="margin-bottom: 10px" v-model="dialogOrdensTrafego" single-line transition="slide-y-transition">
         <v-checkbox v-model="dialogOrdensTrafego" label="Fechar"></v-checkbox>
         <v-data-table style="margin-left: 55px" :headers="cabecalhoOrdensTrafego" :items="listaOrdensTrafego">
         </v-data-table>
-
       </v-banner>
-      <br/>
+
       <v-data-table :headers="nomeColunas" :items="listaVeiculos" :search="search">
         <template v-slot:top>
           <v-toolbar flat color="#">
@@ -258,15 +257,12 @@
               right
           >
             <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                  class="deep-orange"
-                  color="primary"
+              <v-icon
                   dark
                   v-bind="attrs"
                   v-on="on"
-              >
-                Ações
-              </v-btn>
+              >{{ iconClick }}
+              </v-icon>
             </template>
 
             <v-list>
@@ -283,8 +279,6 @@
               </v-list-item>
             </v-list>
           </v-menu>
-          <!--<v-icon small class="mr-2" @click="atualizarVeiculo(item)">mdi-pencil</v-icon>
-          <v-icon small @click="mostrarDialogDeletar(item)">mdi-delete</v-icon>-->
         </template>
         <template v-slot:no-data>
           <h3 color="#" dark>Sem veículos</h3>
@@ -295,7 +289,7 @@
 </template>
 <script>
 import VeiculoService from '../service/veiculoService';
-import {mdiMagnify, mdiWatermark, mdiGlobeModel, mdiSpeedometer, mdiCarDoor} from '@mdi/js';
+import {mdiMagnify, mdiWatermark, mdiGlobeModel, mdiSpeedometer, mdiCarDoor, mdiCursorDefaultClick} from '@mdi/js';
 
 export default {
   name: "veiculo",
@@ -308,6 +302,7 @@ export default {
     veiculoEstadoConservacao: "",
     kmInicial: "",
     kmFinal: "",
+    iconClick: mdiCursorDefaultClick,
     iconKm: mdiSpeedometer,
     iconBuscar: mdiMagnify,
     iconMarca: mdiWatermark,
@@ -432,6 +427,7 @@ export default {
       this.novoOuAtualizar = "Inserir novo veículo";
       this.reset();
     },
+
     reset() {
       this.$refs.form.reset()
     },
@@ -526,6 +522,7 @@ export default {
         }
       });
     },
+
     formatDate(date) {
       if (!date) return null
       const [year, month, day] = date.split('-')

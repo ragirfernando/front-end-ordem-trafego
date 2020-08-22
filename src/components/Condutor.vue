@@ -7,8 +7,85 @@
             type="success"
             close-text="Close Alert"
             dismissible>
-          {{mensagem}}
+          {{ mensagemSuccess }}
         </v-alert>
+
+        <v-alert
+            v-model="alertInfo"
+            type="info"
+            close-text="Close Alert"
+            dismissible>
+          {{ mensagemInfo }}
+        </v-alert>
+
+        <v-expansion-panels popout style="margin-bottom: 10px;">
+          <v-expansion-panel>
+            <v-expansion-panel-header style="font-size: 25px">Consultas</v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <v-tabs botton>
+                <v-tab>
+                  <v-icon left>{{ iconCategoriaCNH }}</v-icon>
+                  Número da CNH
+                </v-tab>
+
+                <v-tab>
+                  <v-icon left>{{ iconCategoriaCNH }}</v-icon>
+                  Categoria CNH
+                </v-tab>
+
+                <v-tab>
+                  <v-icon left>{{ iconnomeCondutor }}</v-icon>
+                  Nome
+                </v-tab>
+
+                <v-tab-item>
+                  <v-row>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field
+                          v-model="cnhCondutor"
+                          label="Digite a cnh do condutor *"
+                      ></v-text-field>
+                    </v-col>
+                    <v-btn style="margin-top: 25px" @click="listarCondutorNumeroCnh()">Buscar condutor</v-btn>
+                  </v-row>
+                </v-tab-item>
+
+                <v-tab-item>
+                  <v-row>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-select
+                          v-model="categoriaCnhCondutor"
+                          :items="categoriaCnh"
+                          :rules="regra"
+                          label="Selecione a categoria da CNH *"
+                      ></v-select>
+                    </v-col>
+                    <v-btn style="margin-top: 25px" @click="listarCondutoresCategoriaCnh()">Buscar condutores</v-btn>
+                  </v-row>
+                </v-tab-item>
+
+                <v-tab-item>
+                  <v-row>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field
+                          v-model="nomeCondutor"
+                          label="Digite o nome do condutor *"
+                      ></v-text-field>
+                    </v-col>
+                    <v-btn style="margin-top: 25px" @click="buscaCondutorNome">Buscar condutor</v-btn>
+                  </v-row>
+                </v-tab-item>
+              </v-tabs>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
+
+        <v-banner style="margin-bottom: 10px" v-model="dialogOrdensTrafego" single-line transition="slide-y-transition">
+          <v-checkbox v-model="dialogOrdensTrafego" label="Fechar"></v-checkbox>
+          <v-data-table style="margin-left: 55px" :headers="cabecalhoOrdensTrafego" :items="listaOrdensTrafego">
+          </v-data-table>
+        </v-banner>
+
         <v-data-table :headers="headers" :items="listaCondutores" :search="search">
           <template v-slot:top style="width: 90%">
             <v-toolbar flat color="#">
@@ -192,7 +269,7 @@
                       </v-form>
                     </v-container>
                   </v-card-text>
-                  <v-card-actions >
+                  <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="white" text @click="dialogFormularios = false ">Cancelar</v-btn>
                     <v-btn color="white" :disabled="!valid" text @click="inserirCondutor">Salvar</v-btn>
@@ -202,8 +279,33 @@
             </v-toolbar>
           </template>
           <template v-slot:item.acoes="{item}">
-            <v-icon small class="mr-2" @click="editarCondutor(item)">mdi-pencil</v-icon>
-            <v-icon small @click="mostrarDialogDeletar(item)">mdi-delete</v-icon>
+            <v-menu
+                transition="slide-x-transition"
+                bottom
+                right
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-icon
+                    dark
+                    v-bind="attrs"
+                    v-on="on"
+                >{{ iconClick }}
+                </v-icon>
+              </template>
+              <v-list>
+                <v-list-item @click="editarCondutor(item)">
+                  <v-list-item-title>Atualizar</v-list-item-title>
+                </v-list-item>
+
+                <v-list-item @click="mostrarDialogDeletar(item)">
+                  <v-list-item-title>Deletar</v-list-item-title>
+                </v-list-item>
+
+                <v-list-item @click="listarOrdensTrafegoRelacionadaCondutor(item)">
+                  <v-list-item-title>Ordem tráfego veículo</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
           </template>
           <template v-slot:no-data>
             <v-card-subtitle>Nenhum codutor para ser mostrado.</v-card-subtitle>
@@ -217,17 +319,28 @@
 <script>
 import CondutorService from '../service/condutorService';
 import ConsultarCepService from '../service/cepService'
+import {mdiCardAccountDetailsOutline, mdiShapeOutline, mdiAccount, mdiCursorDefaultClick} from '@mdi/js';
 
 export default {
   name: 'condutor',
   data: () => ({
+    iconNumeroCNH: mdiCardAccountDetailsOutline,
+    iconCategoriaCNH: mdiShapeOutline,
+    iconnomeCondutor: mdiAccount,
+    iconClick: mdiCursorDefaultClick,
+    cnhCondutor: "",
+    categoriaCnhCondutor: "",
+    nomeCondutor: "",
     date: "",
-    mensagem: "",
+    mensagemSuccess: "",
+    mensagemInfo: "",
     alertSucesso: false,
+    alertInfo: false,
     dateFormatted: "",
     menu1: false,
     alert: false,
     dialogDeletarVeiculo: false,
+    dialogOrdensTrafego: false,
     condutorDeletar: {},
     valid: true,
     lazy: false,
@@ -239,18 +352,31 @@ export default {
     dialogFormularios: false,
     novoOuAtualizar: "",
     headers: [
-      {text: "Nome", class:"subtitle-1 Bold text", align: "start", sortable: false, value: "nome"},
-      {text: "CPF", class:"subtitle-1 Bold text", sortable: false, value: "cpf"},
-      {text: "Matricula", class:"subtitle-1 Bold text", sortable: false, value: "matricula"},
-      {text: "Número CNH", class:"subtitle-1 Bold text", sortable: false, value: "cnh.numeroCNH"},
-      {text: "Categoria CNH", class:"subtitle-1 Bold text", sortable: false, value: "cnh.categoriaCNH"},
-      {text: "Validade da CNH", class:"subtitle-1 Bold text", sortable: false, value: "cnh.validade"},
-      {text: "UF", sortable: false, class:"subtitle-1 Bold text", value: "endereco.uf"},
-      {text: "Cidade", class:"subtitle-1 Bold text", sortable: false, value: "endereco.localidade"},
-      {text: "Bairro", class:"subtitle-1 Bold text", sortable: false, value: "endereco.bairro"},
-      {text: "Ações", class:"subtitle-1 Bold text", value: "acoes", sortable: false}
+      {text: "Nome", class: "subtitle-1 Bold text", align: "start", sortable: false, value: "nome"},
+      {text: "CPF", class: "subtitle-1 Bold text", sortable: false, value: "cpf"},
+      {text: "Matricula", class: "subtitle-1 Bold text", sortable: false, value: "matricula"},
+      {text: "Número CNH", class: "subtitle-1 Bold text", sortable: false, value: "cnh.numeroCNH"},
+      {text: "Categoria CNH", class: "subtitle-1 Bold text", sortable: false, value: "cnh.categoriaCNH"},
+      {text: "Validade da CNH", class: "subtitle-1 Bold text", sortable: false, value: "cnh.validade"},
+      {text: "UF", sortable: false, class: "subtitle-1 Bold text", value: "endereco.uf"},
+      {text: "Cidade", class: "subtitle-1 Bold text", sortable: false, value: "endereco.localidade"},
+      {text: "Bairro", class: "subtitle-1 Bold text", sortable: false, value: "endereco.bairro"},
+      {text: "Ações", class: "subtitle-1 Bold text", value: "acoes", sortable: false}
+    ],
+    cabecalhoOrdensTrafego: [
+      {text: "Cidade de Origem", class: "subtitle-1 Bold text", sortable: false, value: "origem.localidade"},
+      {text: "uf de Origem", class: "subtitle-1 Bold text", sortable: false, value: "origem.uf"},
+      {text: "Cidade de Destino", class: "subtitle-1 Bold text", sortable: false, value: "destino.localidade"},
+      {text: "uf de Destino", class: "subtitle-1 Bold text", sortable: false, value: "origem.uf"},
+      {text: "Data", class: "subtitle-1 Bold text", sortable: false, value: "data"},
+      {text: "Hora", class: "subtitle-1 Bold text", sortable: false, value: "hora"},
+      {text: "Condutor", class: "subtitle-1 Bold text", sortable: false, value: "condutor.nome"},
+      {text: "Veículo", class: "subtitle-1 Bold text", sortable: false, value: "veiculo.modelo"},
+      {text: "Status", class: "subtitle-1 Bold text", sortable: false, value: "status"},
+      {text: "Distância", class: "subtitle-1 Bold text", sortable: false, value: "distanciaPercorrer"},
     ],
     listaCondutores: [],
+    listaOrdensTrafego: [],
     condutor: {
       id: null,
       nome: "",
@@ -272,6 +398,32 @@ export default {
       },
       cpf: "",
       matricula: ""
+    },
+    ordemTrafego: {
+      origem: {
+        id: null,
+        cep: "",
+        logradouro: "",
+        complemento: "",
+        bairro: "",
+        localidade: "",
+        numero: "",
+        uf: ""
+      },
+      destino: {
+        cep: "",
+        logradouro: "",
+        complemento: "",
+        bairro: "",
+        localidade: "",
+        numero: "",
+        uf: ""
+      },
+      id: null,
+      hora: "",
+      status: "",
+      data: "",
+      distanciaPercorrer: ""
     },
 
   }),
@@ -337,6 +489,85 @@ export default {
       });
     },
 
+    listarCondutorNumeroCnh() {
+      CondutorService.listarCondutorNumeroCnh(this.cnhCondutor).then(resposta => {
+        if (resposta.data.length == 0) {
+          this.alertInfo = true
+          this.mensagemInfo = "Nenhum condutor com o número da CNH: '" + this.cnhCondutor + "' em nossa base de dados!"
+          setTimeout(this.fecharAlertInfo, 5000);
+        } else {
+          this.listaCondutores = [];
+          resposta.data.cnh.validade = this.formatDate(resposta.data.cnh.validade)
+          this.listaCondutores.push(resposta.data)
+        }
+      }).catch(error => {
+        console.log(error)
+      });
+    },
+
+    listarCondutoresCategoriaCnh() {
+      let lista = []
+      CondutorService.listarCondutoresCategoriaCnh(this.categoriaCnhCondutor).then(resposta => {
+        if (resposta.data.length == 0) {
+          this.alertInfo = true
+          this.mensagemInfo = "Não há condutores com a categoria da CNH: '" + this.categoriaCnhCondutor + "' em nossa base de dados!"
+          setTimeout(this.fecharAlertInfo, 5000);
+        } else {
+          this.listaCondutores = [];
+          resposta.data.forEach(da => {
+            da.cnh.validade = this.formatDateBr(da.cnh.validade)
+            lista.push(da)
+          })
+          this.listaCondutores = lista
+        }
+      }).catch(error => {
+        console.log(error)
+      });
+    },
+
+    buscaCondutorNome() {
+      let lista = []
+      CondutorService.buscaCondutorNome(this.nomeCondutor).then(resposta => {
+        if (resposta.data.length == 0) {
+          this.alertInfo = true
+          this.mensagemInfo = "Não há condutor com o nome: '" + this.nomeCondutor + "' em nossa base de dados!"
+          setTimeout(this.fecharAlertInfo, 5000);
+        } else {
+          this.listaCondutores = [];
+          resposta.data.forEach(da => {
+            da.cnh.validade = this.formatDateBr(da.cnh.validade)
+            lista.push(da)
+          })
+          this.listaCondutores = lista
+        }
+      }).catch(error => {
+        console.log(error)
+      });
+    },
+
+    listarOrdensTrafegoRelacionadaCondutor(item) {
+      let listaAuxiliar = [];
+      CondutorService.listarOrdensTrafegoRelacionadaCondutor(item.id).then(resposta => {
+        if (resposta.data.length == 0) {
+          this.alertInfo = true
+          this.dialogOrdensTrafego = false;
+          this.mensagemInfo = "Esse condutor não está relacionado a nenhuma ordem de tráfego!"
+          setTimeout(this.fecharAlertInfo, 5000);
+        } else {
+          resposta.data.forEach(res => {
+            res.data = this.formatDate(res.data);
+            listaAuxiliar.push(res);
+          })
+          this.listaOrdensTrafego = listaAuxiliar
+          this.dialogOrdensTrafego = true;
+        }
+      });
+    },
+
+    fecharAlertInfo() {
+      this.alertInfo = false
+    },
+
     mostrarDialogFormularios() {
       this.dialogFormularios = true;
       this.novoOuAtualizar = "Inserir novo condutor";
@@ -364,7 +595,7 @@ export default {
           console.log(resposta);
           this.listarCondutores();
           this.alertSucesso = true
-          this.mensagem = "Condutor salvo com sucesso!"
+          this.mensagemSuccess = "Condutor salvo com sucesso!"
           setTimeout(this.fecharAlertSucesso, 3000);
         }).catch(error => {
           console.log(error)
@@ -372,7 +603,7 @@ export default {
       } else {
         CondutorService.atualizar(this.condutor).then(resposta => {
           console.log(resposta);
-          this.mensagem = "Condutor atualizado com sucesso!"
+          this.mensagemSuccess = "Condutor atualizado com sucesso!"
           this.alertSucesso = true
           this.listarCondutores();
           setTimeout(this.fecharAlertSucesso, 3000);
@@ -394,7 +625,7 @@ export default {
       this.condutor = item;
     },
 
-    fecharAlertSucesso(){
+    fecharAlertSucesso() {
       this.alertSucesso = false;
     },
 
@@ -403,7 +634,7 @@ export default {
         console.log(resposta.data)
         this.listarCondutores()
         this.alertSucesso = true
-        this.mensagem = resposta.data
+        this.mensagemSuccess = resposta.data
         setTimeout(this.fecharAlertSucesso, 3000);
       }).catch(e => {
         console.log(e);
@@ -415,7 +646,7 @@ export default {
 </script>
 
 <style>
-.c{
+.c {
   background-color: beige;
 }
 
