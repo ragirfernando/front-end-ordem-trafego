@@ -105,7 +105,7 @@ export default {
     iconGithub: mdiGithub,
     im: [
       {
-        src: 'https://raw.githubusercontent.com/ragirfernando/front-end-ordem-trafego/master/src/imagens/Captura%20de%20tela%20de%202020-07-16%2022-06-16.png',
+        src: 'https://raw.githubusercontent.com/ragirfernando/front-end-ordem-trafego/master/src/imagens/Linkedin.png',
       },
       {
         src: 'https://cdn.vuetifyjs.com/images/carousel/sky.jpg',
