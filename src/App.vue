@@ -24,7 +24,7 @@
         <v-toolbar-title class="text-uppercase">Gestão de frotas</v-toolbar-title>
       </v-app-bar>
 
-      <v-carousel
+     <!-- <v-carousel
           cycle
           height="400"
           hide-delimiter-background
@@ -39,7 +39,7 @@
             reverse-transition="fade-transition"
             transition="fade-transition"
         ></v-carousel-item>
-        <!--<v-carousel-item
+        &lt;!&ndash;<v-carousel-item
             v-for="(slide, i) in slides"
             :key="i"
         >
@@ -55,7 +55,7 @@
               <div class="display-3">{{ slide }} Slide</div>
             </v-row>
           </v-sheet>
-        </v-carousel-item>-->
+        </v-carousel-item>&ndash;&gt;
       </v-carousel>
       <v-card style="width: 95%; margin: 10px 2.5% 10px 2.5%">
         <v-card-text>
@@ -68,7 +68,7 @@
           euismod nisi. Etiam consequat enim justo, vitae maximus est congue lacinia. In rhoncus tortor cursus arcu
           blandit, tempus tempor arcu consectetur.
         </v-card-text>
-      </v-card>
+      </v-card>-->
       <v-footer app height="70px">
         <span>&copy; Ragir Fernando</span>
         <div style="padding-left: 40%">
