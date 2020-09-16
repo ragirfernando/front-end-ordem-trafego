@@ -281,7 +281,7 @@
           </v-menu>
         </template>
         <template v-slot:no-data>
-          <h3 color="#" dark>Sem veículos</h3>
+          <v-card-subtitle>Nenhum veículo para ser mostrado.</v-card-subtitle>
         </template>
       </v-data-table>
     </div>

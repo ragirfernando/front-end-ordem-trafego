@@ -534,7 +534,7 @@
         </template>
 
         <template v-slot:no-data>
-          <v-btn color="primary" @click="listarOrdensTrafego">Reset</v-btn>
+          <v-card-subtitle>Nenhuma ordem de tráfego para ser mostrado.</v-card-subtitle>
         </template>
       </v-data-table>
     </div>
