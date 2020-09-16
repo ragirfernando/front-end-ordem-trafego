@@ -73,7 +73,7 @@
         <span>&copy; Ragir Fernando</span>
         <div style="padding-left: 40%">
           <v-btn
-              href="https://www.linkedin.com/in/ragir-fernando-71b986176/"
+              href="https://www.linkedin.com/in/ragirfernando/"
               target="_blank"
               icon>
             <v-icon size="24px">{{ iconLinkedin }}</v-icon>
@@ -105,7 +105,7 @@ export default {
     iconGithub: mdiGithub,
     im: [
       {
-        src: 'https://raw.githubusercontent.com/ragirfernando/front-end-ordem-trafego/master/src/imagens/Link.png',
+        src: 'https://raw.githubusercontent.com/ragirfernando/front-end-ordem-trafego/master/src/imagens/Captura%20de%20Tela%20(38).png',
       },
       {
         src: 'https://cdn.vuetifyjs.com/images/carousel/sky.jpg',
