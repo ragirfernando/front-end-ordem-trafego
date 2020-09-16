@@ -91,7 +91,7 @@
 </template>
 
 <script>
-import {mdiCar, mdiCardAccountDetailsOutline, mdiHighway, mdiAbTesting, mdiLinkedin, mdiGithub} from '@mdi/js';
+import {mdiCar, mdiCardAccountDetailsOutline, mdiHighway/*, mdiAbTesting*/, mdiLinkedin, mdiGithub} from '@mdi/js';
 
 export default {
   name: "App",
@@ -121,7 +121,7 @@ export default {
       {title: 'Veículo', icon: mdiCar, link: '/Veiculo'},
       {title: 'Condutor', icon: mdiCardAccountDetailsOutline, link: '/Condutor'},
       {title: 'Ordem de Tráfego', icon: mdiHighway, link: '/OrdemTrafego'},
-      {title: 'Teste', icon: mdiAbTesting, link: '/Teste'}
+      /*{title: 'Teste', icon: mdiAbTesting, link: '/Teste'}*/
     ],
     right: null,
     colors: [
