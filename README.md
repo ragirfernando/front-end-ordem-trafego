@@ -34,5 +34,5 @@ Muito obrigado pela atenção
 ## Sobre o autor/organizador.
 Ragir Fernando Aparecido da Silva.
 
-* Linkedin: https://www.linkedin.com/in/ragir-fernando-71b986176/
+* Linkedin: https://www.linkedin.com/in/ragirfernando
 * E-mail: ragirfernando@gmail.com
