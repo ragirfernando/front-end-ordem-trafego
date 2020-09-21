@@ -3,7 +3,7 @@
 ![alt text](https://github.com/ragirfernando/front-end-ordem-trafego/blob/master/src/imagens/Captura%20de%20tela%20de%202020-07-16%2022-08-31.png)
 
 
-# front-end-ordem-trafego
+# front end Gestão de Frotas
 
 ## Project setup
 ```
@@ -25,9 +25,9 @@ npm run build
 npm run lint
 ```
 ## Url para acessar aplicação.
-[Ordem de tráfego](https://ordem-trafego.netlify.app/).
+[Gestão de Frotas ](https://ordem-trafego.netlify.app/).
 
 ## Tecnologias usadas
-[Vue CLI](https://cli.vuejs.org/config/),
+[VueCLI](https://cli.vuejs.org/config/),
 [ Vuetify](https://vuetifyjs.com/en/),
 [ Axios API](https://github.com/axios/axios).
