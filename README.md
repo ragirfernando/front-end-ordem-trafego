@@ -28,6 +28,7 @@ npm run lint
 [Gestão de Frotas ](https://ordem-trafego.netlify.app/).
 
 ## Tecnologias usadas
-*[VueCLI](https://cli.vuejs.org/config/),
+* Item *
+[VueCLI](https://cli.vuejs.org/config/),
 [ Vuetify](https://vuetifyjs.com/en/),
 [ Axios API](https://github.com/axios/axios).
