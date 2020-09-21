@@ -1,6 +1,6 @@
-![alt text](https://github.com/ragirfernando/front-end-ordem-trafego/blob/master/src/imagens/Captura%20de%20tela%20de%202020-07-16%2022-06-41.png)
+![alt text](https://raw.githubusercontent.com/ragirfernando/front-end-ordem-trafego/master/src/imagens/listaOrdensTrafego.png)
 
-![alt text](https://github.com/ragirfernando/front-end-ordem-trafego/blob/master/src/imagens/Captura%20de%20tela%20de%202020-07-16%2022-08-31.png)
+![alt text](https://raw.githubusercontent.com/ragirfernando/front-end-ordem-trafego/master/src/imagens/menuLateral.png)
 
 
 # front end Gestão de Frotas
@@ -31,3 +31,12 @@ npm run lint
 * [VueCLI](https://cli.vuejs.org/config/)
 * [ Vuetify](https://vuetifyjs.com/en/)
 * [Axios API](https://github.com/axios/axios)
+
+## Se você chegou até aqui.
+Muito obrigado pela atenção
+
+## Sobre o autor/organizador.
+Ragir Fernando Aparecido da Silva.
+
+* [Linkedin: ](https://www.linkedin.com/in/ragir-fernando-71b986176/)
+* E-mail: ragirfernando@gmail.com
