@@ -21,7 +21,7 @@ npm run build
 ```
 
 ## Url para acessar aplicação.
-[Gestão de Frotas](https://ordem-trafego.netlify.app/).
+[Gestão de Frotas](https://ordem-trafego.netlify.app/)
 
 ## Tecnologias usadas
 * [Vue CLI](https://cli.vuejs.org/config/)
