@@ -24,8 +24,9 @@ npm run build
 [Gestão de Frotas ](https://ordem-trafego.netlify.app/).
 
 ## Tecnologias usadas
-* [VueCLI](https://cli.vuejs.org/config/)
-* [ Vuetify](https://vuetifyjs.com/en/)
+* [Vue CLI](https://cli.vuejs.org/config/)
+* [Vue Router](https://router.vuejs.org/)
+* [Vuetify](https://vuetifyjs.com/en/)
 * [Axios API](https://github.com/axios/axios)
 
 ## Se você chegou até aqui.
