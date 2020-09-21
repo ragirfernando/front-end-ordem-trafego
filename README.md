@@ -3,27 +3,23 @@
 ![alt text](https://raw.githubusercontent.com/ragirfernando/front-end-ordem-trafego/master/src/imagens/menuLateral.png)
 
 
-# front end Gestão de Frotas
+# Gestão de Frotas
 
-## Project setup
+## Configuração do projeto
 ```
 npm install
 ```
 
-### Compiles and hot-reloads for development
+### Compilar e recarregar para desenvolvimento
 ```
 npm run serve
 ```
 
-### Compiles and minifies for production
+### Compila e minimiza para produção
 ```
 npm run build
 ```
 
-### Lints and fixes files
-```
-npm run lint
-```
 ## Url para acessar aplicação.
 [Gestão de Frotas ](https://ordem-trafego.netlify.app/).
 
@@ -38,5 +34,5 @@ Muito obrigado pela atenção
 ## Sobre o autor/organizador.
 Ragir Fernando Aparecido da Silva.
 
-* [Linkedin](https://www.linkedin.com/in/ragir-fernando-71b986176/)
+* Linkedin: (https://www.linkedin.com/in/ragir-fernando-71b986176/)
 * E-mail: ragirfernando@gmail.com
