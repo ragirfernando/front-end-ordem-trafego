@@ -30,7 +30,7 @@ npm run build
 * [Axios API](https://github.com/axios/axios)
 
 ## Se você chegou até aqui.
-Muito obrigado pela atenção
+Muito obrigado pela atenção.
 
 ## Sobre o autor/organizador.
 Ragir Fernando Aparecido da Silva.
