@@ -5,23 +5,23 @@
 
 # Gestão de Frotas
 
-## Configuração do projeto
+## Configuração do projeto.
 ```
 npm install
 ```
 
-### Compilar e recarregar para desenvolvimento
+### Compilar e recarregar para desenvolvimento.
 ```
 npm run serve
 ```
 
-### Compila e minimiza para produção
+### Compila e minimiza para produção.
 ```
 npm run build
 ```
 
 ## Url para acessar aplicação.
-[Gestão de Frotas ](https://ordem-trafego.netlify.app/).
+[Gestão de Frotas](https://ordem-trafego.netlify.app/).
 
 ## Tecnologias usadas
 * [Vue CLI](https://cli.vuejs.org/config/)
