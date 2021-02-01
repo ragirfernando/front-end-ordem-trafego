@@ -24,52 +24,7 @@
         <v-toolbar-title class="text-uppercase">Gestão de frotas</v-toolbar-title>
       </v-app-bar>
 
-     <!-- <v-carousel
-          cycle
-          height="400"
-          hide-delimiter-background
-          show-arrows-on-hover
-          interval="3000"
-          style="width: 95%; margin: 80px 2.5% 10px 2.5%"
-      >
-        <v-carousel-item
-            v-for="(item,i) in im"
-            :key="i"
-            :src="item.src"
-            reverse-transition="fade-transition"
-            transition="fade-transition"
-        ></v-carousel-item>
-        &lt;!&ndash;<v-carousel-item
-            v-for="(slide, i) in slides"
-            :key="i"
-        >
-          <v-sheet
-              :color="colors[i]"
-              height="100%"
-          >
-            <v-row
-                class="fill-height"
-                align="center"
-                justify="center"
-            >
-              <div class="display-3">{{ slide }} Slide</div>
-            </v-row>
-          </v-sheet>
-        </v-carousel-item>&ndash;&gt;
-      </v-carousel>
-      <v-card style="width: 95%; margin: 10px 2.5% 10px 2.5%">
-        <v-card-text>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam porttitor, ex eget efficitur vehicula, elit
-          libero scelerisque ligula, vitae lobortis augue mauris id erat. Maecenas vitae auctor sapien. Aenean consequat
-          eleifend mi. Duis malesuada elit risus, in commodo erat porta eget. Nullam pellentesque sit amet purus et
-          semper. Nam a sodales diam, dignissim placerat libero. Maecenas a eros nisi. Mauris a imperdiet libero.
-          Integer hendrerit sit amet magna sed sollicitudin. Class aptent taciti sociosqu ad litora torquent per conubia
-          nostra, per inceptos himenaeos. Sed euismod quis mi ac molestie. Etiam eleifend maximus ullamcorper. Duis quis
-          euismod nisi. Etiam consequat enim justo, vitae maximus est congue lacinia. In rhoncus tortor cursus arcu
-          blandit, tempus tempor arcu consectetur.
-        </v-card-text>
-      </v-card>-->
-      <v-footer app height="70px">
+       <v-footer app height="70px">
         <span>&copy; Ragir Fernando</span>
         <div style="padding-left: 40%">
           <v-btn
@@ -91,7 +46,7 @@
 </template>
 
 <script>
-import {mdiCar, mdiCardAccountDetailsOutline, mdiHighway/*, mdiAbTesting*/, mdiLinkedin, mdiGithub} from '@mdi/js';
+import {mdiCar, mdiCardAccountDetailsOutline, mdiHighway, mdiLinkedin, mdiGithub} from '@mdi/js';
 
 export default {
   name: "App",
@@ -103,25 +58,10 @@ export default {
     drawer: null,
     iconLinkedin: mdiLinkedin,
     iconGithub: mdiGithub,
-    im: [
-      {
-        src: 'https://raw.githubusercontent.com/ragirfernando/front-end-ordem-trafego/master/src/imagens/Captura%20de%20Tela%20(38).png',
-      },
-      {
-        src: 'https://cdn.vuetifyjs.com/images/carousel/sky.jpg',
-      },
-      {
-        src: 'https://cdn.vuetifyjs.com/images/carousel/bird.jpg',
-      },
-      {
-        src: 'https://cdn.vuetifyjs.com/images/carousel/planet.jpg',
-      },
-    ],
     items: [
       {title: 'Veículo', icon: mdiCar, link: '/Veiculo'},
       {title: 'Condutor', icon: mdiCardAccountDetailsOutline, link: '/Condutor'},
-      {title: 'Ordem de Tráfego', icon: mdiHighway, link: '/OrdemTrafego'},
-      /*{title: 'Teste', icon: mdiAbTesting, link: '/Teste'}*/
+      {title: 'Ordem de Tráfego', icon: mdiHighway, link: '/OrdemTrafego'}
     ],
     right: null,
     colors: [
